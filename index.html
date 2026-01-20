@@ -11,11 +11,108 @@
             box-sizing: border-box;
         }
         
+        :root {
+            --bg-primary: #1a1a1a;
+            --bg-secondary: #2a2a2a;
+            --bg-tertiary: #333;
+            --text-primary: #e0e0e0;
+            --text-secondary: #888;
+            --accent: #667eea;
+            --accent-hover: #764ba2;
+            --border: #333;
+        }
+        
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background: #1a1a1a;
-            color: #e0e0e0;
+            background: var(--bg-primary);
+            color: var(--text-primary);
             min-height: 100vh;
+            transition: background 0.3s, color 0.3s;
+        }
+        
+        body.light-mode {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f5f5f5;
+            --bg-tertiary: #e0e0e0;
+            --text-primary: #1a1a1a;
+            --text-secondary: #666;
+            --border: #ddd;
+        }
+        
+        /* Light Mode Anpassungen */
+        body.light-mode .gallery-card {
+            background: var(--bg-secondary);
+            border: 2px solid var(--border);
+        }
+        
+        body.light-mode .gallery-card:hover {
+            border-color: var(--accent);
+            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.2);
+        }
+        
+        body.light-mode .gallery-item {
+            background: var(--bg-secondary);
+        }
+        
+        body.light-mode .gallery-item-overlay {
+            background: linear-gradient(to bottom, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.05) 50%, rgba(0,0,0,0.3) 100%);
+        }
+        
+        body.light-mode .stat-item {
+            background: rgba(102, 126, 234, 0.05);
+            border-left-color: var(--accent);
+        }
+        
+        body.light-mode .stat-label {
+            color: var(--text-secondary);
+        }
+        
+        body.light-mode .stat-value {
+            color: var(--text-primary);
+        }
+        
+        body.light-mode .sidebar-section {
+            border-top-color: var(--border);
+        }
+        
+        body.light-mode .flag-summary-item {
+            background: rgba(0,0,0,0.05);
+        }
+        
+        body.light-mode .selection-item {
+            background: rgba(102, 126, 234, 0.05);
+            border-left-color: var(--accent);
+        }
+        
+        body.light-mode .comment-item {
+            background: var(--bg-primary);
+            border-left-color: var(--accent);
+        }
+        
+        body.light-mode .comment-input {
+            background: var(--bg-primary);
+            border-color: var(--border);
+            color: var(--text-primary);
+        }
+        
+        body.light-mode .breadcrumb-item {
+            color: var(--text-secondary);
+        }
+        
+        body.light-mode .breadcrumb-item:hover {
+            color: var(--accent);
+        }
+        
+        body.light-mode .breadcrumb-item.active {
+            color: var(--text-primary);
+        }
+        
+        body.light-mode .breadcrumb-separator {
+            color: var(--text-secondary);
+        }
+        
+        body.light-mode .skeleton {
+            background: var(--bg-secondary);
         }
         
         .container {
@@ -29,6 +126,56 @@
             padding: 40px 20px;
             border-bottom: 1px solid #333;
             margin-bottom: 40px;
+            position: relative;
+        }
+        
+        /* Theme Toggle */
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(102, 126, 234, 0.2);
+            border: 1px solid #667eea;
+            color: #667eea;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+        
+        .theme-toggle:hover {
+            background: rgba(102, 126, 234, 0.4);
+        }
+        
+        /* Breadcrumb Navigation */
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 15px 0;
+            margin-bottom: 20px;
+            font-size: 0.9em;
+            flex-wrap: wrap;
+        }
+        
+        .breadcrumb-item {
+            color: #888;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        
+        .breadcrumb-item:hover {
+            color: #667eea;
+        }
+        
+        .breadcrumb-item.active {
+            color: #e0e0e0;
+            cursor: default;
+        }
+        
+        .breadcrumb-separator {
+            color: #555;
         }
         
         .logo-container {
@@ -63,7 +210,7 @@
         }
         
         .gallery-card {
-            background: #2a2a2a;
+            background: var(--bg-secondary);
             border-radius: 12px;
             padding: 30px;
             cursor: pointer;
@@ -264,6 +411,37 @@
         .gallery-item.selected {
             outline: 3px solid #667eea;
             outline-offset: -3px;
+        }
+        
+        /* Skeleton Loading Animation */
+        .skeleton {
+            background: var(--bg-secondary);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .skeleton-shimmer {
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                rgba(255, 255, 255, 0.1),
+                transparent
+            );
+            animation: shimmer 1.5s infinite;
+        }
+        
+        @keyframes shimmer {
+            0% {
+                left: -100%;
+            }
+            100% {
+                left: 100%;
+            }
         }
         
         /* Actions unten */
@@ -728,8 +906,8 @@
             position: relative;
             width: 200px;
             min-width: 200px;
-            background: linear-gradient(180deg, #1a1a1a 0%, #2a2a2a 100%);
-            border-right: 1px solid #333;
+            background: linear-gradient(180deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+            border-right: 1px solid var(--border);
             padding: 12px;
             overflow-y: auto;
             max-height: calc(100vh - 150px);
@@ -937,10 +1115,64 @@
             }
         }
         
-        @media (max-width: 768px) {
-            .lightbox-nav {
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .container {
                 padding: 15px;
-                font-size: 20px;
+            }
+            
+            .gallery {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+                gap: 15px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            header {
+                padding: 20px 10px;
+            }
+            
+            h1 {
+                font-size: 1.8em;
+            }
+            
+            .logo {
+                width: 60px;
+                height: 60px;
+            }
+            
+            .theme-toggle {
+                top: 10px;
+                right: 10px;
+                padding: 6px 12px;
+                font-size: 12px;
+            }
+            
+            .gallery-selector {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+                gap: 15px;
+            }
+            
+            .gallery-card {
+                padding: 20px;
+            }
+            
+            .gallery {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+                gap: 10px;
+            }
+            
+            .gallery-item {
+                border-radius: 8px;
+            }
+            
+            .lightbox-nav {
+                padding: 12px;
+                font-size: 18px;
             }
             
             .lightbox-prev {
@@ -963,10 +1195,57 @@
                 height: 100vh;
                 z-index: 999;
                 max-height: 100vh;
+                width: 200px;
             }
             
             .gallery-sidebar.open {
                 left: 0;
+            }
+            
+            #gallery-container > div {
+                flex-direction: column;
+            }
+            
+            .breadcrumb {
+                font-size: 0.8em;
+                padding: 10px 0;
+            }
+            
+            .lightbox-sidebar {
+                width: 100%;
+                max-width: 100%;
+            }
+            
+            .lightbox-content {
+                max-width: 95%;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .gallery {
+                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+                gap: 8px;
+            }
+            
+            .gallery-selector {
+                grid-template-columns: 1fr;
+            }
+            
+            .gallery-card-preview {
+                height: 150px;
+            }
+        }
+        
+        /* Touch Gestures für Mobile */
+        @media (hover: none) and (pointer: coarse) {
+            .gallery-item-overlay {
+                opacity: 1;
+                pointer-events: all;
+            }
+            
+            .gallery-item-btn {
+                padding: 10px 12px;
+                font-size: 13px;
             }
         }
     </style>
@@ -974,6 +1253,9 @@
 <body>
     <div class="container">
         <header>
+            <button class="theme-toggle" onclick="toggleTheme()" id="theme-toggle" title="Dark/Light Mode wechseln">
+                <span id="theme-icon">🌙</span>
+            </button>
             <div class="logo-container">
                 <img src="./logo.png" alt="WB Foto Manager Logo" class="logo">
                 <div>
@@ -982,7 +1264,7 @@
                 </div>
             </div>
             <div style="margin-top: 20px;">
-                <a href="admin.html" style="color: #667eea; text-decoration: none; font-size: 0.9em;">⚙️ Admin</a>
+                <a href="admin.html" style="color: var(--accent); text-decoration: none; font-size: 0.9em;">⚙️ Admin</a>
             </div>
         </header>
         
@@ -1013,6 +1295,12 @@
                     </button>
                     <div class="sidebar-content" id="sidebar-content">
                         <h3>📊 Übersicht</h3>
+                        
+                        <!-- Suche -->
+                        <div class="sidebar-section" style="margin-top: 0; padding-top: 0; border-top: none;">
+                            <input type="text" id="search-input" placeholder="🔍 Suchen..." style="width: 100%; padding: 6px 8px; background: var(--bg-primary); border: 1px solid var(--border); border-radius: 4px; color: var(--text-primary); font-size: 12px; margin-bottom: 12px;">
+                        </div>
+                        
                         <div class="sidebar-stats">
                             <div class="stat-item clickable" onclick="filterByType('all')" title="Alle Bilder anzeigen">
                                 <span class="stat-label">Gesamt:</span>
@@ -1060,9 +1348,26 @@
                                 <p style="color: #888; font-size: 0.75em; margin: 0;">Keine Auswahlen</p>
                             </div>
                         </div>
+                        
+                        <!-- Bulk-Aktionen -->
+                        <div class="sidebar-section" id="bulk-actions-section" style="display: none;">
+                            <h4>⚡ Bulk-Aktionen</h4>
+                            <div style="display: flex; flex-direction: column; gap: 6px;">
+                                <button class="btn-secondary" onclick="bulkAddToFavorites()" style="width: 100%; padding: 6px 12px; font-size: 12px;">❤️ Als Favoriten markieren</button>
+                                <button class="btn-secondary" onclick="bulkSetFlag()" style="width: 100%; padding: 6px 12px; font-size: 12px;">🏷️ Markierung setzen</button>
+                                <button class="btn-secondary" onclick="bulkAddToSelection()" style="width: 100%; padding: 6px 12px; font-size: 12px;">📁 Zu Auswahl hinzufügen</button>
+                                <button class="btn-primary" onclick="bulkDownload()" style="width: 100%; padding: 6px 12px; font-size: 12px;">📥 Als ZIP herunterladen</button>
+                                <button class="btn-secondary" onclick="exportAsPDF()" style="width: 100%; padding: 6px 12px; font-size: 12px; margin-top: 6px;">📄 Als PDF exportieren</button>
+                                <button class="btn-secondary" onclick="clearSelection()" style="width: 100%; padding: 6px 12px; font-size: 12px; background: #444; border-color: #555;">✗ Auswahl aufheben</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="gallery" id="gallery" style="flex: 1;"></div>
+                <div style="flex: 1; display: flex; flex-direction: column;">
+                    <!-- Breadcrumb -->
+                    <div class="breadcrumb" id="breadcrumb" style="display: none;"></div>
+                    <div class="gallery" id="gallery" style="flex: 1;"></div>
+                </div>
             </div>
         </div>
         
@@ -1135,9 +1440,21 @@
             <!-- Auswahl -->
             <div class="feedback-section">
                 <h4>📁 Auswahl</h4>
-                <input type="text" id="selection-name" placeholder="Auswahl-Name" style="width: 100%; padding: 6px 8px; background: #1a1a1a; border: 1px solid #444; border-radius: 4px; color: #e0e0e0; margin-bottom: 6px; font-size: 12px;">
+                <input type="text" id="selection-name" placeholder="Auswahl-Name" style="width: 100%; padding: 6px 8px; background: var(--bg-primary); border: 1px solid var(--border); border-radius: 4px; color: var(--text-primary); margin-bottom: 6px; font-size: 12px;">
                 <button class="btn-secondary" onclick="addToSelection()" style="width: 100%;">Zu Auswahl hinzufügen</button>
                 <div id="current-selections"></div>
+            </div>
+            
+            <!-- Bild-Info -->
+            <div class="feedback-section">
+                <h4>ℹ️ Bild-Informationen</h4>
+                <div id="image-info" style="font-size: 0.8em; color: var(--text-secondary); line-height: 1.6;">
+                    <div><strong>Name:</strong> <span id="info-name">-</span></div>
+                    <div><strong>Größe:</strong> <span id="info-size">-</span></div>
+                    <div><strong>Auflösung:</strong> <span id="info-resolution">-</span></div>
+                    <div><strong>Upload:</strong> <span id="info-upload">-</span></div>
+                    <div><strong>Quelle:</strong> <span id="info-source">-</span></div>
+                </div>
             </div>
         </div>
     </div>
@@ -1148,6 +1465,7 @@
         let currentGallery = null;
         let currentImages = [];
         let currentImageIndex = 0;
+        let searchQuery = '';
         
         // Feedback-Daten (wird in localStorage gespeichert)
         let feedbackData = {
@@ -1157,6 +1475,167 @@
             comments: {},    // { imageId: [{ author, text, date }] }
             selections: {}    // { imageId: ['selection1', 'selection2'] }
         };
+        
+        // Theme Management
+        function initTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            if (savedTheme === 'light') {
+                document.body.classList.add('light-mode');
+                document.getElementById('theme-icon').textContent = '☀️';
+            } else {
+                document.body.classList.remove('light-mode');
+                document.getElementById('theme-icon').textContent = '🌙';
+            }
+        }
+        
+        function toggleTheme() {
+            const isLight = document.body.classList.toggle('light-mode');
+            localStorage.setItem('theme', isLight ? 'light' : 'dark');
+            document.getElementById('theme-icon').textContent = isLight ? '☀️' : '🌙';
+        }
+        
+        // Breadcrumb Navigation
+        function updateBreadcrumb() {
+            const breadcrumb = document.getElementById('breadcrumb');
+            if (!breadcrumb || !currentGallery) {
+                if (breadcrumb) breadcrumb.style.display = 'none';
+                return;
+            }
+            
+            breadcrumb.style.display = 'flex';
+            const parts = [];
+            
+            // Home
+            parts.push('<span class="breadcrumb-item" onclick="showGallerySelector()">Home</span>');
+            
+            // Folder path
+            if (currentGallery.folder) {
+                const folderParts = currentGallery.folder.split('/');
+                let currentPath = '';
+                folderParts.forEach((part, index) => {
+                    currentPath += (currentPath ? '/' : '') + part;
+                    parts.push(`<span class="breadcrumb-separator">›</span>`);
+                    parts.push(`<span class="breadcrumb-item" onclick="filterByFolder('${currentPath}')">${part}</span>`);
+                });
+            }
+            
+            // Current Gallery
+            parts.push(`<span class="breadcrumb-separator">›</span>`);
+            parts.push(`<span class="breadcrumb-item active">${currentGallery.name || 'Galerie'}</span>`);
+            
+            breadcrumb.innerHTML = parts.join('');
+        }
+        
+        function filterByFolder(folderPath) {
+            // Filtere Galerien nach Ordner
+            if (!galleryConfig || !galleryConfig.galleries) return;
+            
+            const filtered = galleryConfig.galleries.filter(g => {
+                if (!g.folder) return false;
+                return g.folder.startsWith(folderPath);
+            });
+            
+            if (filtered.length > 0) {
+                showGallerySelector();
+                // Highlight entsprechende Galerien
+                setTimeout(() => {
+                    document.querySelectorAll('.gallery-card').forEach(card => {
+                        const galleryName = card.querySelector('h3')?.textContent;
+                        const gallery = filtered.find(g => g.name === galleryName);
+                        if (gallery) {
+                            card.style.border = '2px solid #667eea';
+                            card.style.boxShadow = '0 4px 12px rgba(102, 126, 234, 0.3)';
+                        }
+                    });
+                }, 100);
+            }
+        }
+        
+        // Search Functionality
+        function initSearch() {
+            const searchInput = document.getElementById('search-input');
+            if (searchInput) {
+                searchInput.addEventListener('input', (e) => {
+                    searchQuery = e.target.value.toLowerCase().trim();
+                    applySearchAndFilter();
+                });
+            }
+        }
+        
+        function applySearchAndFilter() {
+            const items = document.querySelectorAll('.gallery-item');
+            let visibleCount = 0;
+            
+            items.forEach(item => {
+                const imageId = item.dataset.imageId;
+                if (!imageId) {
+                    item.style.display = 'none';
+                    return;
+                }
+                
+                // Finde Bild
+                const imageIndex = parseInt(imageId.replace('img_', '')) || currentImages.findIndex(img => (img.id || `img_${currentImages.indexOf(img)}`) === imageId);
+                const image = currentImages[imageIndex];
+                
+                let shouldShow = true;
+                
+                // Search Filter
+                if (searchQuery) {
+                    const searchableText = [
+                        image?.name || '',
+                        image?.id || '',
+                        (feedbackData.comments[imageId] || []).map(c => c.text).join(' '),
+                        (feedbackData.selections[imageId] || []).join(' ')
+                    ].join(' ').toLowerCase();
+                    
+                    shouldShow = searchableText.includes(searchQuery);
+                }
+                
+                // Existing Filter
+                if (shouldShow) {
+                    if (currentFilter.type === 'selected') {
+                        shouldShow = item.classList.contains('selected');
+                    } else if (currentFilter.type === 'favorites') {
+                        shouldShow = feedbackData.favorites[imageId] || false;
+                    } else if (currentFilter.type === 'commented') {
+                        const comments = feedbackData.comments[imageId] || [];
+                        shouldShow = comments.length > 0;
+                    } else if (currentFilter.type === 'selection' && currentFilter.selectionName) {
+                        const selections = feedbackData.selections[imageId] || [];
+                        shouldShow = selections.includes(currentFilter.selectionName);
+                    }
+                    
+                    if (shouldShow && currentFilter.flag) {
+                        const flag = feedbackData.flags[imageId];
+                        shouldShow = flag === currentFilter.flag;
+                    }
+                }
+                
+                if (shouldShow) {
+                    item.style.display = '';
+                    visibleCount++;
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+            
+            // Zeige Meldung wenn keine Bilder sichtbar
+            const gallery = document.getElementById('gallery');
+            let noResultsMsg = gallery.querySelector('.no-results-message');
+            if (visibleCount === 0) {
+                if (!noResultsMsg) {
+                    noResultsMsg = document.createElement('p');
+                    noResultsMsg.className = 'no-results-message';
+                    noResultsMsg.style.cssText = 'text-align: center; color: var(--text-secondary); grid-column: 1 / -1; padding: 40px; font-size: 1.1em;';
+                    noResultsMsg.textContent = searchQuery ? `Keine Ergebnisse für "${searchQuery}"` : 'Keine Bilder entsprechen dem Filter';
+                    gallery.appendChild(noResultsMsg);
+                } else {
+                    noResultsMsg.textContent = searchQuery ? `Keine Ergebnisse für "${searchQuery}"` : 'Keine Bilder entsprechen dem Filter';
+                }
+            } else if (noResultsMsg) {
+                noResultsMsg.remove();
+            }
+        }
         
         // Lade Feedback-Daten
         function loadFeedbackData() {
@@ -1209,6 +1688,17 @@
             document.getElementById('gallery-container').style.display = 'none';
             document.getElementById('loading').style.display = 'none';
             document.getElementById('error').style.display = 'none';
+            
+            // Verstecke Breadcrumb
+            const breadcrumb = document.getElementById('breadcrumb');
+            if (breadcrumb) breadcrumb.style.display = 'none';
+            
+            // Reset Search
+            const searchInput = document.getElementById('search-input');
+            if (searchInput) {
+                searchInput.value = '';
+                searchQuery = '';
+            }
             
             const galleryList = document.getElementById('gallery-list');
             galleryList.innerHTML = '';
@@ -1355,51 +1845,108 @@
             
             currentImages = gallery.images || [];
             console.log('Lade', currentImages.length, 'Bilder - "' + (gallery.name || 'Unbekannt') + '"');
+            updateBreadcrumb();
             displayGallery(currentImages);
             document.getElementById('loading').style.display = 'none';
+        }
+        
+        // Skeleton Screen für Ladeanimation
+        function createSkeletonItems(count) {
+            const gallery = document.getElementById('gallery');
+            gallery.innerHTML = '';
+            for (let i = 0; i < count; i++) {
+                const skeleton = document.createElement('div');
+                skeleton.className = 'gallery-item skeleton';
+                skeleton.innerHTML = '<div class="skeleton-shimmer"></div>';
+                gallery.appendChild(skeleton);
+            }
         }
         
         // Zeige Galerie-Bilder
         function displayGallery(images) {
             const gallery = document.getElementById('gallery');
-            gallery.innerHTML = '';
             
             if (images.length === 0) {
-                gallery.innerHTML = '<p style="text-align: center; color: #888; grid-column: 1 / -1;">Keine Bilder gefunden</p>';
+                gallery.innerHTML = '<p style="text-align: center; color: var(--text-secondary); grid-column: 1 / -1;">Keine Bilder gefunden</p>';
                 return;
             }
+            
+            // Zeige Skeleton Screens während des Ladens
+            createSkeletonItems(Math.min(images.length, 12));
+            
+            let loadedCount = 0;
+            const totalImages = images.length;
+            const items = [];
             
             images.forEach((image, index) => {
                 const item = document.createElement('div');
                 item.className = 'gallery-item';
                 item.dataset.imageId = image.id || `img_${index}`;
                 
-                // Erstelle hochwertiges Thumbnail-URL
+                // Erstelle hochwertiges Thumbnail-URL mit Progressive Loading
                 let imgSrc = image.thumbnailUrl || image.url || `./images/${image.name}`;
                 const fullSrc = image.url || `./images/${image.name}`;
+                
+                // Progressive Loading: Zuerst kleines Thumbnail, dann größeres
+                let lowQualitySrc = imgSrc;
+                let highQualitySrc = imgSrc;
                 
                 // Wenn Cloudinary-URL vorhanden, aber altes Format (h_60,w_90), ersetze durch größeres Thumbnail
                 if (imgSrc.includes('res.cloudinary.com') && imgSrc.includes('/upload/')) {
                     // Prüfe ob bereits Transformation vorhanden
                     if (imgSrc.includes('/c_limit,h_60,w_90/') || imgSrc.includes('/c_fill,h_60,w_90/')) {
-                        // Ersetze durch hochwertiges Thumbnail (400x400px)
-                        imgSrc = imgSrc.replace(
+                        // Low Quality für schnelles Laden
+                        lowQualitySrc = imgSrc.replace(
+                            /\/upload\/[^\/]+\//,
+                            '/upload/c_fill,h_200,w_200,q_auto:low,f_auto,blur:200/'
+                        );
+                        // High Quality Thumbnail (400x400px)
+                        highQualitySrc = imgSrc.replace(
                             /\/upload\/[^\/]+\//,
                             '/upload/c_fill,h_400,w_400,q_auto:good,f_auto/'
                         );
                     } else if (!imgSrc.includes('/c_') && !imgSrc.includes('/w_') && !imgSrc.includes('/h_')) {
                         // Keine Transformation vorhanden - füge hinzu
-                        imgSrc = imgSrc.replace(
+                        lowQualitySrc = imgSrc.replace(
+                            /\/upload\//,
+                            '/upload/c_fill,h_200,w_200,q_auto:low,f_auto,blur:200/'
+                        );
+                        highQualitySrc = imgSrc.replace(
                             /\/upload\//,
                             '/upload/c_fill,h_400,w_400,q_auto:good,f_auto/'
                         );
+                    } else {
+                        // Bereits Transformation vorhanden - füge Low Quality Version hinzu
+                        lowQualitySrc = imgSrc.replace(
+                            /\/upload\/[^\/]+\//,
+                            '/upload/c_fill,h_200,w_200,q_auto:low,f_auto,blur:200/'
+                        );
+                        highQualitySrc = imgSrc;
                     }
                 }
                 
                 const img = document.createElement('img');
-                img.src = imgSrc;
                 img.alt = image.name || 'Bild';
                 img.loading = 'lazy';
+                
+                // Progressive Loading: Lade zuerst Low Quality, dann High Quality
+                img.src = lowQualitySrc;
+                img.style.filter = 'blur(5px)';
+                img.style.transition = 'filter 0.3s';
+                
+                // Lade High Quality im Hintergrund
+                const highQualityImg = new Image();
+                highQualityImg.onload = function() {
+                    img.src = highQualitySrc;
+                    img.style.filter = 'blur(0)';
+                };
+                highQualityImg.src = highQualitySrc;
+                
+                // Fallback: Wenn High Quality nicht lädt, behalte Low Quality
+                highQualityImg.onerror = function() {
+                    img.style.filter = 'blur(0)';
+                };
+                
                 img.onerror = function() {
                     // Fallback 1: Versuche ohne ./ prefix
                     if (this.src.includes('./')) {
@@ -1472,8 +2019,24 @@
                 item.appendChild(img);
                 item.appendChild(overlay);
                 item.onclick = () => openLightbox(index, fullSrc);
-                gallery.appendChild(item);
+                
+                items.push(item);
             });
+            
+            // Ersetze Skeletons durch echte Items
+            const skeletons = gallery.querySelectorAll('.skeleton');
+            items.forEach((item, idx) => {
+                if (skeletons[idx]) {
+                    skeletons[idx].replaceWith(item);
+                } else {
+                    gallery.appendChild(item);
+                }
+            });
+            
+            // Entferne verbleibende Skeletons
+            setTimeout(() => {
+                document.querySelectorAll('.skeleton').forEach(s => s.remove());
+            }, 500);
             
             // Update alle Badges nach dem Rendern
             updateAllImageBadges();
@@ -1527,59 +2090,7 @@
         
         // Filter anwenden
         function applyFilter() {
-            const items = document.querySelectorAll('.gallery-item');
-            let visibleCount = 0;
-            
-            items.forEach(item => {
-                const imageId = item.dataset.imageId;
-                if (!imageId) {
-                    item.style.display = 'none';
-                    return;
-                }
-                
-                let shouldShow = true;
-                
-                // Typ-Filter
-                if (currentFilter.type === 'selected') {
-                    shouldShow = item.classList.contains('selected');
-                } else if (currentFilter.type === 'favorites') {
-                    shouldShow = feedbackData.favorites[imageId] || false;
-                } else if (currentFilter.type === 'commented') {
-                    const comments = feedbackData.comments[imageId] || [];
-                    shouldShow = comments.length > 0;
-                } else if (currentFilter.type === 'selection' && currentFilter.selectionName) {
-                    const selections = feedbackData.selections[imageId] || [];
-                    shouldShow = selections.includes(currentFilter.selectionName);
-                }
-                
-                // Flag-Filter
-                if (shouldShow && currentFilter.flag) {
-                    const flag = feedbackData.flags[imageId];
-                    shouldShow = flag === currentFilter.flag;
-                }
-                
-                if (shouldShow) {
-                    item.style.display = '';
-                    visibleCount++;
-                } else {
-                    item.style.display = 'none';
-                }
-            });
-            
-            // Zeige Meldung wenn keine Bilder sichtbar
-            const gallery = document.getElementById('gallery');
-            let noResultsMsg = gallery.querySelector('.no-results-message');
-            if (visibleCount === 0) {
-                if (!noResultsMsg) {
-                    noResultsMsg = document.createElement('p');
-                    noResultsMsg.className = 'no-results-message';
-                    noResultsMsg.style.cssText = 'text-align: center; color: #888; grid-column: 1 / -1; padding: 40px; font-size: 1.1em;';
-                    noResultsMsg.textContent = 'Keine Bilder entsprechen dem Filter';
-                    gallery.appendChild(noResultsMsg);
-                }
-            } else if (noResultsMsg) {
-                noResultsMsg.remove();
-            }
+            applySearchAndFilter();
         }
         
         // Update Filter UI (aktive Zustände)
@@ -1831,10 +2342,257 @@
             // Update Sidebar-Statistiken
             updateSidebarStats();
             
+            // Zeige/Verstecke Bulk-Aktionen
+            updateBulkActionsVisibility();
+            
             // Filter neu anwenden (falls "Ausgewählt" Filter aktiv)
             if (currentFilter.type === 'selected') {
                 applyFilter();
             }
+        }
+        
+        // Update Bulk-Aktionen Sichtbarkeit
+        function updateBulkActionsVisibility() {
+            const selectedCount = document.querySelectorAll('.gallery-item.selected').length;
+            const bulkSection = document.getElementById('bulk-actions-section');
+            if (bulkSection) {
+                bulkSection.style.display = selectedCount > 0 ? 'block' : 'none';
+            }
+        }
+        
+        // Bulk-Aktionen
+        function bulkAddToFavorites() {
+            const selected = document.querySelectorAll('.gallery-item.selected');
+            selected.forEach(item => {
+                const imageId = item.dataset.imageId;
+                if (imageId) {
+                    feedbackData.favorites[imageId] = true;
+                    updateFavoriteUI(imageId);
+                }
+            });
+            saveFeedbackData();
+            updateAllImageBadges();
+            updateSidebarStats();
+        }
+        
+        function bulkSetFlag() {
+            const flag = prompt('Markierung wählen:\n1 = Abgelehnt\n2 = Prüfen\n3 = Genehmigt\n4 = Final', '3');
+            if (!flag) return;
+            
+            const flagMap = { '1': 'reject', '2': 'review', '3': 'approve', '4': 'final' };
+            const selectedFlag = flagMap[flag];
+            if (!selectedFlag) return;
+            
+            const selected = document.querySelectorAll('.gallery-item.selected');
+            selected.forEach(item => {
+                const imageId = item.dataset.imageId;
+                if (imageId) {
+                    feedbackData.flags[imageId] = selectedFlag;
+                }
+            });
+            saveFeedbackData();
+            updateAllImageBadges();
+            updateSidebarStats();
+        }
+        
+        function bulkAddToSelection() {
+            const selectionName = prompt('Auswahl-Name eingeben:');
+            if (!selectionName || !selectionName.trim()) return;
+            
+            const selected = document.querySelectorAll('.gallery-item.selected');
+            selected.forEach(item => {
+                const imageId = item.dataset.imageId;
+                if (imageId) {
+                    if (!feedbackData.selections[imageId]) {
+                        feedbackData.selections[imageId] = [];
+                    }
+                    if (!feedbackData.selections[imageId].includes(selectionName.trim())) {
+                        feedbackData.selections[imageId].push(selectionName.trim());
+                    }
+                }
+            });
+            saveFeedbackData();
+            updateAllImageBadges();
+            updateSidebarStats();
+        }
+        
+        async function bulkDownload() {
+            const selected = document.querySelectorAll('.gallery-item.selected');
+            if (selected.length === 0) {
+                alert('Keine Bilder ausgewählt');
+                return;
+            }
+            
+            if (!confirm(`${selected.length} Bild(er) herunterladen?`)) return;
+            
+            // Zeige Progress
+            const progressDiv = document.createElement('div');
+            progressDiv.style.cssText = 'position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: var(--bg-secondary); padding: 20px; border-radius: 8px; z-index: 10000; border: 2px solid var(--accent);';
+            progressDiv.innerHTML = `<p>Lade ${selected.length} Bild(er) herunter...</p><div style="width: 200px; height: 4px; background: var(--bg-tertiary); border-radius: 2px; margin-top: 10px;"><div id="download-progress" style="width: 0%; height: 100%; background: var(--accent); border-radius: 2px; transition: width 0.3s;"></div></div>`;
+            document.body.appendChild(progressDiv);
+            
+            let downloaded = 0;
+            for (const item of selected) {
+                const imageId = item.dataset.imageId;
+                if (!imageId) continue;
+                
+                const imageIndex = parseInt(imageId.replace('img_', '')) || currentImages.findIndex(img => (img.id || `img_${currentImages.indexOf(img)}`) === imageId);
+                const image = currentImages[imageIndex];
+                if (!image) continue;
+                
+                try {
+                    await downloadImageById(imageId);
+                    downloaded++;
+                    const progress = (downloaded / selected.length) * 100;
+                    document.getElementById('download-progress').style.width = progress + '%';
+                } catch (error) {
+                    console.error('Download-Fehler:', error);
+                }
+                
+                // Kleine Pause zwischen Downloads
+                await new Promise(resolve => setTimeout(resolve, 200));
+            }
+            
+            progressDiv.remove();
+            alert(`${downloaded} von ${selected.length} Bild(er) erfolgreich heruntergeladen`);
+        }
+        
+        function downloadImageById(imageId) {
+            const imageIndex = parseInt(imageId.replace('img_', '')) || currentImages.findIndex(img => (img.id || `img_${currentImages.indexOf(img)}`) === imageId);
+            const image = currentImages[imageIndex];
+            if (!image) return Promise.reject('Bild nicht gefunden');
+            
+            return new Promise((resolve, reject) => {
+                const imageUrl = image.url || `./images/${image.name}`;
+                const fileName = image.name || 'image.jpg';
+                
+                // Für Cloudinary: Entferne Transformationen
+                let downloadUrl = imageUrl;
+                if (imageUrl.includes('res.cloudinary.com') && imageUrl.includes('/upload/')) {
+                    downloadUrl = imageUrl.replace(/\/upload\/[^\/]+\//, '/upload/');
+                }
+                
+                fetch(downloadUrl)
+                    .then(response => response.blob())
+                    .then(blob => {
+                        const url = window.URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.href = url;
+                        a.download = fileName;
+                        document.body.appendChild(a);
+                        a.click();
+                        window.URL.revokeObjectURL(url);
+                        document.body.removeChild(a);
+                        resolve();
+                    })
+                    .catch(reject);
+            });
+        }
+        
+        function clearSelection() {
+            document.querySelectorAll('.gallery-item.selected').forEach(item => {
+                item.classList.remove('selected');
+                const checkbox = item.querySelector('.gallery-item-checkbox');
+                if (checkbox) {
+                    checkbox.classList.remove('checked');
+                    checkbox.textContent = '';
+                }
+            });
+            updateBulkActionsVisibility();
+            updateSidebarStats();
+        }
+        
+        // Export als ZIP (mit JSZip)
+        async function bulkDownload() {
+            const selected = document.querySelectorAll('.gallery-item.selected');
+            if (selected.length === 0) {
+                alert('Keine Bilder ausgewählt');
+                return;
+            }
+            
+            if (!confirm(`${selected.length} Bild(er) als ZIP herunterladen?`)) return;
+            
+            // Lade JSZip dynamisch
+            if (!window.JSZip) {
+                const script = document.createElement('script');
+                script.src = 'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js';
+                await new Promise((resolve, reject) => {
+                    script.onload = resolve;
+                    script.onerror = reject;
+                    document.head.appendChild(script);
+                });
+            }
+            
+            // Zeige Progress
+            const progressDiv = document.createElement('div');
+            progressDiv.style.cssText = 'position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: var(--bg-secondary); padding: 20px; border-radius: 8px; z-index: 10000; border: 2px solid var(--accent); min-width: 250px;';
+            progressDiv.innerHTML = `<p style="margin-bottom: 10px;">Erstelle ZIP...</p><div style="width: 200px; height: 4px; background: var(--bg-tertiary); border-radius: 2px;"><div id="download-progress" style="width: 0%; height: 100%; background: var(--accent); border-radius: 2px; transition: width 0.3s;"></div></div><p id="progress-text" style="margin-top: 10px; font-size: 0.85em; color: var(--text-secondary);">0 / ${selected.length}</p>`;
+            document.body.appendChild(progressDiv);
+            
+            const zip = new JSZip();
+            let processed = 0;
+            
+            try {
+                for (const item of selected) {
+                    const imageId = item.dataset.imageId;
+                    if (!imageId) continue;
+                    
+                    const imageIndex = parseInt(imageId.replace('img_', '')) || currentImages.findIndex(img => (img.id || `img_${currentImages.indexOf(img)}`) === imageId);
+                    const image = currentImages[imageIndex];
+                    if (!image) continue;
+                    
+                    try {
+                        const imageUrl = image.url || `./images/${image.name}`;
+                        let downloadUrl = imageUrl;
+                        
+                        // Für Cloudinary: Entferne Transformationen
+                        if (imageUrl.includes('res.cloudinary.com') && imageUrl.includes('/upload/')) {
+                            downloadUrl = imageUrl.replace(/\/upload\/[^\/]+\//, '/upload/');
+                        }
+                        
+                        const response = await fetch(downloadUrl);
+                        const blob = await response.blob();
+                        const fileName = image.name || `image_${imageIndex}.jpg`;
+                        zip.file(fileName, blob);
+                        
+                        processed++;
+                        const progress = (processed / selected.length) * 100;
+                        document.getElementById('download-progress').style.width = progress + '%';
+                        document.getElementById('progress-text').textContent = `${processed} / ${selected.length}`;
+                    } catch (error) {
+                        console.error('Fehler beim Laden von Bild:', error);
+                    }
+                }
+                
+                // Erstelle ZIP
+                const zipBlob = await zip.generateAsync({ type: 'blob' });
+                const url = window.URL.createObjectURL(zipBlob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `galerie-export-${new Date().toISOString().split('T')[0]}.zip`;
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                document.body.removeChild(a);
+                
+                progressDiv.remove();
+                alert(`${processed} Bild(er) erfolgreich als ZIP heruntergeladen`);
+            } catch (error) {
+                progressDiv.remove();
+                alert('Fehler beim Erstellen der ZIP-Datei: ' + error.message);
+            }
+        }
+        
+        // Export als PDF (einfache Version)
+        async function exportAsPDF() {
+            const selected = document.querySelectorAll('.gallery-item.selected');
+            if (selected.length === 0) {
+                alert('Keine Bilder ausgewählt');
+                return;
+            }
+            
+            alert('PDF-Export wird vorbereitet...\n\nHinweis: Für vollständigen PDF-Export wird eine externe Bibliothek benötigt. Aktuell können Sie die Bilder als ZIP herunterladen.');
+            // TODO: PDF-Export mit jsPDF implementieren
         }
         
         // Toggle Favorit
@@ -1907,6 +2665,9 @@
             // Bild-Name
             document.getElementById('feedback-image-name').textContent = image.name || 'Bild Feedback';
             
+            // Bild-Info
+            updateImageInfo(image);
+            
             // Bewertung
             const rating = feedbackData.ratings[imageId] || 0;
             updateRatingStars(rating);
@@ -1923,6 +2684,44 @@
             
             // Auswahlen
             displaySelections(imageId);
+        }
+        
+        // Update Bild-Informationen
+        function updateImageInfo(image) {
+            if (!image) return;
+            
+            document.getElementById('info-name').textContent = image.name || '-';
+            
+            // Größe
+            if (image.width && image.height) {
+                const mp = ((image.width * image.height) / 1000000).toFixed(1);
+                document.getElementById('info-size').textContent = `${mp} MP`;
+            } else {
+                document.getElementById('info-size').textContent = '-';
+            }
+            
+            // Auflösung
+            if (image.width && image.height) {
+                document.getElementById('info-resolution').textContent = `${image.width} × ${image.height}`;
+            } else {
+                document.getElementById('info-resolution').textContent = '-';
+            }
+            
+            // Upload-Datum
+            if (image.uploadDate) {
+                const date = new Date(image.uploadDate);
+                document.getElementById('info-upload').textContent = date.toLocaleDateString('de-CH') + ' ' + date.toLocaleTimeString('de-CH', { hour: '2-digit', minute: '2-digit' });
+            } else {
+                document.getElementById('info-upload').textContent = '-';
+            }
+            
+            // Quelle
+            const sourceLabels = {
+                'cloudinary': 'Cloudinary',
+                'github': 'GitHub',
+                'local': 'Lokal'
+            };
+            document.getElementById('info-source').textContent = sourceLabels[image.source] || image.source || '-';
         }
         
         // Update Rating Stars
@@ -2189,6 +2988,12 @@
         
         // Initialisierung
         (async () => {
+            // Theme initialisieren
+            initTheme();
+            
+            // Suche initialisieren
+            initSearch();
+            
             await loadConfig();
             
             if (!galleryConfig) {
