@@ -349,6 +349,13 @@
                     <small>Eindeutige ID (kleinbuchstaben, keine Leerzeichen)</small>
                 </div>
                 
+                <!-- Hinweis: Bilder-Upload wird nach Name/ID aktiviert -->
+                <div id="gallery-info-hint" style="display: none; padding: 12px; background: #1a1a1a; border-left: 3px solid #667eea; border-radius: 4px; margin-bottom: 15px;">
+                    <p style="color: #667eea; font-size: 0.9em; margin: 0;">
+                        ✓ Galerie-Name und ID ausgefüllt. Sie können jetzt Bilder hochladen!
+                    </p>
+                </div>
+                
                 <div class="form-group">
                     <label for="gallery-description">Beschreibung</label>
                     <textarea id="gallery-description" placeholder="z.B. Eishockey-Fotos"></textarea>
@@ -368,8 +375,11 @@
                     <small>⚠️ Nur für einfachen Schutz - nicht sicher!</small>
                 </div>
                 
-                <div class="form-group">
+                <div class="form-group" id="image-upload-section" style="display: none;">
                     <label for="gallery-images">Bilder hinzufügen</label>
+                    <p style="color: #888; font-size: 0.9em; margin-bottom: 15px;">
+                        💡 <strong>Hinweis:</strong> Bitte füllen Sie zuerst Name und ID aus, bevor Sie Bilder hochladen.
+                    </p>
                     
                     <!-- Upload Optionen -->
                     <div style="margin-bottom: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
@@ -1089,6 +1099,27 @@
             });
         }
         
+        // Prüfe ob Name und ID ausgefüllt sind, um Bild-Upload zu aktivieren
+        function checkGalleryInfo() {
+            const name = document.getElementById('gallery-name').value.trim();
+            const id = document.getElementById('gallery-id').value.trim();
+            const imageSection = document.getElementById('image-upload-section');
+            const hint = document.getElementById('gallery-info-hint');
+            
+            if (name && id) {
+                imageSection.style.display = 'block';
+                hint.style.display = 'block';
+                
+                // Scroll zum Bild-Upload-Bereich
+                setTimeout(() => {
+                    imageSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                }, 100);
+            } else {
+                imageSection.style.display = 'none';
+                hint.style.display = 'none';
+            }
+        }
+        
         // Passwort-Feld ein/ausblenden
         function togglePasswordField() {
             const usePassword = document.getElementById('use-password').checked;
@@ -1549,6 +1580,22 @@
             if (downloadBtn) {
                 downloadBtn.addEventListener('click', downloadGalleryJson);
             }
+            
+            // Event Listener für Name/ID Inputs - aktiviert Bild-Upload
+            const galleryNameInput = document.getElementById('gallery-name');
+            const galleryIdInput = document.getElementById('gallery-id');
+            
+            if (galleryNameInput) {
+                galleryNameInput.addEventListener('input', checkGalleryInfo);
+                galleryNameInput.addEventListener('change', checkGalleryInfo);
+            }
+            if (galleryIdInput) {
+                galleryIdInput.addEventListener('input', checkGalleryInfo);
+                galleryIdInput.addEventListener('change', checkGalleryInfo);
+            }
+            
+            // Prüfe initial ob bereits ausgefüllt (z.B. beim Bearbeiten)
+            checkGalleryInfo();
             
             // Cloudinary Upload Button
             const cloudinaryBtn = document.getElementById('cloudinary-upload-btn');
