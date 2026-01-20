@@ -1,6 +1,6 @@
 {
   "version": "3.0",
-  "generated": "2026-01-20T12:00:00Z",
+  "generated": "2026-01-20T11:12:50.932Z",
   "galleries": [
     {
       "id": "gallery1",
@@ -441,6 +441,22 @@
           "height": 4000
         }
       ]
+    },
+    {
+      "id": "hockey",
+      "name": "EHCB",
+      "images": [
+        {
+          "id": "img_1",
+          "name": "2J4A0331.JPG",
+          "url": "./images/2J4A0331.JPG",
+          "uploadDate": "2026-01-20T11:03:51.756606Z",
+          "thumbnailUrl": "./images/thumbnails/thumb_2J4A0331.JPG",
+          "width": 6000,
+          "height": 4000
+        }
+      ],
+      "description": "EHCB vs HCD"
     }
   ]
 }
