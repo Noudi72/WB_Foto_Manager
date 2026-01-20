@@ -265,6 +265,13 @@
                     <label for="gallery-images">Bilder (eine pro Zeile oder kommagetrennt)</label>
                     <textarea id="gallery-images" placeholder="2J4A0331.JPG&#10;2J4A0354.JPG&#10;2J4A0369.JPG"></textarea>
                     <small>Dateinamen der Bilder, die in dieser Galerie angezeigt werden sollen</small>
+                    <button type="button" class="btn-secondary" onclick="showAvailableImages()" style="margin-top: 10px; width: auto; padding: 8px 16px; font-size: 14px;">
+                        Verfügbare Bilder anzeigen
+                    </button>
+                    <div id="available-images" style="display: none; margin-top: 10px; padding: 10px; background: #1a1a1a; border-radius: 6px; max-height: 200px; overflow-y: auto;">
+                        <p style="color: #888; font-size: 0.9em; margin-bottom: 10px;">Klicken Sie auf ein Bild, um es hinzuzufügen:</p>
+                        <div id="images-list" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 10px;"></div>
+                    </div>
                 </div>
                 
                 <div class="button-group">
@@ -492,6 +499,50 @@
             URL.revokeObjectURL(url);
             
             showAlert('gallery.json wurde heruntergeladen. Bitte laden Sie die Datei zu GitHub hoch.', 'info');
+        }
+        
+        // Verfügbare Bilder anzeigen
+        function showAvailableImages() {
+            const container = document.getElementById('available-images');
+            const imagesList = document.getElementById('images-list');
+            
+            if (container.style.display === 'none') {
+                // Sammle alle verfügbaren Bilder aus allen Galerien
+                const allImages = new Map();
+                galleryConfig.galleries?.forEach(gallery => {
+                    gallery.images?.forEach(img => {
+                        if (!allImages.has(img.name)) {
+                            allImages.set(img.name, img);
+                        }
+                    });
+                });
+                
+                imagesList.innerHTML = '';
+                
+                if (allImages.size === 0) {
+                    imagesList.innerHTML = '<p style="color: #888; grid-column: 1 / -1;">Keine Bilder gefunden</p>';
+                } else {
+                    Array.from(allImages.values()).forEach(img => {
+                        const imgDiv = document.createElement('div');
+                        imgDiv.style.cssText = 'cursor: pointer; padding: 5px; background: #2a2a2a; border-radius: 4px; text-align: center;';
+                        imgDiv.innerHTML = `
+                            <div style="font-size: 0.8em; color: #888; word-break: break-all;">${img.name}</div>
+                        `;
+                        imgDiv.onclick = () => {
+                            const textarea = document.getElementById('gallery-images');
+                            const current = textarea.value.trim();
+                            const newValue = current ? current + '\n' + img.name : img.name;
+                            textarea.value = newValue;
+                            textarea.focus();
+                        };
+                        imagesList.appendChild(imgDiv);
+                    });
+                }
+                
+                container.style.display = 'block';
+            } else {
+                container.style.display = 'none';
+            }
         }
         
         // Alert anzeigen
