@@ -342,11 +342,20 @@
                 const item = document.createElement('div');
                 item.className = 'gallery-item';
                 
-                // Verwende thumbnailUrl falls vorhanden, sonst url
-                const imgSrc = image.thumbnailUrl || image.url || `./images/${image.name}`;
+                // Verwende direkt die URL (Thumbnails können fehlen)
+                const imgSrc = image.url || `./images/${image.name}`;
                 const fullSrc = image.url || `./images/${image.name}`;
                 
-                item.innerHTML = `<img src="${imgSrc}" alt="${image.name || 'Bild'}" loading="lazy">`;
+                const img = document.createElement('img');
+                img.src = imgSrc;
+                img.alt = image.name || 'Bild';
+                img.loading = 'lazy';
+                img.onerror = function() {
+                    // Fallback: Versuche ohne ./ prefix
+                    this.src = imgSrc.replace('./', '/');
+                };
+                
+                item.appendChild(img);
                 item.onclick = () => openLightbox(index, fullSrc);
                 gallery.appendChild(item);
             });
