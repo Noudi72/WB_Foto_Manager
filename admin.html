@@ -606,6 +606,14 @@
                 </div>
                 
                 <div class="form-group">
+                    <label for="gallery-category">Kategorie</label>
+                    <select id="gallery-category" style="width: 100%; padding: 12px; background: #1a1a1a; border: 1px solid #444; border-radius: 6px; color: #e0e0e0; font-size: 16px;">
+                        <option value="">-- Keine Kategorie --</option>
+                    </select>
+                    <small>Wählen Sie eine Kategorie für diese Galerie (wird in der Sidebar angezeigt)</small>
+                </div>
+                
+                <div class="form-group">
                     <label for="gallery-folder">Unterordner (optional)</label>
                     <div style="display: flex; gap: 8px; align-items: flex-end;">
                         <div style="flex: 1;">
@@ -836,6 +844,30 @@
             </div>
             <button type="button" class="btn-primary" id="change-admin-password-btn">Passwort ändern</button>
             <p id="admin-password-change-message" style="margin-top: 15px; display: none;"></p>
+        </div>
+        
+        <!-- Kategorien verwalten -->
+        <div class="admin-section">
+            <h2>📁 Kategorien verwalten</h2>
+            <p style="color: #888; margin-bottom: 15px;">Erstellen Sie Kategorien für die Sidebar auf der Startseite (z.B. Sport, Portrait, Shootings, Tiere, Landschaft)</p>
+            <div id="categories-list" style="margin-bottom: 20px;"></div>
+            <div style="display: flex; gap: 10px; margin-top: 15px;">
+                <input type="text" id="new-category-name" placeholder="Kategorie-Name (z.B. Sport)" style="flex: 1; padding: 10px; background: #1a1a1a; border: 1px solid #444; border-radius: 6px; color: #e0e0e0;">
+                <input type="text" id="new-category-icon" placeholder="Icon (z.B. ⚽)" style="width: 80px; padding: 10px; background: #1a1a1a; border: 1px solid #444; border-radius: 6px; color: #e0e0e0;">
+                <button type="button" class="btn-primary" onclick="addCategory()">+ Kategorie hinzufügen</button>
+            </div>
+        </div>
+        
+        <!-- Portfolio verwalten -->
+        <div class="admin-section">
+            <h2>🎨 Portfolio-Slider verwalten</h2>
+            <p style="color: #888; margin-bottom: 15px;">Fügen Sie Bilder zum Portfolio-Slider auf der Startseite hinzu, um Kunden zu zeigen, was Sie fotografieren</p>
+            <div id="portfolio-list" style="margin-bottom: 20px;"></div>
+            <div style="display: flex; gap: 10px; margin-top: 15px;">
+                <input type="text" id="new-portfolio-title" placeholder="Titel (optional)" style="flex: 1; padding: 10px; background: #1a1a1a; border: 1px solid #444; border-radius: 6px; color: #e0e0e0;">
+                <input type="text" id="new-portfolio-description" placeholder="Beschreibung (optional)" style="flex: 1; padding: 10px; background: #1a1a1a; border: 1px solid #444; border-radius: 6px; color: #e0e0e0;">
+                <button type="button" class="btn-primary" id="portfolio-upload-btn">📤 Portfolio-Bild hochladen</button>
+            </div>
         </div>
         
         <!-- gallery.json exportieren -->
@@ -1943,6 +1975,13 @@
             document.getElementById('gallery-name').value = gallery.name || '';
             document.getElementById('gallery-id').value = gallery.id || '';
             document.getElementById('gallery-description').value = gallery.description || '';
+            
+            // Setze Kategorie
+            const categorySelect = document.getElementById('gallery-category');
+            if (categorySelect) {
+                categorySelect.value = gallery.category || '';
+            }
+            
             // Setze Ordner-Dropdown
             const folder = gallery.folder || '';
             if (folder) {
@@ -2136,6 +2175,7 @@
             const name = document.getElementById('gallery-name').value.trim();
             const id = document.getElementById('gallery-id').value.trim().toLowerCase().replace(/\s+/g, '-');
             const description = document.getElementById('gallery-description').value.trim();
+            const category = document.getElementById('gallery-category').value.trim() || null;
             const folder = document.getElementById('gallery-folder').value.trim() || null;
             const usePassword = document.getElementById('use-password').checked;
             const password = usePassword ? document.getElementById('gallery-password').value : null;
@@ -2251,6 +2291,10 @@
             
             if (description) {
                 gallery.description = description;
+            }
+            
+            if (category) {
+                gallery.category = category;
             }
             
             if (folder) {
@@ -2643,6 +2687,211 @@
             }
         }
         
+        // Kategorien-Verwaltung
+        function initCategories() {
+            if (!galleryConfig.categories) {
+                galleryConfig.categories = [];
+            }
+            displayCategories();
+        }
+        
+        function displayCategories() {
+            const list = document.getElementById('categories-list');
+            if (!list) return;
+            
+            list.innerHTML = '';
+            
+            if (!galleryConfig.categories || galleryConfig.categories.length === 0) {
+                list.innerHTML = '<p style="color: #888; font-style: italic;">Noch keine Kategorien erstellt</p>';
+                return;
+            }
+            
+            galleryConfig.categories.forEach((category, index) => {
+                const item = document.createElement('div');
+                item.style.cssText = 'display: flex; align-items: center; gap: 10px; padding: 10px; background: #1a1a1a; border-radius: 6px; margin-bottom: 8px;';
+                item.innerHTML = `
+                    <span style="font-size: 1.5em;">${category.icon || '📁'}</span>
+                    <div style="flex: 1;">
+                        <strong style="color: #e0e0e0;">${category.name}</strong>
+                        <p style="color: #888; font-size: 0.85em; margin: 0;">ID: ${category.id}</p>
+                    </div>
+                    <button class="btn-danger" onclick="deleteCategory(${index})" style="padding: 6px 12px; font-size: 0.85em;">Löschen</button>
+                `;
+                list.appendChild(item);
+            });
+        }
+        
+        function addCategory() {
+            const name = document.getElementById('new-category-name').value.trim();
+            const icon = document.getElementById('new-category-icon').value.trim() || '📁';
+            
+            if (!name) {
+                showAlert('Bitte geben Sie einen Kategorie-Namen ein', 'error');
+                return;
+            }
+            
+            const id = name.toLowerCase().replace(/[^a-z0-9-_]/g, '-');
+            
+            if (!galleryConfig.categories) {
+                galleryConfig.categories = [];
+            }
+            
+            // Prüfe auf Duplikate
+            if (galleryConfig.categories.find(c => c.id === id)) {
+                showAlert('Eine Kategorie mit diesem Namen existiert bereits', 'error');
+                return;
+            }
+            
+            galleryConfig.categories.push({ id, name, icon });
+            galleryConfig.generated = new Date().toISOString();
+            
+            displayCategories();
+            updateCategoryDropdown();
+            
+            // Push zu GitHub
+            if (githubConfig) {
+                await pushGalleryJsonToGitHub();
+            }
+            
+            document.getElementById('new-category-name').value = '';
+            document.getElementById('new-category-icon').value = '';
+            showAlert('Kategorie hinzugefügt', 'success');
+        }
+        
+        async function deleteCategory(index) {
+            if (!confirm('Möchten Sie diese Kategorie wirklich löschen?')) return;
+            
+            galleryConfig.categories.splice(index, 1);
+            galleryConfig.generated = new Date().toISOString();
+            
+            displayCategories();
+            updateCategoryDropdown();
+            
+            // Push zu GitHub
+            if (githubConfig) {
+                await pushGalleryJsonToGitHub();
+            }
+            
+            showAlert('Kategorie gelöscht', 'success');
+        }
+        
+        function updateCategoryDropdown() {
+            const select = document.getElementById('gallery-category');
+            if (!select) return;
+            
+            select.innerHTML = '<option value="">-- Keine Kategorie --</option>';
+            
+            if (galleryConfig.categories) {
+                galleryConfig.categories.forEach(category => {
+                    const option = document.createElement('option');
+                    option.value = category.id;
+                    option.textContent = `${category.icon || '📁'} ${category.name}`;
+                    select.appendChild(option);
+                });
+            }
+        }
+        
+        // Portfolio-Verwaltung
+        function initPortfolio() {
+            if (!galleryConfig.portfolio) {
+                galleryConfig.portfolio = [];
+            }
+            displayPortfolio();
+        }
+        
+        function displayPortfolio() {
+            const list = document.getElementById('portfolio-list');
+            if (!list) return;
+            
+            list.innerHTML = '';
+            
+            if (!galleryConfig.portfolio || galleryConfig.portfolio.length === 0) {
+                list.innerHTML = '<p style="color: #888; font-style: italic;">Noch keine Portfolio-Bilder hinzugefügt</p>';
+                return;
+            }
+            
+            galleryConfig.portfolio.forEach((item, index) => {
+                const portfolioItem = document.createElement('div');
+                portfolioItem.style.cssText = 'display: flex; align-items: center; gap: 15px; padding: 15px; background: #1a1a1a; border-radius: 6px; margin-bottom: 10px;';
+                portfolioItem.innerHTML = `
+                    <img src="${item.image || item.url}" alt="${item.title || ''}" style="width: 120px; height: 80px; object-fit: cover; border-radius: 6px;">
+                    <div style="flex: 1;">
+                        <strong style="color: #e0e0e0; display: block; margin-bottom: 5px;">${item.title || 'Ohne Titel'}</strong>
+                        <p style="color: #888; font-size: 0.85em; margin: 0;">${item.description || 'Keine Beschreibung'}</p>
+                    </div>
+                    <button class="btn-danger" onclick="deletePortfolioItem(${index})" style="padding: 6px 12px; font-size: 0.85em;">Löschen</button>
+                `;
+                list.appendChild(portfolioItem);
+            });
+        }
+        
+        async function deletePortfolioItem(index) {
+            if (!confirm('Möchten Sie dieses Portfolio-Bild wirklich löschen?')) return;
+            
+            galleryConfig.portfolio.splice(index, 1);
+            galleryConfig.generated = new Date().toISOString();
+            
+            displayPortfolio();
+            
+            // Push zu GitHub
+            if (githubConfig) {
+                await pushGalleryJsonToGitHub();
+            }
+            
+            showAlert('Portfolio-Bild gelöscht', 'success');
+        }
+        
+        // Portfolio-Upload Button
+        document.getElementById('portfolio-upload-btn')?.addEventListener('click', () => {
+            const cloudinaryWidget = cloudinary.createUploadWidget(
+                {
+                    cloudName: localStorage.getItem('cloudinary_cloud_name') || 'dnvqw9wif',
+                    uploadPreset: localStorage.getItem('cloudinary_upload_preset') || 'wb_foto_manager',
+                    multiple: false,
+                    sources: ['local', 'camera'],
+                    maxFileSize: 10000000
+                },
+                (error, result) => {
+                    if (error) {
+                        console.error('Upload-Fehler:', error);
+                        showAlert('Upload-Fehler: ' + error.message, 'error');
+                        return;
+                    }
+                    
+                    if (result && result.event === 'success') {
+                        const title = document.getElementById('new-portfolio-title').value.trim();
+                        const description = document.getElementById('new-portfolio-description').value.trim();
+                        
+                        if (!galleryConfig.portfolio) {
+                            galleryConfig.portfolio = [];
+                        }
+                        
+                        galleryConfig.portfolio.push({
+                            image: result.info.secure_url,
+                            url: result.info.secure_url,
+                            title: title || null,
+                            description: description || null
+                        });
+                        
+                        galleryConfig.generated = new Date().toISOString();
+                        
+                        displayPortfolio();
+                        
+                        // Push zu GitHub
+                        if (githubConfig) {
+                            pushGalleryJsonToGitHub();
+                        }
+                        
+                        document.getElementById('new-portfolio-title').value = '';
+                        document.getElementById('new-portfolio-description').value = '';
+                        showAlert('Portfolio-Bild hinzugefügt', 'success');
+                    }
+                }
+            );
+            
+            cloudinaryWidget.open();
+        });
+        
         // Initialisiere Passwortschutz
         function initPasswordProtection() {
             // WICHTIG: Verstecke Admin-Content zuerst, zeige Passwort-Screen
@@ -2803,6 +3052,11 @@
             // Drag and Drop einrichten
             setupDragAndDrop();
             
+            // Initialisiere Kategorien und Portfolio
+            initCategories();
+            initPortfolio();
+            updateCategoryDropdown();
+            
             // Admin-Passwort ändern Button
             const changePasswordBtn = document.getElementById('change-admin-password-btn');
             if (changePasswordBtn) {
@@ -2817,6 +3071,9 @@
             window.togglePasswordField = togglePasswordField;
             window.showAvailableImages = showAvailableImages;
             window.clearForm = clearForm;
+            window.addCategory = addCategory;
+            window.deleteCategory = deleteCategory;
+            window.deletePortfolioItem = deletePortfolioItem;
             
             // Lade Konfiguration
             loadGalleryConfig();

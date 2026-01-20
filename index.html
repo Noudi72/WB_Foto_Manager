@@ -246,11 +246,179 @@
             background-clip: text;
         }
         
+        /* Portfolio Slider */
+        .portfolio-slider {
+            width: 100%;
+            height: 400px;
+            position: relative;
+            margin-bottom: 40px;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        }
+        
+        .portfolio-slider-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+        }
+        
+        .portfolio-slide {
+            min-width: 100%;
+            height: 100%;
+            position: relative;
+        }
+        
+        .portfolio-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .portfolio-slide-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 100%);
+            padding: 30px;
+            color: white;
+        }
+        
+        .portfolio-slide-overlay h3 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+        
+        .portfolio-slide-overlay p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+        
+        .portfolio-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(102, 126, 234, 0.8);
+            border: none;
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            z-index: 10;
+        }
+        
+        .portfolio-nav:hover {
+            background: rgba(102, 126, 234, 1);
+            transform: translateY(-50%) scale(1.1);
+        }
+        
+        .portfolio-nav.prev {
+            left: 20px;
+        }
+        
+        .portfolio-nav.next {
+            right: 20px;
+        }
+        
+        .portfolio-dots {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+            z-index: 10;
+        }
+        
+        .portfolio-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.5);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .portfolio-dot.active {
+            background: var(--accent);
+            transform: scale(1.3);
+        }
+        
+        /* Kategorie-Sidebar für Startseite */
+        .category-sidebar {
+            width: 220px;
+            min-width: 220px;
+            background: linear-gradient(180deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+            border-right: 1px solid var(--border);
+            padding: 20px;
+            overflow-y: auto;
+            max-height: calc(100vh - 200px);
+            box-shadow: 4px 0 24px rgba(0,0,0,0.3);
+        }
+        
+        .category-sidebar h3 {
+            font-size: 1.1em;
+            margin-bottom: 16px;
+            color: var(--text-primary);
+            border-bottom: 2px solid var(--accent);
+            padding-bottom: 8px;
+            font-weight: 600;
+        }
+        
+        .category-button {
+            width: 100%;
+            padding: 12px 16px;
+            margin-bottom: 8px;
+            background: rgba(102, 126, 234, 0.1);
+            border: 2px solid transparent;
+            border-left: 3px solid var(--accent);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 0.95em;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .category-button:hover {
+            background: rgba(102, 126, 234, 0.2);
+            transform: translateX(4px);
+            border-left-width: 4px;
+        }
+        
+        .category-button.active {
+            background: rgba(102, 126, 234, 0.3);
+            border-color: var(--accent);
+            font-weight: 600;
+        }
+        
+        .category-button-icon {
+            font-size: 1.2em;
+        }
+        
         .gallery-selector {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
             gap: 24px;
             padding: 30px 0;
+        }
+        
+        .main-content-with-sidebar {
+            display: flex;
+            gap: 24px;
+            margin-top: 20px;
         }
         
         .gallery-card {
@@ -1373,7 +1541,27 @@
         
         <!-- Galerie-Auswahl (wird angezeigt wenn mehrere Galerien vorhanden) -->
         <div id="gallery-selector" style="display: none;">
-            <div class="gallery-selector" id="gallery-list"></div>
+            <!-- Portfolio Slider -->
+            <div class="portfolio-slider" id="portfolio-slider" style="display: none;">
+                <div class="portfolio-slider-container" id="portfolio-slider-container"></div>
+                <button class="portfolio-nav prev" onclick="portfolioPrev()">‹</button>
+                <button class="portfolio-nav next" onclick="portfolioNext()">›</button>
+                <div class="portfolio-dots" id="portfolio-dots"></div>
+            </div>
+            
+            <!-- Hauptinhalt mit Sidebar -->
+            <div class="main-content-with-sidebar">
+                <!-- Kategorie-Sidebar -->
+                <div class="category-sidebar" id="category-sidebar">
+                    <h3>📁 Kategorien</h3>
+                    <div id="category-buttons"></div>
+                </div>
+                
+                <!-- Galerie-Liste -->
+                <div style="flex: 1;">
+                    <div class="gallery-selector" id="gallery-list"></div>
+                </div>
+            </div>
         </div>
         
         <!-- Passwort-Formular -->
@@ -1569,6 +1757,9 @@
         let currentImages = [];
         let currentImageIndex = 0;
         let searchQuery = '';
+        let selectedCategory = 'all';
+        let portfolioCurrentSlide = 0;
+        let portfolioInterval = null;
         
         // Feedback-Daten (wird in localStorage gespeichert)
         let feedbackData = {
@@ -1784,6 +1975,202 @@
             }
         }
         
+        // Portfolio Slider Funktionen
+        function initPortfolioSlider() {
+            const portfolio = galleryConfig?.portfolio || [];
+            const slider = document.getElementById('portfolio-slider');
+            const container = document.getElementById('portfolio-slider-container');
+            const dots = document.getElementById('portfolio-dots');
+            
+            if (!portfolio || portfolio.length === 0) {
+                if (slider) slider.style.display = 'none';
+                return;
+            }
+            
+            if (slider) slider.style.display = 'block';
+            if (container) container.innerHTML = '';
+            if (dots) dots.innerHTML = '';
+            
+            portfolio.forEach((item, index) => {
+                // Slide
+                const slide = document.createElement('div');
+                slide.className = 'portfolio-slide';
+                const img = document.createElement('img');
+                img.src = item.image || item.url || '';
+                img.alt = item.title || '';
+                slide.appendChild(img);
+                
+                if (item.title || item.description) {
+                    const overlay = document.createElement('div');
+                    overlay.className = 'portfolio-slide-overlay';
+                    if (item.title) {
+                        const h3 = document.createElement('h3');
+                        h3.textContent = item.title;
+                        overlay.appendChild(h3);
+                    }
+                    if (item.description) {
+                        const p = document.createElement('p');
+                        p.textContent = item.description;
+                        overlay.appendChild(p);
+                    }
+                    slide.appendChild(overlay);
+                }
+                
+                container.appendChild(slide);
+                
+                // Dot
+                const dot = document.createElement('div');
+                dot.className = 'portfolio-dot' + (index === 0 ? ' active' : '');
+                dot.onclick = () => goToPortfolioSlide(index);
+                dots.appendChild(dot);
+            });
+            
+            // Auto-play
+            startPortfolioAutoPlay();
+        }
+        
+        function startPortfolioAutoPlay() {
+            if (portfolioInterval) clearInterval(portfolioInterval);
+            const portfolio = galleryConfig?.portfolio || [];
+            if (portfolio.length <= 1) return;
+            
+            portfolioInterval = setInterval(() => {
+                portfolioNext();
+            }, 5000); // Wechsle alle 5 Sekunden
+        }
+        
+        function portfolioNext() {
+            const portfolio = galleryConfig?.portfolio || [];
+            if (portfolio.length === 0) return;
+            portfolioCurrentSlide = (portfolioCurrentSlide + 1) % portfolio.length;
+            updatePortfolioSlider();
+        }
+        
+        function portfolioPrev() {
+            const portfolio = galleryConfig?.portfolio || [];
+            if (portfolio.length === 0) return;
+            portfolioCurrentSlide = (portfolioCurrentSlide - 1 + portfolio.length) % portfolio.length;
+            updatePortfolioSlider();
+        }
+        
+        function goToPortfolioSlide(index) {
+            portfolioCurrentSlide = index;
+            updatePortfolioSlider();
+        }
+        
+        function updatePortfolioSlider() {
+            const container = document.getElementById('portfolio-slider-container');
+            const dots = document.querySelectorAll('.portfolio-dot');
+            
+            if (container) {
+                container.style.transform = `translateX(-${portfolioCurrentSlide * 100}%)`;
+            }
+            
+            dots.forEach((dot, index) => {
+                if (index === portfolioCurrentSlide) {
+                    dot.classList.add('active');
+                } else {
+                    dot.classList.remove('active');
+                }
+            });
+            
+            // Reset Auto-play
+            startPortfolioAutoPlay();
+        }
+        
+        // Kategorie-Sidebar initialisieren
+        function initCategorySidebar() {
+            const categories = galleryConfig?.categories || [];
+            const buttonsContainer = document.getElementById('category-buttons');
+            if (!buttonsContainer) return;
+            
+            buttonsContainer.innerHTML = '';
+            
+            // "Alle" Button
+            const allButton = document.createElement('button');
+            allButton.className = 'category-button' + (selectedCategory === 'all' ? ' active' : '');
+            allButton.innerHTML = '<span class="category-button-icon">📷</span><span>Alle Galerien</span>';
+            allButton.onclick = () => filterByCategory('all');
+            buttonsContainer.appendChild(allButton);
+            
+            // Kategorie-Buttons
+            categories.forEach(category => {
+                const button = document.createElement('button');
+                button.className = 'category-button' + (selectedCategory === category.id ? ' active' : '');
+                button.innerHTML = `<span class="category-button-icon">${category.icon || '📁'}</span><span>${category.name}</span>`;
+                button.onclick = () => filterByCategory(category.id);
+                buttonsContainer.appendChild(button);
+            });
+        }
+        
+        // Filter nach Kategorie
+        function filterByCategory(categoryId) {
+            selectedCategory = categoryId;
+            initCategorySidebar();
+            displayFilteredGalleries();
+        }
+        
+        // Zeige gefilterte Galerien
+        function displayFilteredGalleries() {
+            const galleryList = document.getElementById('gallery-list');
+            if (!galleryList) return;
+            
+            galleryList.innerHTML = '';
+            
+            if (!galleryConfig || !galleryConfig.galleries || galleryConfig.galleries.length === 0) {
+                galleryList.innerHTML = '<p style="text-align: center; color: var(--text-secondary); grid-column: 1 / -1; padding: 40px;">Keine Galerien gefunden</p>';
+                return;
+            }
+            
+            // Filtere Galerien nach Kategorie
+            let filteredGalleries = galleryConfig.galleries;
+            if (selectedCategory !== 'all') {
+                filteredGalleries = galleryConfig.galleries.filter(gallery => {
+                    return gallery.category === selectedCategory;
+                });
+            }
+            
+            if (filteredGalleries.length === 0) {
+                galleryList.innerHTML = '<p style="text-align: center; color: var(--text-secondary); grid-column: 1 / -1; padding: 40px;">Keine Galerien in dieser Kategorie gefunden</p>';
+                return;
+            }
+            
+            // Gruppiere nach Ordnern
+            const galleriesByFolder = {};
+            const rootGalleries = [];
+            
+            filteredGalleries.forEach((gallery) => {
+                if (gallery.folder) {
+                    if (!galleriesByFolder[gallery.folder]) {
+                        galleriesByFolder[gallery.folder] = [];
+                    }
+                    galleriesByFolder[gallery.folder].push(gallery);
+                } else {
+                    rootGalleries.push(gallery);
+                }
+            });
+            
+            // Zeige Root-Galerien
+            rootGalleries.forEach((gallery) => {
+                const card = createGalleryCard(gallery);
+                galleryList.appendChild(card);
+            });
+            
+            // Zeige Galerien nach Ordnern gruppiert
+            Object.keys(galleriesByFolder).sort().forEach((folder) => {
+                // Ordner-Header
+                const folderHeader = document.createElement('div');
+                folderHeader.className = 'gallery-folder-header';
+                folderHeader.innerHTML = `<h3>📁 ${folder}</h3>`;
+                galleryList.appendChild(folderHeader);
+                
+                galleriesByFolder[folder].forEach((gallery) => {
+                    const card = createGalleryCard(gallery);
+                    galleryList.appendChild(card);
+                });
+            });
+        }
+        
         // Zeige Galerie-Auswahl
         function showGallerySelector() {
             document.getElementById('gallery-selector').style.display = 'block';
@@ -1803,49 +2190,10 @@
                 searchQuery = '';
             }
             
-            const galleryList = document.getElementById('gallery-list');
-            galleryList.innerHTML = '';
-            
-            if (!galleryConfig || !galleryConfig.galleries || galleryConfig.galleries.length === 0) {
-                galleryList.innerHTML = '<p style="text-align: center; color: #888; grid-column: 1 / -1;">Keine Galerien gefunden</p>';
-                return;
-            }
-            
-            // Gruppiere Galerien nach Ordnern
-            const galleriesByFolder = {};
-            const rootGalleries = [];
-            
-            galleryConfig.galleries.forEach((gallery) => {
-                if (gallery.folder) {
-                    if (!galleriesByFolder[gallery.folder]) {
-                        galleriesByFolder[gallery.folder] = [];
-                    }
-                    galleriesByFolder[gallery.folder].push(gallery);
-                } else {
-                    rootGalleries.push(gallery);
-                }
-            });
-            
-            // Zeige Root-Galerien (ohne Ordner)
-            rootGalleries.forEach((gallery) => {
-                const card = createGalleryCard(gallery);
-                galleryList.appendChild(card);
-            });
-            
-            // Zeige Galerien nach Ordnern gruppiert
-            Object.keys(galleriesByFolder).sort().forEach((folder) => {
-                // Ordner-Header
-                const folderHeader = document.createElement('div');
-                folderHeader.className = 'gallery-folder-header';
-                folderHeader.innerHTML = `<h3>📁 ${folder}</h3>`;
-                galleryList.appendChild(folderHeader);
-                
-                // Galerien in diesem Ordner
-                galleriesByFolder[folder].forEach((gallery) => {
-                    const card = createGalleryCard(gallery);
-                    galleryList.appendChild(card);
-                });
-            });
+            // Initialisiere Portfolio und Kategorien
+            initPortfolioSlider();
+            initCategorySidebar();
+            displayFilteredGalleries();
         }
         
         // Erstelle Galerie-Karte
