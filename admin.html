@@ -740,75 +740,108 @@
         
         // Setup Cloudinary Upload Widget
         function setupCloudinaryWidget(cloudName, uploadPreset) {
-            cloudinaryWidget = cloudinary.createUploadWidget(
-                {
-                    cloudName: cloudName,
-                    uploadPreset: uploadPreset,
-                    multiple: true,
-                    maxFiles: 100,
-                    sources: ['local', 'camera', 'url'],
-                    showAdvancedOptions: false,
-                    cropping: false,
-                    resourceType: 'image'
-                },
-                (error, result) => {
-                    if (error) {
-                        console.error('Cloudinary Upload Fehler:', error);
-                        showAlert('Upload-Fehler: ' + error.message, 'error');
-                        return;
-                    }
-                    
-                    if (result && result.event === "success") {
-                        const imageInfo = result.info;
-                        const imageName = imageInfo.original_filename || imageInfo.public_id;
-                        const imageUrl = imageInfo.secure_url;
-                        const thumbnailUrl = imageInfo.thumbnail_url || imageInfo.secure_url;
+            try {
+                if (typeof cloudinary === 'undefined') {
+                    console.error('Cloudinary Widget nicht geladen');
+                    showAlert('Cloudinary Widget wird noch geladen. Bitte Seite neu laden.', 'error');
+                    return;
+                }
+                
+                console.log('Erstelle Cloudinary Widget mit:', { cloudName, uploadPreset });
+                
+                cloudinaryWidget = cloudinary.createUploadWidget(
+                    {
+                        cloudName: cloudName,
+                        uploadPreset: uploadPreset,
+                        multiple: true,
+                        maxFiles: 100,
+                        sources: ['local', 'camera', 'url'],
+                        showAdvancedOptions: false,
+                        cropping: false,
+                        resourceType: 'image'
+                    },
+                    (error, result) => {
+                        if (error) {
+                            console.error('Cloudinary Upload Fehler:', error);
+                            showAlert('Upload-Fehler: ' + (error.message || 'Unbekannter Fehler'), 'error');
+                            return;
+                        }
                         
-                        // Füge Bild zur Liste hinzu
-                        uploadedImages.push({
-                            name: imageName,
-                            url: imageUrl,
-                            thumbnailUrl: thumbnailUrl,
-                            publicId: imageInfo.public_id,
-                            width: imageInfo.width,
-                            height: imageInfo.height
-                        });
+                        if (result && result.event === "success") {
+                            const imageInfo = result.info;
+                            const imageName = imageInfo.original_filename || imageInfo.public_id;
+                            const imageUrl = imageInfo.secure_url;
+                            const thumbnailUrl = imageInfo.thumbnail_url || imageInfo.secure_url;
+                            
+                            // Füge Bild zur Liste hinzu
+                            uploadedImages.push({
+                                name: imageName,
+                                url: imageUrl,
+                                thumbnailUrl: thumbnailUrl,
+                                publicId: imageInfo.public_id,
+                                width: imageInfo.width,
+                                height: imageInfo.height
+                            });
+                            
+                            // Füge Dateinamen zum Textfeld hinzu
+                            const textarea = document.getElementById('gallery-images');
+                            if (textarea) {
+                                const current = textarea.value.trim();
+                                const newValue = current ? current + '\n' + imageName : imageName;
+                                textarea.value = newValue;
+                            }
+                            
+                            showAlert(`Bild "${imageName}" erfolgreich hochgeladen!`, 'success');
+                        }
                         
-                        // Füge Dateinamen zum Textfeld hinzu
-                        const textarea = document.getElementById('gallery-images');
-                        const current = textarea.value.trim();
-                        const newValue = current ? current + '\n' + imageName : imageName;
-                        textarea.value = newValue;
-                        
-                        showAlert(`Bild "${imageName}" erfolgreich hochgeladen!`, 'success');
-                    }
-                    
-                    if (result && result.event === "close") {
-                        // Upload abgeschlossen
-                        if (uploadedImages.length > 0) {
-                            showAlert(`${uploadedImages.length} Bild(er) erfolgreich hochgeladen!`, 'success');
+                        if (result && result.event === "close") {
+                            // Upload abgeschlossen
+                            if (uploadedImages.length > 0) {
+                                showAlert(`${uploadedImages.length} Bild(er) erfolgreich hochgeladen!`, 'success');
+                            }
                         }
                     }
-                }
-            );
+                );
+                
+                console.log('Cloudinary Widget erstellt:', cloudinaryWidget);
+            } catch (error) {
+                console.error('Fehler beim Erstellen des Cloudinary Widgets:', error);
+                showAlert('Fehler beim Initialisieren: ' + error.message, 'error');
+            }
         }
         
         // Öffne Cloudinary Widget
         function openCloudinaryUpload() {
-            const cloudName = localStorage.getItem('cloudinary_cloud_name');
-            const uploadPreset = localStorage.getItem('cloudinary_upload_preset');
-            
-            if (!cloudName || !uploadPreset) {
-                document.getElementById('cloudinary-setup').style.display = 'block';
-                showAlert('Bitte konfigurieren Sie zuerst Cloudinary', 'error');
-                return;
+            try {
+                const cloudName = localStorage.getItem('cloudinary_cloud_name') || 'dnvqw9wif';
+                const uploadPreset = localStorage.getItem('cloudinary_upload_preset') || 'wb_foto_manager';
+                
+                if (!cloudName || !uploadPreset) {
+                    document.getElementById('cloudinary-setup').style.display = 'block';
+                    showAlert('Bitte konfigurieren Sie zuerst Cloudinary', 'error');
+                    return;
+                }
+                
+                // Prüfe ob Cloudinary Widget geladen ist
+                if (typeof cloudinary === 'undefined') {
+                    showAlert('Cloudinary Widget wird noch geladen. Bitte warten Sie einen Moment und versuchen Sie es erneut.', 'error');
+                    return;
+                }
+                
+                if (!cloudinaryWidget) {
+                    console.log('Initialisiere Cloudinary Widget:', { cloudName, uploadPreset });
+                    setupCloudinaryWidget(cloudName, uploadPreset);
+                }
+                
+                if (cloudinaryWidget) {
+                    cloudinaryWidget.open();
+                } else {
+                    showAlert('Fehler beim Initialisieren des Cloudinary Widgets', 'error');
+                }
+            } catch (error) {
+                console.error('Fehler beim Öffnen des Cloudinary Widgets:', error);
+                showAlert('Fehler: ' + error.message, 'error');
             }
-            
-            if (!cloudinaryWidget) {
-                setupCloudinaryWidget(cloudName, uploadPreset);
-            }
-            
-            cloudinaryWidget.open();
         }
         
         // Öffne Dateiauswahl für GitHub-Upload
@@ -1153,7 +1186,7 @@
         }
         
         // Neue Galerie erstellen / Bearbeiten
-        document.getElementById('new-gallery-form').addEventListener('submit', (e) => {
+        document.getElementById('new-gallery-form').addEventListener('submit', async (e) => {
             e.preventDefault();
             
             console.log('Formular wird abgeschickt...');
