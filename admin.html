@@ -152,6 +152,12 @@
             font-size: 0.9em;
         }
         
+        .no-galleries-message {
+            color: #888;
+            text-align: center;
+            padding: 20px;
+        }
+        
         /* Drag and Drop Bereich */
         .drop-zone {
             border: 2px dashed #667eea;
@@ -1336,7 +1342,7 @@
             const galleryList = document.getElementById('gallery-list');
             
             if (!galleryConfig || !galleryConfig.galleries || galleryConfig.galleries.length === 0) {
-                galleryList.innerHTML = '<p>Noch keine Galerien vorhanden</p>';
+                galleryList.innerHTML = '<p class="no-galleries-message">Noch keine Galerien vorhanden</p>';
                 return;
             }
             
@@ -1367,6 +1373,7 @@
         }
         
         // Prüfe ob Name und ID ausgefüllt sind, um Bild-Upload zu aktivieren
+        let hasScrolledToImageSection = false; // Flag um Scroll nur einmalig auszuführen
         function checkGalleryInfo() {
             const name = document.getElementById('gallery-name').value.trim();
             const id = document.getElementById('gallery-id').value.trim();
@@ -1374,16 +1381,21 @@
             const hint = document.getElementById('gallery-info-hint');
             
             if (name && id) {
+                const wasHidden = imageSection.style.display === 'none' || imageSection.style.display === '';
                 imageSection.style.display = 'block';
                 hint.style.display = 'block';
                 
-                // Scroll zum Bild-Upload-Bereich
-                setTimeout(() => {
-                    imageSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-                }, 100);
+                // Scroll nur einmalig, wenn der Bereich gerade sichtbar wurde (nicht bei jedem Tippen)
+                if (wasHidden && !hasScrolledToImageSection) {
+                    hasScrolledToImageSection = true;
+                    setTimeout(() => {
+                        imageSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                    }, 100);
+                }
             } else {
                 imageSection.style.display = 'none';
                 hint.style.display = 'none';
+                hasScrolledToImageSection = false; // Reset wenn Felder geleert werden
             }
         }
         
