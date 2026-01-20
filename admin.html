@@ -371,18 +371,45 @@
                 <div class="form-group">
                     <label for="gallery-images">Bilder hinzufügen</label>
                     
-                    <!-- Cloudinary Upload Option -->
-                    <div style="margin-bottom: 20px; padding: 15px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 8px;">
-                        <h3 style="color: white; margin-bottom: 10px;">🚀 Einfacher Upload (Empfohlen)</h3>
-                        <p style="color: rgba(255,255,255,0.9); margin-bottom: 15px; font-size: 0.9em;">
-                            Laden Sie Bilder direkt hoch - automatisch in der Cloud gespeichert, keine GitHub-Uploads nötig!
-                        </p>
-                        <button type="button" id="cloudinary-upload-btn" class="btn-primary" style="background: white; color: #667eea; font-weight: bold; padding: 12px 24px;">
-                            📤 Bilder hochladen (Cloudinary)
-                        </button>
-                        <p style="color: rgba(255,255,255,0.8); margin-top: 10px; font-size: 0.85em;">
-                            ⚙️ Erste Einrichtung: Siehe Anleitung unten
-                        </p>
+                    <!-- Upload Optionen -->
+                    <div style="margin-bottom: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                        <!-- Cloudinary Upload Option -->
+                        <div style="padding: 15px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 8px;">
+                            <h3 style="color: white; margin-bottom: 10px;">☁️ Cloudinary (Empfohlen)</h3>
+                            <p style="color: rgba(255,255,255,0.9); margin-bottom: 15px; font-size: 0.85em;">
+                                ✓ Schnell (CDN)<br>
+                                ✓ Automatische Thumbnails<br>
+                                ✓ Keine Größenbeschränkung<br>
+                                ✓ Kostenlos (25 GB)
+                            </p>
+                            <button type="button" id="cloudinary-upload-btn" class="btn-primary" style="background: white; color: #667eea; font-weight: bold; padding: 10px 20px; width: 100%;">
+                                📤 Bilder hochladen
+                            </button>
+                        </div>
+                        
+                        <!-- GitHub Direct Upload Option -->
+                        <div style="padding: 15px; background: linear-gradient(135deg, #28a745 0%, #20c997 100%); border-radius: 8px;">
+                            <h3 style="color: white; margin-bottom: 10px;">🔷 Direkt zu GitHub</h3>
+                            <p style="color: rgba(255,255,255,0.9); margin-bottom: 15px; font-size: 0.85em;">
+                                ✓ Alles an einem Ort<br>
+                                ✓ Kein externer Service<br>
+                                ⚠️ Max. 50 MB pro Bild<br>
+                                ⚠️ Langsamer (kein CDN)
+                            </p>
+                            <button type="button" id="github-upload-btn" class="btn-primary" style="background: white; color: #28a745; font-weight: bold; padding: 10px 20px; width: 100%;">
+                                📤 Bilder hochladen
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div id="upload-progress" style="display: none; margin-top: 15px; padding: 15px; background: #1a1a1a; border-radius: 6px;">
+                        <div style="color: #e0e0e0; margin-bottom: 10px;">
+                            <strong id="upload-status">Upload läuft...</strong>
+                        </div>
+                        <div style="background: #2a2a2a; border-radius: 4px; height: 20px; overflow: hidden;">
+                            <div id="upload-progress-bar" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); height: 100%; width: 0%; transition: width 0.3s;"></div>
+                        </div>
+                        <div id="upload-details" style="color: #888; font-size: 0.85em; margin-top: 8px;"></div>
                     </div>
                     
                     <!-- Alternative: Lokale Dateinamen (für GitHub) -->
@@ -755,6 +782,164 @@
             cloudinaryWidget.open();
         }
         
+        // Öffne Dateiauswahl für GitHub-Upload
+        function openGitHubUpload() {
+            if (!githubConfig) {
+                document.getElementById('github-setup').style.display = 'block';
+                showAlert('Bitte konfigurieren Sie zuerst GitHub', 'error');
+                return;
+            }
+            
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.multiple = true;
+            input.accept = 'image/*';
+            input.onchange = async (e) => {
+                const files = Array.from(e.target.files);
+                await uploadFilesToGitHub(files);
+            };
+            input.click();
+        }
+        
+        // Lade Dateien zu GitHub hoch
+        async function uploadFilesToGitHub(files) {
+            if (!githubConfig) {
+                showAlert('GitHub nicht konfiguriert', 'error');
+                return;
+            }
+            
+            const imageFiles = files.filter(file => {
+                const type = file.type.toLowerCase();
+                const name = file.name.toLowerCase();
+                return type.startsWith('image/') || 
+                       /\.(jpg|jpeg|png|gif|heic|heif|raw|cr2|nef|arw|dng)$/i.test(name);
+            });
+            
+            if (imageFiles.length === 0) {
+                showAlert('Bitte wählen Sie nur Bilddateien aus', 'error');
+                return;
+            }
+            
+            // Prüfe Dateigröße (50 MB Limit)
+            const tooLarge = imageFiles.filter(f => f.size > 50 * 1024 * 1024);
+            if (tooLarge.length > 0) {
+                showAlert(`${tooLarge.length} Datei(en) zu groß (max. 50 MB). Bitte verwenden Sie Cloudinary für große Dateien.`, 'error');
+                return;
+            }
+            
+            // Zeige Progress
+            const progressDiv = document.getElementById('upload-progress');
+            const progressBar = document.getElementById('upload-progress-bar');
+            const statusText = document.getElementById('upload-status');
+            const detailsText = document.getElementById('upload-details');
+            
+            progressDiv.style.display = 'block';
+            statusText.textContent = 'Upload läuft...';
+            progressBar.style.width = '0%';
+            
+            const uploadedImages = [];
+            const total = imageFiles.length;
+            
+            for (let i = 0; i < imageFiles.length; i++) {
+                const file = imageFiles[i];
+                const fileName = file.name;
+                
+                try {
+                    statusText.textContent = `Lade hoch: ${fileName} (${i + 1}/${total})`;
+                    detailsText.textContent = `${i} von ${total} Dateien hochgeladen`;
+                    
+                    // Lese Datei als Base64
+                    const base64 = await readFileAsBase64(file);
+                    
+                    // Prüfe ob Datei bereits existiert
+                    let sha = null;
+                    try {
+                        const getResponse = await fetch(`https://api.github.com/repos/${githubConfig.username}/${githubConfig.repo}/contents/images/${fileName}`, {
+                            headers: {
+                                'Authorization': `Bearer ${githubConfig.token}`,
+                                'X-GitHub-Api-Version': '2022-11-28',
+                                'Accept': 'application/vnd.github.v3+json'
+                            }
+                        });
+                        
+                        if (getResponse.ok) {
+                            const fileData = await getResponse.json();
+                            sha = fileData.sha;
+                        }
+                    } catch (e) {
+                        // Datei existiert nicht, das ist okay
+                    }
+                    
+                    // Upload zu GitHub
+                    const uploadResponse = await fetch(`https://api.github.com/repos/${githubConfig.username}/${githubConfig.repo}/contents/images/${fileName}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Authorization': `Bearer ${githubConfig.token}`,
+                            'X-GitHub-Api-Version': '2022-11-28',
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/vnd.github.v3+json'
+                        },
+                        body: JSON.stringify({
+                            message: `WebApp: Bild hochgeladen - ${fileName}`,
+                            content: base64,
+                            sha: sha
+                        })
+                    });
+                    
+                    if (uploadResponse.ok) {
+                        const result = await uploadResponse.json();
+                        uploadedImages.push({
+                            name: fileName,
+                            url: `./images/${fileName}`,
+                            thumbnailUrl: `./images/thumbnails/thumb_${fileName}`,
+                            uploadDate: new Date().toISOString(),
+                            source: 'github'
+                        });
+                        
+                        // Füge Dateinamen zum Textfeld hinzu
+                        const textarea = document.getElementById('gallery-images');
+                        const current = textarea.value.trim();
+                        const newValue = current ? current + '\n' + fileName : fileName;
+                        textarea.value = newValue;
+                    } else {
+                        const errorData = await uploadResponse.json();
+                        console.error('Upload Fehler:', errorData);
+                        showAlert(`Fehler bei ${fileName}: ${errorData.message || 'Unbekannter Fehler'}`, 'error');
+                    }
+                    
+                    // Update Progress
+                    const progress = ((i + 1) / total) * 100;
+                    progressBar.style.width = progress + '%';
+                    
+                } catch (error) {
+                    console.error('Fehler beim Upload:', error);
+                    showAlert(`Fehler bei ${fileName}: ${error.message}`, 'error');
+                }
+            }
+            
+            // Fertig
+            statusText.textContent = `✓ ${uploadedImages.length} von ${total} Bildern erfolgreich hochgeladen!`;
+            detailsText.textContent = '';
+            showAlert(`${uploadedImages.length} Bild(er) erfolgreich zu GitHub hochgeladen!`, 'success');
+            
+            // Speichere hochgeladene Bilder für später
+            window.uploadedImages = uploadedImages;
+        }
+        
+        // Lese Datei als Base64
+        function readFileAsBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => {
+                    // Entferne Data URL Prefix (data:image/jpeg;base64,)
+                    const base64 = reader.result.split(',')[1];
+                    resolve(base64);
+                };
+                reader.onerror = reject;
+                reader.readAsDataURL(file);
+            });
+        }
+        
         // Lade bestehende gallery.json
         async function loadGalleryConfig() {
             try {
@@ -998,6 +1183,20 @@
                         width: cloudinaryImage.width,
                         height: cloudinaryImage.height,
                         source: 'cloudinary'
+                    };
+                }
+                
+                // Prüfe ob Bild über GitHub hochgeladen wurde
+                const githubImage = window.uploadedImages?.find(img => img.name === name);
+                if (githubImage) {
+                    console.log('Verwende GitHub-Bild:', name);
+                    return {
+                        id: `img_${Date.now()}_${index}`,
+                        name: name,
+                        url: githubImage.url,
+                        thumbnailUrl: githubImage.thumbnailUrl,
+                        uploadDate: new Date().toISOString(),
+                        source: 'github'
                     };
                 }
                 
@@ -1293,6 +1492,12 @@
             const cloudinaryBtn = document.getElementById('cloudinary-upload-btn');
             if (cloudinaryBtn) {
                 cloudinaryBtn.addEventListener('click', openCloudinaryUpload);
+            }
+            
+            // GitHub Direct Upload Button
+            const githubUploadBtn = document.getElementById('github-upload-btn');
+            if (githubUploadBtn) {
+                githubUploadBtn.addEventListener('click', openGitHubUpload);
             }
             
             // Cloudinary Config speichern
