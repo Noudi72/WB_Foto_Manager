@@ -240,6 +240,11 @@
             color: white;
         }
         
+        .btn-success {
+            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+            color: white;
+        }
+        
         button:hover {
             opacity: 0.9;
         }
@@ -762,9 +767,11 @@
         // Teste GitHub-Verbindung (mit Werten)
         async function testGitHubConnectionWithValues(username, repo, token) {
             try {
+                console.log('Teste GitHub-Verbindung mit:', { username, repo, tokenLength: token?.length || 0 });
                 showAlert('Teste Verbindung...', 'info');
                 
                 // Test 1: Repository-Zugriff
+                console.log('Test 1: Repository-Zugriff...');
                 const repoResponse = await fetch(`https://api.github.com/repos/${username}/${repo}`, {
                     headers: {
                         'Authorization': `Bearer ${token}`,
@@ -772,28 +779,35 @@
                     }
                 });
                 
+                console.log('Repository-Response Status:', repoResponse.status);
+                
                 if (!repoResponse.ok) {
+                    const errorData = await repoResponse.json().catch(() => ({}));
+                    console.error('Repository-Fehler:', errorData);
+                    
                     if (repoResponse.status === 401) {
                         showAlert('✗ Token ungültig oder abgelaufen. Bitte erstellen Sie einen neuen Token.', 'error');
-                        return;
+                        return false;
                     } else if (repoResponse.status === 404) {
                         showAlert(`✗ Repository "${username}/${repo}" nicht gefunden. Bitte prüfen Sie den Namen.`, 'error');
-                        return;
+                        return false;
                     } else if (repoResponse.status === 403) {
-                        const errorData = await repoResponse.json().catch(() => ({}));
                         if (errorData.message && errorData.message.includes('personal access token')) {
-                            showAlert('✗ Token hat keine Berechtigung. Bitte erstellen Sie einen neuen Token mit "repo" Scope (vollständiger Zugriff).', 'error');
+                            showAlert('✗ Token hat keine Berechtigung. Bitte erstellen Sie einen neuen Token mit "repo" Scope (vollständiger Zugriff). WICHTIG: Verwenden Sie "Tokens (classic)", nicht "Fine-grained tokens"!', 'error');
                         } else {
-                            showAlert('✗ Zugriff verweigert (403). Token hat möglicherweise nicht die richtigen Berechtigungen.', 'error');
+                            showAlert('✗ Zugriff verweigert (403). Token hat möglicherweise nicht die richtigen Berechtigungen. Bitte prüfen Sie, ob Sie einen "Tokens (classic)" mit "repo" Scope verwenden.', 'error');
                         }
-                        return;
+                        return false;
                     } else {
-                        showAlert('✗ Fehler: ' + repoResponse.statusText, 'error');
-                        return;
+                        showAlert('✗ Fehler: ' + repoResponse.statusText + ' (' + repoResponse.status + ')', 'error');
+                        return false;
                     }
                 }
                 
-                // Test 2: Schreib-Zugriff (versuche gallery.json zu lesen)
+                console.log('✓ Repository-Zugriff erfolgreich');
+                
+                // Test 2: Schreib-Zugriff (versuche gallery.json zu lesen - 404 ist OK)
+                console.log('Test 2: Schreib-Zugriff (gallery.json)...');
                 const contentResponse = await fetch(`https://api.github.com/repos/${username}/${repo}/contents/gallery.json`, {
                     headers: {
                         'Authorization': `Bearer ${token}`,
@@ -802,31 +816,68 @@
                     }
                 });
                 
+                console.log('Content-Response Status:', contentResponse.status);
+                
                 if (contentResponse.status === 403) {
                     const errorData = await contentResponse.json().catch(() => ({}));
+                    console.error('Content-Fehler (403):', errorData);
                     if (errorData.message && errorData.message.includes('personal access token')) {
-                        showAlert('✗ Token hat keine Schreib-Berechtigung. Bitte erstellen Sie einen neuen Token mit "repo" Scope (vollständiger Zugriff auf Repository-Inhalte).', 'error');
-                        return;
+                        showAlert('✗ Token hat keine Schreib-Berechtigung. Bitte erstellen Sie einen neuen Token mit "repo" Scope (vollständiger Zugriff auf Repository-Inhalte). WICHTIG: Verwenden Sie "Tokens (classic)"!', 'error');
+                        return false;
+                    } else {
+                        showAlert('✗ Schreib-Zugriff verweigert (403). Bitte prüfen Sie, ob Sie einen "Tokens (classic)" mit "repo" Scope verwenden.', 'error');
+                        return false;
                     }
+                } else if (contentResponse.status === 404) {
+                    console.log('✓ gallery.json existiert noch nicht (OK für ersten Test)');
+                } else if (!contentResponse.ok) {
+                    console.warn('Unerwarteter Status beim Lesen von gallery.json:', contentResponse.status);
+                } else {
+                    console.log('✓ gallery.json erfolgreich gelesen');
                 }
                 
                 // Wenn wir hier sind, ist alles OK
+                console.log('✓ Alle Tests erfolgreich!');
                 showAlert('✓ Verbindung erfolgreich! Repository und Token sind korrekt konfiguriert.', 'success');
+                return true;
                 
             } catch (error) {
                 console.error('Verbindungstest Fehler:', error);
                 showAlert('✗ Verbindungsfehler: ' + error.message, 'error');
+                return false;
             }
         }
         
         // Teste GitHub-Verbindung
         async function testGitHubConnection() {
-            const username = document.getElementById('github-username').value.trim();
-            const repo = document.getElementById('github-repo').value.trim();
-            const token = document.getElementById('github-token').value.trim();
+            // Prüfe zuerst Setup-Bereich, dann Export-Bereich
+            let username = document.getElementById('github-username')?.value.trim();
+            let repo = document.getElementById('github-repo')?.value.trim();
+            let token = document.getElementById('github-token')?.value.trim();
+            
+            // Falls Setup-Bereich leer, versuche Export-Bereich
+            if (!username || !repo || !token) {
+                username = document.getElementById('github-username-export')?.value.trim();
+                repo = document.getElementById('github-repo-export')?.value.trim();
+                token = document.getElementById('github-token-export')?.value.trim();
+            }
+            
+            // Falls immer noch leer, versuche gespeicherte Konfiguration
+            if (!username || !repo || !token) {
+                const savedUsername = localStorage.getItem('github_username');
+                const savedRepo = localStorage.getItem('github_repo');
+                const savedToken = localStorage.getItem('github_token');
+                
+                if (savedUsername && savedRepo && savedToken) {
+                    username = savedUsername;
+                    repo = savedRepo;
+                    token = savedToken;
+                    showAlert('Verwende gespeicherte Konfiguration für Test...', 'info');
+                }
+            }
             
             if (!username || !repo || !token) {
-                showAlert('Bitte füllen Sie alle Felder aus', 'error');
+                showAlert('Bitte füllen Sie alle Felder aus oder speichern Sie zuerst die Konfiguration', 'error');
                 return;
             }
             
@@ -1361,12 +1412,19 @@
                 filePreview.innerHTML = '';
             }
             
-            const formSection = document.querySelector('.admin-section');
+            const formSection = document.querySelector('#new-gallery-form')?.closest('.admin-section');
             if (formSection) {
                 const h2 = formSection.querySelector('h2');
                 if (h2) {
                     h2.textContent = 'Neue Galerie erstellen';
                 }
+            }
+            
+            // Submit-Button Text zurücksetzen
+            const submitButton = document.querySelector('#new-gallery-form button[type="submit"]');
+            if (submitButton) {
+                submitButton.textContent = 'Galerie erstellen';
+                submitButton.classList.remove('btn-success');
             }
         }
         
@@ -1405,13 +1463,20 @@
                 filePreview.innerHTML = '';
             }
             
-            // Formular-Titel ändern - finde das richtige h2 Element
+            // Formular-Titel und Button-Text ändern - finde das richtige h2 Element
             const formSection = document.querySelector('#new-gallery-form')?.closest('.admin-section');
             if (formSection) {
                 const h2 = formSection.querySelector('h2');
                 if (h2) {
                     h2.textContent = 'Galerie bearbeiten';
                 }
+            }
+            
+            // Submit-Button Text ändern
+            const submitButton = document.querySelector('#new-gallery-form button[type="submit"]');
+            if (submitButton) {
+                submitButton.textContent = 'Änderungen speichern';
+                submitButton.classList.add('btn-success'); // Optional: andere Farbe für Speichern
             }
             
             // Scroll zum Formular
