@@ -438,21 +438,21 @@
         /* Lightbox Sidebar */
         .lightbox-sidebar {
             position: fixed;
-            right: -400px;
+            left: -400px;
             top: 0;
-            width: 380px;
+            width: 360px;
             height: 100vh;
             background: linear-gradient(180deg, #1a1a1a 0%, #2a2a2a 100%);
-            border-left: 1px solid #333;
+            border-right: 1px solid #333;
             padding: 30px 20px;
             overflow-y: auto;
-            transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             z-index: 1001;
-            box-shadow: -4px 0 24px rgba(0,0,0,0.5);
+            box-shadow: 4px 0 24px rgba(0,0,0,0.5);
         }
         
         .lightbox-sidebar.open {
-            right: 0;
+            left: 0;
         }
         
         .lightbox-sidebar h3 {
@@ -665,15 +665,15 @@
         /* Gallery Sidebar (für Übersicht) */
         .gallery-sidebar {
             position: relative;
-            width: 320px;
-            min-width: 320px;
+            width: 260px;
+            min-width: 260px;
             background: linear-gradient(180deg, #1a1a1a 0%, #2a2a2a 100%);
-            border-left: 1px solid #333;
+            border-right: 1px solid #333;
             padding: 20px;
             overflow-y: auto;
-            max-height: calc(100vh - 200px);
+            max-height: calc(100vh - 150px);
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: -4px 0 24px rgba(0,0,0,0.3);
+            box-shadow: 4px 0 24px rgba(0,0,0,0.3);
         }
         
         .gallery-sidebar.collapsed {
@@ -689,7 +689,7 @@
         .sidebar-toggle {
             position: absolute;
             top: 20px;
-            right: 10px;
+            left: 10px;
             background: rgba(102, 126, 234, 0.2);
             border: 1px solid #667eea;
             color: #667eea;
@@ -711,7 +711,24 @@
         }
         
         .gallery-sidebar.collapsed .sidebar-toggle {
-            right: 10px;
+            left: 10px;
+        }
+        
+        /* Clickable items */
+        .clickable {
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .clickable:hover {
+            background: rgba(102, 126, 234, 0.2) !important;
+            transform: translateX(3px);
+        }
+        
+        .clickable.active {
+            background: rgba(102, 126, 234, 0.3) !important;
+            border-left-color: #667eea !important;
+            border-left-width: 4px !important;
         }
         
         .sidebar-content h3 {
@@ -832,8 +849,8 @@
         
         @media (max-width: 1200px) {
             .gallery-sidebar {
-                width: 280px;
-                min-width: 280px;
+                width: 240px;
+                min-width: 240px;
             }
         }
         
@@ -858,7 +875,7 @@
             
             .gallery-sidebar {
                 position: fixed;
-                right: -320px;
+                left: -260px;
                 top: 0;
                 height: 100vh;
                 z-index: 999;
@@ -866,7 +883,7 @@
             }
             
             .gallery-sidebar.open {
-                right: 0;
+                left: 0;
             }
         }
     </style>
@@ -906,28 +923,27 @@
                 ← Zurück zur Galerie-Auswahl
             </button>
             <div style="display: flex; gap: 20px;">
-                <div class="gallery" id="gallery" style="flex: 1;"></div>
                 <!-- Sidebar für Galerie-Übersicht -->
                 <div class="gallery-sidebar" id="gallery-sidebar">
                     <button class="sidebar-toggle" onclick="toggleGallerySidebar()" id="sidebar-toggle-btn">
-                        <span id="sidebar-toggle-icon">◀</span>
+                        <span id="sidebar-toggle-icon">▶</span>
                     </button>
                     <div class="sidebar-content" id="sidebar-content">
                         <h3>📊 Übersicht</h3>
                         <div class="sidebar-stats">
-                            <div class="stat-item">
+                            <div class="stat-item clickable" onclick="filterByType('all')" title="Alle Bilder anzeigen">
                                 <span class="stat-label">Bilder gesamt:</span>
                                 <span class="stat-value" id="stat-total">0</span>
                             </div>
-                            <div class="stat-item">
+                            <div class="stat-item clickable" onclick="filterByType('selected')" title="Nur ausgewählte Bilder">
                                 <span class="stat-label">Ausgewählt:</span>
                                 <span class="stat-value" id="stat-selected">0</span>
                             </div>
-                            <div class="stat-item">
+                            <div class="stat-item clickable" onclick="filterByType('favorites')" title="Nur Favoriten">
                                 <span class="stat-label">Favoriten:</span>
                                 <span class="stat-value" id="stat-favorites">0</span>
                             </div>
-                            <div class="stat-item">
+                            <div class="stat-item clickable" onclick="filterByType('commented')" title="Nur kommentierte Bilder">
                                 <span class="stat-label">Kommentiert:</span>
                                 <span class="stat-value" id="stat-commented">0</span>
                             </div>
@@ -936,19 +952,19 @@
                         <div class="sidebar-section">
                             <h4>🏷️ Markierungen</h4>
                             <div class="flag-summary" id="flag-summary">
-                                <div class="flag-summary-item">
+                                <div class="flag-summary-item clickable" onclick="filterByFlag('reject')" title="Nur abgelehnte Bilder">
                                     <span class="flag-badge red">✗</span>
                                     <span class="flag-count" id="flag-reject">0</span>
                                 </div>
-                                <div class="flag-summary-item">
+                                <div class="flag-summary-item clickable" onclick="filterByFlag('review')" title="Nur zu prüfende Bilder">
                                     <span class="flag-badge yellow">⚠</span>
                                     <span class="flag-count" id="flag-review">0</span>
                                 </div>
-                                <div class="flag-summary-item">
+                                <div class="flag-summary-item clickable" onclick="filterByFlag('approve')" title="Nur genehmigte Bilder">
                                     <span class="flag-badge green">✓</span>
                                     <span class="flag-count" id="flag-approve">0</span>
                                 </div>
-                                <div class="flag-summary-item">
+                                <div class="flag-summary-item clickable" onclick="filterByFlag('final')" title="Nur finale Bilder">
                                     <span class="flag-badge black">★</span>
                                     <span class="flag-count" id="flag-final">0</span>
                                 </div>
@@ -963,6 +979,7 @@
                         </div>
                     </div>
                 </div>
+                <div class="gallery" id="gallery" style="flex: 1;"></div>
             </div>
         </div>
         
@@ -989,7 +1006,7 @@
         
         <!-- Feedback-Sidebar -->
         <div class="lightbox-sidebar" id="feedback-sidebar">
-            <button onclick="toggleSidebar()" style="position: absolute; top: 10px; right: 10px; background: none; border: none; color: #e0e0e0; font-size: 24px; cursor: pointer;">&times;</button>
+            <button onclick="toggleSidebar()" style="position: absolute; top: 10px; left: 10px; background: none; border: none; color: #e0e0e0; font-size: 24px; cursor: pointer;">&times;</button>
             <h3 id="feedback-image-name">Bild Feedback</h3>
             
             <!-- Bewertung -->
@@ -1342,14 +1359,137 @@
             
             // Update Sidebar-Statistiken
             updateSidebarStats();
+            
+            // Filter anwenden
+            applyFilter();
+            updateFilterUI();
         }
+        
+        // Aktiver Filter
+        let currentFilter = {
+            type: 'all',  // 'all', 'selected', 'favorites', 'commented'
+            flag: null    // 'reject', 'review', 'approve', 'final', null
+        };
         
         // Toggle Gallery Sidebar
         function toggleGallerySidebar() {
             const sidebar = document.getElementById('gallery-sidebar');
             const toggleIcon = document.getElementById('sidebar-toggle-icon');
             sidebar.classList.toggle('collapsed');
-            toggleIcon.textContent = sidebar.classList.contains('collapsed') ? '▶' : '◀';
+            toggleIcon.textContent = sidebar.classList.contains('collapsed') ? '◀' : '▶';
+        }
+        
+        // Filter nach Typ
+        function filterByType(type) {
+            currentFilter.type = type;
+            currentFilter.flag = null;
+            applyFilter();
+            updateFilterUI();
+        }
+        
+        // Filter nach Flag
+        function filterByFlag(flag) {
+            if (currentFilter.flag === flag) {
+                // Toggle: Wenn bereits aktiv, zurücksetzen
+                currentFilter.flag = null;
+                currentFilter.type = 'all';
+            } else {
+                currentFilter.flag = flag;
+                currentFilter.type = 'all';
+            }
+            applyFilter();
+            updateFilterUI();
+        }
+        
+        // Filter anwenden
+        function applyFilter() {
+            const items = document.querySelectorAll('.gallery-item');
+            let visibleCount = 0;
+            
+            items.forEach(item => {
+                const imageId = item.dataset.imageId;
+                if (!imageId) {
+                    item.style.display = 'none';
+                    return;
+                }
+                
+                let shouldShow = true;
+                
+                // Typ-Filter
+                if (currentFilter.type === 'selected') {
+                    shouldShow = item.classList.contains('selected');
+                } else if (currentFilter.type === 'favorites') {
+                    shouldShow = feedbackData.favorites[imageId] || false;
+                } else if (currentFilter.type === 'commented') {
+                    const comments = feedbackData.comments[imageId] || [];
+                    shouldShow = comments.length > 0;
+                }
+                
+                // Flag-Filter
+                if (shouldShow && currentFilter.flag) {
+                    const flag = feedbackData.flags[imageId];
+                    shouldShow = flag === currentFilter.flag;
+                }
+                
+                if (shouldShow) {
+                    item.style.display = '';
+                    visibleCount++;
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+            
+            // Zeige Meldung wenn keine Bilder sichtbar
+            const gallery = document.getElementById('gallery');
+            let noResultsMsg = gallery.querySelector('.no-results-message');
+            if (visibleCount === 0) {
+                if (!noResultsMsg) {
+                    noResultsMsg = document.createElement('p');
+                    noResultsMsg.className = 'no-results-message';
+                    noResultsMsg.style.cssText = 'text-align: center; color: #888; grid-column: 1 / -1; padding: 40px; font-size: 1.1em;';
+                    noResultsMsg.textContent = 'Keine Bilder entsprechen dem Filter';
+                    gallery.appendChild(noResultsMsg);
+                }
+            } else if (noResultsMsg) {
+                noResultsMsg.remove();
+            }
+        }
+        
+        // Update Filter UI (aktive Zustände)
+        function updateFilterUI() {
+            // Entferne alle aktiven Zustände
+            document.querySelectorAll('.stat-item, .flag-summary-item').forEach(el => {
+                el.classList.remove('active');
+            });
+            
+            // Setze aktiven Zustand für Typ-Filter
+            if (currentFilter.type !== 'all') {
+                const statItems = document.querySelectorAll('.stat-item');
+                const typeMap = {
+                    'selected': 1,
+                    'favorites': 2,
+                    'commented': 3
+                };
+                if (typeMap[currentFilter.type] !== undefined) {
+                    statItems[typeMap[currentFilter.type]].classList.add('active');
+                }
+            } else {
+                document.querySelectorAll('.stat-item')[0].classList.add('active');
+            }
+            
+            // Setze aktiven Zustand für Flag-Filter
+            if (currentFilter.flag) {
+                const flagItems = document.querySelectorAll('.flag-summary-item');
+                const flagMap = {
+                    'reject': 0,
+                    'review': 1,
+                    'approve': 2,
+                    'final': 3
+                };
+                if (flagMap[currentFilter.flag] !== undefined) {
+                    flagItems[flagMap[currentFilter.flag]].classList.add('active');
+                }
+            }
         }
         
         // Update Sidebar Statistiken
@@ -1540,6 +1680,11 @@
             
             // Update Sidebar-Statistiken
             updateSidebarStats();
+            
+            // Filter neu anwenden (falls "Ausgewählt" Filter aktiv)
+            if (currentFilter.type === 'selected') {
+                applyFilter();
+            }
         }
         
         // Toggle Favorit
@@ -1570,6 +1715,11 @@
             updateFavoriteUI(imageId);
             updateAllImageBadges();
             updateSidebarStats();
+            
+            // Filter neu anwenden (falls "Favoriten" Filter aktiv)
+            if (currentFilter.type === 'favorites') {
+                applyFilter();
+            }
         }
         
         // Update Favorit-UI
@@ -1792,6 +1942,11 @@
             updateFlagButtons(feedbackData.flags[imageId] || null);
             updateAllImageBadges();
             updateSidebarStats();
+            
+            // Filter neu anwenden (falls Flag-Filter aktiv)
+            if (currentFilter.flag) {
+                applyFilter();
+            }
         }
         
         function closeLightbox() {
