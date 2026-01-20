@@ -1,6 +1,6 @@
 {
   "version": "3.0",
-  "generated": "2026-01-20T20:41:55.052Z",
+  "generated": "2026-01-20T22:27:49.900Z",
   "galleries": [
     {
       "id": "noel",
@@ -61,8 +61,8 @@
       "password": "Rambo72"
     },
     {
-      "id": "sport",
-      "name": "Sport",
+      "id": "eishockey",
+      "name": "Eishockey",
       "images": [
         {
           "id": "img_1768941715052_0",
