@@ -1218,45 +1218,83 @@
                 return;
             }
             
+            // Gruppiere Galerien nach Ordnern
+            const galleriesByFolder = {};
+            const rootGalleries = [];
+            
             galleryConfig.galleries.forEach((gallery) => {
-                const card = document.createElement('div');
-                card.className = 'gallery-card' + (gallery.password ? ' locked' : '');
-                
-                // Vorschaubild für nicht geschützte Galerien
-                let previewImage = '';
-                if (!gallery.password && gallery.images && gallery.images.length > 0) {
-                    const firstImage = gallery.images[0];
-                    let thumbnailUrl = firstImage.thumbnailUrl || firstImage.url;
-                    
-                    // Verbessere Thumbnail-Qualität für Vorschaubild (500x500px für Galerie-Karten)
-                    if (thumbnailUrl.includes('res.cloudinary.com') && thumbnailUrl.includes('/upload/')) {
-                        // Ersetze alte kleine Thumbnails durch größere
-                        if (thumbnailUrl.includes('/c_limit,h_60,w_90/') || thumbnailUrl.includes('/c_fill,h_60,w_90/')) {
-                            thumbnailUrl = thumbnailUrl.replace(
-                                /\/upload\/[^\/]+\//,
-                                '/upload/c_fill,h_500,w_500,q_auto:good,f_auto/'
-                            );
-                        } else if (!thumbnailUrl.includes('/c_') && !thumbnailUrl.includes('/w_') && !thumbnailUrl.includes('/h_')) {
-                            // Keine Transformation - füge hinzu
-                            thumbnailUrl = thumbnailUrl.replace(
-                                /\/upload\//,
-                                '/upload/c_fill,h_500,w_500,q_auto:good,f_auto/'
-                            );
-                        }
+                if (gallery.folder) {
+                    if (!galleriesByFolder[gallery.folder]) {
+                        galleriesByFolder[gallery.folder] = [];
                     }
-                    
-                    previewImage = `<img src="${thumbnailUrl}" alt="${gallery.name}" class="gallery-card-preview" loading="lazy">`;
+                    galleriesByFolder[gallery.folder].push(gallery);
+                } else {
+                    rootGalleries.push(gallery);
                 }
-                
-                card.innerHTML = `
-                    ${gallery.password ? '<span class="lock-icon">🔒</span>' : previewImage}
-                    <h3>${gallery.name || 'Unbenannte Galerie'}</h3>
-                    <p>${gallery.description || ''}</p>
-                    <p class="image-count">${gallery.images?.length || 0} Bilder</p>
-                `;
-                card.onclick = () => selectGallery(gallery);
+            });
+            
+            // Zeige Root-Galerien (ohne Ordner)
+            rootGalleries.forEach((gallery) => {
+                const card = createGalleryCard(gallery);
                 galleryList.appendChild(card);
             });
+            
+            // Zeige Galerien nach Ordnern gruppiert
+            Object.keys(galleriesByFolder).sort().forEach((folder) => {
+                // Ordner-Header
+                const folderHeader = document.createElement('div');
+                folderHeader.className = 'gallery-folder-header';
+                folderHeader.style.cssText = 'grid-column: 1 / -1; color: #667eea; margin: 20px 0 10px 0; font-size: 1.2em; font-weight: 600; padding: 10px 0; border-bottom: 1px solid #333;';
+                folderHeader.innerHTML = `📁 ${folder}`;
+                galleryList.appendChild(folderHeader);
+                
+                // Galerien in diesem Ordner
+                galleriesByFolder[folder].forEach((gallery) => {
+                    const card = createGalleryCard(gallery);
+                    galleryList.appendChild(card);
+                });
+            });
+        }
+        
+        // Erstelle Galerie-Karte
+        function createGalleryCard(gallery) {
+            const card = document.createElement('div');
+            card.className = 'gallery-card' + (gallery.password ? ' locked' : '');
+            
+            // Vorschaubild für nicht geschützte Galerien
+            let previewImage = '';
+            if (!gallery.password && gallery.images && gallery.images.length > 0) {
+                const firstImage = gallery.images[0];
+                let thumbnailUrl = firstImage.thumbnailUrl || firstImage.url;
+                
+                // Verbessere Thumbnail-Qualität für Vorschaubild (500x500px für Galerie-Karten)
+                if (thumbnailUrl.includes('res.cloudinary.com') && thumbnailUrl.includes('/upload/')) {
+                    // Ersetze alte kleine Thumbnails durch größere
+                    if (thumbnailUrl.includes('/c_limit,h_60,w_90/') || thumbnailUrl.includes('/c_fill,h_60,w_90/')) {
+                        thumbnailUrl = thumbnailUrl.replace(
+                            /\/upload\/[^\/]+\//,
+                            '/upload/c_fill,h_500,w_500,q_auto:good,f_auto/'
+                        );
+                    } else if (!thumbnailUrl.includes('/c_') && !thumbnailUrl.includes('/w_') && !thumbnailUrl.includes('/h_')) {
+                        // Keine Transformation - füge hinzu
+                        thumbnailUrl = thumbnailUrl.replace(
+                            /\/upload\//,
+                            '/upload/c_fill,h_500,w_500,q_auto:good,f_auto/'
+                        );
+                    }
+                }
+                
+                previewImage = `<img src="${thumbnailUrl}" alt="${gallery.name}" class="gallery-card-preview" loading="lazy">`;
+            }
+            
+            card.innerHTML = `
+                ${gallery.password ? '<span class="lock-icon">🔒</span>' : previewImage}
+                <h3>${gallery.name || 'Unbenannte Galerie'}</h3>
+                <p>${gallery.description || ''}</p>
+                <p class="image-count">${gallery.images?.length || 0} Bilder</p>
+            `;
+            card.onclick = () => selectGallery(gallery);
+            return card;
         }
         
         // Wähle eine Galerie aus
