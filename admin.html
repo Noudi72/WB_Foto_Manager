@@ -801,6 +801,28 @@
             </div>
         </div>
         
+        <!-- Admin-Passwort ändern -->
+        <div class="admin-section">
+            <h2>🔐 Admin-Passwort ändern</h2>
+            <p style="color: #888; margin-bottom: 20px;">
+                Ändern Sie das Passwort für den Admin-Zugang. Das neue Passwort wird lokal gespeichert.
+            </p>
+            <div class="form-group">
+                <label for="current-admin-password">Aktuelles Passwort</label>
+                <input type="password" id="current-admin-password" placeholder="Aktuelles Passwort eingeben">
+            </div>
+            <div class="form-group">
+                <label for="new-admin-password">Neues Passwort</label>
+                <input type="password" id="new-admin-password" placeholder="Neues Passwort eingeben">
+            </div>
+            <div class="form-group">
+                <label for="confirm-admin-password">Passwort bestätigen</label>
+                <input type="password" id="confirm-admin-password" placeholder="Neues Passwort wiederholen">
+            </div>
+            <button type="button" class="btn-primary" id="change-admin-password-btn">Passwort ändern</button>
+            <p id="admin-password-change-message" style="margin-top: 15px; display: none;"></p>
+        </div>
+        
         <!-- gallery.json exportieren -->
         <div class="admin-section">
             <h2>gallery.json exportieren</h2>
@@ -2324,6 +2346,12 @@
             
             // Drag and Drop einrichten
             setupDragAndDrop();
+            
+            // Admin-Passwort ändern Button
+            const changePasswordBtn = document.getElementById('change-admin-password-btn');
+            if (changePasswordBtn) {
+                changePasswordBtn.addEventListener('click', changeAdminPassword);
+            }
             
             // Globale Funktionen für onclick (müssen im globalen Scope sein)
             // WICHTIG: Alle Funktionen müssen zu diesem Zeitpunkt bereits definiert sein!

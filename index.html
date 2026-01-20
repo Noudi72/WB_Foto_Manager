@@ -81,6 +81,15 @@
             opacity: 0.7;
         }
         
+        .gallery-card-preview {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            background: #1a1a1a;
+        }
+        
         .gallery-card h3 {
             font-size: 1.5em;
             margin-bottom: 10px;
@@ -411,8 +420,17 @@
             galleryConfig.galleries.forEach((gallery) => {
                 const card = document.createElement('div');
                 card.className = 'gallery-card' + (gallery.password ? ' locked' : '');
+                
+                // Vorschaubild für nicht geschützte Galerien
+                let previewImage = '';
+                if (!gallery.password && gallery.images && gallery.images.length > 0) {
+                    const firstImage = gallery.images[0];
+                    const thumbnailUrl = firstImage.thumbnailUrl || firstImage.url;
+                    previewImage = `<img src="${thumbnailUrl}" alt="${gallery.name}" class="gallery-card-preview" loading="lazy">`;
+                }
+                
                 card.innerHTML = `
-                    ${gallery.password ? '<span class="lock-icon">🔒</span>' : ''}
+                    ${gallery.password ? '<span class="lock-icon">🔒</span>' : previewImage}
                     <h3>${gallery.name || 'Unbenannte Galerie'}</h3>
                     <p>${gallery.description || ''}</p>
                     <p class="image-count">${gallery.images?.length || 0} Bilder</p>
