@@ -473,7 +473,7 @@
             }
             
             currentImages = gallery.images || [];
-            console.log('Lade', currentImages.length, 'Bilder');
+            console.log('Lade', currentImages.length, '- "' + (gallery.name || 'Unbekannt') + '"');
             displayGallery(currentImages);
             document.getElementById('loading').style.display = 'none';
         }
@@ -573,11 +573,14 @@
             }
             
             // Prüfe ob mehrere Galerien vorhanden sind
+            console.log('Galerien gefunden:', galleryConfig.galleries?.length || 0);
             if (galleryConfig.galleries && galleryConfig.galleries.length > 1) {
                 // Zeige Galerie-Auswahl
+                console.log('Zeige Galerie-Auswahl');
                 showGallerySelector();
             } else if (galleryConfig.galleries && galleryConfig.galleries.length === 1) {
                 // Nur eine Galerie - zeige direkt
+                console.log('Zeige einzige Galerie direkt');
                 selectGallery(galleryConfig.galleries[0]);
             } else {
                 // Fallback: Alte Struktur (nur images Array)

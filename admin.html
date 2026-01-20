@@ -391,6 +391,16 @@
                         <p>Klicken Sie auf ein Bild, um es hinzuzufügen:</p>
                         <div id="images-list"></div>
                     </div>
+                    
+                    <div style="margin-top: 15px; padding: 15px; background: #1a1a1a; border-radius: 6px; border-left: 3px solid #667eea;">
+                        <strong style="color: #667eea;">ℹ️ Wichtig:</strong>
+                        <p style="margin-top: 8px; color: #888; font-size: 0.9em;">
+                            Das Drag-and-Drop extrahiert nur die <strong>Dateinamen</strong> der Bilder. 
+                            Die tatsächlichen Bilddateien müssen Sie manuell in den <code style="background: #2a2a2a; padding: 2px 6px; border-radius: 3px;">images/</code> Ordner 
+                            auf GitHub hochladen. Nach dem Erstellen der Galerie laden Sie die <code>gallery.json</code> herunter 
+                            und pushen beide (Bilder + gallery.json) zu GitHub.
+                        </p>
+                    </div>
                 </div>
                 
                 <div class="button-group">
@@ -543,8 +553,16 @@
         
         // Galerie bearbeiten
         function editGallery(galleryId) {
+            if (!galleryConfig || !galleryConfig.galleries) {
+                showAlert('Fehler: Keine Galerien geladen', 'error');
+                return;
+            }
+            
             const gallery = galleryConfig.galleries.find(g => g.id === galleryId);
-            if (!gallery) return;
+            if (!gallery) {
+                showAlert('Galerie nicht gefunden', 'error');
+                return;
+            }
             
             editingGalleryId = galleryId;
             document.getElementById('gallery-name').value = gallery.name || '';
@@ -558,11 +576,27 @@
             const imageNames = gallery.images?.map(img => img.name).join('\n') || '';
             document.getElementById('gallery-images').value = imageNames;
             
-            // Formular-Titel ändern
-            document.querySelector('.admin-section h2').textContent = 'Galerie bearbeiten';
+            // Reset Drag and Drop Vorschau
+            const filePreview = document.getElementById('file-preview');
+            if (filePreview) {
+                filePreview.style.display = 'none';
+                filePreview.innerHTML = '';
+            }
+            
+            // Formular-Titel ändern - finde das richtige h2 Element
+            const formSection = document.querySelector('#new-gallery-form')?.closest('.admin-section');
+            if (formSection) {
+                const h2 = formSection.querySelector('h2');
+                if (h2) {
+                    h2.textContent = 'Galerie bearbeiten';
+                }
+            }
             
             // Scroll zum Formular
-            document.querySelector('.admin-section').scrollIntoView({ behavior: 'smooth' });
+            const formElement = document.getElementById('new-gallery-form');
+            if (formElement) {
+                formElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
         }
         
         // Galerie löschen
