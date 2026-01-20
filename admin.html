@@ -326,10 +326,255 @@
         .password-toggle input[type="checkbox"] {
             width: auto;
         }
+        
+        /* Admin Passwortschutz */
+        #admin-password-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #1a1a1a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+        }
+        
+        .password-screen-content {
+            background: #2a2a2a;
+            padding: 40px;
+            border-radius: 12px;
+            border: 2px solid #667eea;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+        }
+        
+        .password-screen-content h2 {
+            margin-bottom: 20px;
+            color: #e0e0e0;
+        }
+        
+        .password-screen-content input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            background: #1a1a1a;
+            border: 2px solid #667eea;
+            border-radius: 6px;
+            color: #e0e0e0;
+            font-size: 16px;
+            margin-bottom: 15px;
+        }
+        
+        .password-screen-content input[type="password"]:focus {
+            outline: none;
+            border-color: #764ba2;
+        }
+        
+        .password-error {
+            color: #ff6b6b;
+            margin-top: 10px;
+            font-size: 0.9em;
+            display: none;
+        }
+        
+        .password-error.show {
+            display: block;
+        }
+        
+        /* CSS-Klassen für bisher inline styles */
+        .gallery-info-hint {
+            display: none;
+            padding: 12px;
+            background: #1a1a1a;
+            border-left: 3px solid #667eea;
+            border-radius: 4px;
+            margin-bottom: 15px;
+        }
+        
+        .gallery-info-hint p {
+            color: #667eea;
+            font-size: 0.9em;
+            margin: 0;
+        }
+        
+        .image-upload-section {
+            display: none;
+        }
+        
+        .upload-options-grid {
+            margin-bottom: 20px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        
+        .upload-option-card {
+            padding: 15px;
+            border-radius: 8px;
+        }
+        
+        .upload-option-card.cloudinary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .upload-option-card.github {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        }
+        
+        .upload-option-card h3 {
+            color: white;
+            margin-bottom: 10px;
+        }
+        
+        .upload-option-card p {
+            color: rgba(255,255,255,0.9);
+            margin-bottom: 15px;
+            font-size: 0.85em;
+        }
+        
+        .upload-option-btn {
+            background: white;
+            font-weight: bold;
+            padding: 10px 20px;
+            width: 100%;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+        
+        .upload-option-btn.cloudinary {
+            color: #667eea;
+        }
+        
+        .upload-option-btn.github {
+            color: #28a745;
+        }
+        
+        .upload-option-btn:hover {
+            opacity: 0.9;
+        }
+        
+        .upload-option-status {
+            color: rgba(255,255,255,0.7);
+            margin-top: 8px;
+            font-size: 0.75em;
+            text-align: center;
+        }
+        
+        .upload-progress-container {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #1a1a1a;
+            border-radius: 6px;
+        }
+        
+        .upload-progress-bar-container {
+            background: #2a2a2a;
+            border-radius: 4px;
+            height: 20px;
+            overflow: hidden;
+        }
+        
+        .upload-progress-bar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s;
+        }
+        
+        .upload-details {
+            color: #888;
+            font-size: 0.85em;
+            margin-top: 8px;
+        }
+        
+        .alternative-upload-summary {
+            cursor: pointer;
+            color: #888;
+            padding: 10px;
+            background: #1a1a1a;
+            border-radius: 6px;
+        }
+        
+        .cloudinary-setup-box {
+            margin-top: 15px;
+            padding: 20px;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+            border: 2px solid #667eea;
+            border-radius: 8px;
+            display: none;
+        }
+        
+        .cloudinary-setup-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .cloudinary-setup-header strong {
+            color: #667eea;
+            font-size: 1.1em;
+        }
+        
+        .cloudinary-setup-form {
+            background: #1a1a1a;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+        }
+        
+        .cloudinary-setup-field {
+            margin-bottom: 15px;
+        }
+        
+        .cloudinary-setup-field label {
+            display: block;
+            margin-bottom: 8px;
+            color: #e0e0e0;
+            font-size: 0.95em;
+            font-weight: 500;
+        }
+        
+        .cloudinary-setup-field label span {
+            color: #667eea;
+        }
+        
+        .cloudinary-setup-field input {
+            width: 100%;
+            padding: 12px;
+            background: #2a2a2a;
+            border: 2px solid #667eea;
+            border-radius: 6px;
+            color: #e0e0e0;
+            font-size: 1em;
+        }
+        
+        .cloudinary-setup-field small {
+            color: #888;
+            font-size: 0.85em;
+            margin-top: 5px;
+            display: block;
+        }
     </style>
 </head>
 <body>
-    <div class="container">
+    <!-- Admin Passwortschutz -->
+    <div id="admin-password-screen">
+        <div class="password-screen-content">
+            <h2>🔒 Admin-Zugang</h2>
+            <p style="color: #888; margin-bottom: 20px;">Bitte geben Sie das Admin-Passwort ein:</p>
+            <input type="password" id="admin-password-input" placeholder="Passwort" autofocus>
+            <button type="button" class="btn-primary" id="admin-password-submit" style="width: 100%;">Zugang gewähren</button>
+            <p class="password-error" id="admin-password-error">Falsches Passwort. Bitte versuchen Sie es erneut.</p>
+        </div>
+    </div>
+    
+    <div class="container" id="admin-content" style="display: none;">
         <a href="index.html" class="back-link">← Zurück zur Galerie</a>
         
         <header>
@@ -361,8 +606,8 @@
                 </div>
                 
                 <!-- Hinweis: Bilder-Upload wird nach Name/ID aktiviert -->
-                <div id="gallery-info-hint" style="display: none; padding: 12px; background: #1a1a1a; border-left: 3px solid #667eea; border-radius: 4px; margin-bottom: 15px;">
-                    <p style="color: #667eea; font-size: 0.9em; margin: 0;">
+                <div id="gallery-info-hint" class="gallery-info-hint">
+                    <p>
                         ✓ Galerie-Name und ID ausgefüllt. Sie können jetzt Bilder hochladen!
                     </p>
                 </div>
@@ -386,59 +631,59 @@
                     <small>⚠️ Nur für einfachen Schutz - nicht sicher!</small>
                 </div>
                 
-                <div class="form-group" id="image-upload-section" style="display: none;">
+                <div class="form-group image-upload-section" id="image-upload-section">
                     <label for="gallery-images">Bilder hinzufügen</label>
                     <p style="color: #888; font-size: 0.9em; margin-bottom: 15px;">
                         💡 <strong>Hinweis:</strong> Bitte füllen Sie zuerst Name und ID aus, bevor Sie Bilder hochladen.
                     </p>
                     
                     <!-- Upload Optionen -->
-                    <div style="margin-bottom: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div class="upload-options-grid">
                         <!-- Cloudinary Upload Option -->
-                        <div style="padding: 15px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 8px;">
-                            <h3 style="color: white; margin-bottom: 10px;">☁️ Cloudinary (Empfohlen)</h3>
-                            <p style="color: rgba(255,255,255,0.9); margin-bottom: 15px; font-size: 0.85em;">
+                        <div class="upload-option-card cloudinary">
+                            <h3>☁️ Cloudinary (Empfohlen)</h3>
+                            <p>
                                 ✓ Schnell (CDN)<br>
                                 ✓ Automatische Thumbnails<br>
                                 ✓ Keine Größenbeschränkung<br>
                                 ✓ Kostenlos (25 GB)
                             </p>
-                            <button type="button" id="cloudinary-upload-btn" class="btn-primary" style="background: white; color: #667eea; font-weight: bold; padding: 10px 20px; width: 100%;">
+                            <button type="button" id="cloudinary-upload-btn" class="upload-option-btn cloudinary">
                                 📤 Bilder hochladen
                             </button>
-                            <p style="color: rgba(255,255,255,0.7); margin-top: 8px; font-size: 0.75em; text-align: center;">
+                            <p class="upload-option-status">
                                 ✓ Bereits konfiguriert
                             </p>
                         </div>
                         
                         <!-- GitHub Direct Upload Option -->
-                        <div style="padding: 15px; background: linear-gradient(135deg, #28a745 0%, #20c997 100%); border-radius: 8px;">
-                            <h3 style="color: white; margin-bottom: 10px;">🔷 Direkt zu GitHub</h3>
-                            <p style="color: rgba(255,255,255,0.9); margin-bottom: 15px; font-size: 0.85em;">
+                        <div class="upload-option-card github">
+                            <h3>🔷 Direkt zu GitHub</h3>
+                            <p>
                                 ✓ Alles an einem Ort<br>
                                 ✓ Kein externer Service<br>
                                 ⚠️ Max. 50 MB pro Bild<br>
                                 ⚠️ Langsamer (kein CDN)
                             </p>
-                            <button type="button" id="github-upload-btn" class="btn-primary" style="background: white; color: #28a745; font-weight: bold; padding: 10px 20px; width: 100%;">
+                            <button type="button" id="github-upload-btn" class="upload-option-btn github">
                                 📤 Bilder hochladen
                             </button>
                         </div>
                     </div>
                     
-                    <div id="upload-progress" style="display: none; margin-top: 15px; padding: 15px; background: #1a1a1a; border-radius: 6px;">
+                    <div id="upload-progress" class="upload-progress-container">
                         <div style="color: #e0e0e0; margin-bottom: 10px;">
                             <strong id="upload-status">Upload läuft...</strong>
                         </div>
-                        <div style="background: #2a2a2a; border-radius: 4px; height: 20px; overflow: hidden;">
-                            <div id="upload-progress-bar" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); height: 100%; width: 0%; transition: width 0.3s;"></div>
+                        <div class="upload-progress-bar-container">
+                            <div id="upload-progress-bar" class="upload-progress-bar"></div>
                         </div>
-                        <div id="upload-details" style="color: #888; font-size: 0.85em; margin-top: 8px;"></div>
+                        <div id="upload-details" class="upload-details"></div>
                     </div>
                     
                     <!-- Alternative: Lokale Dateinamen (für GitHub) -->
                     <details style="margin-bottom: 15px;">
-                        <summary style="cursor: pointer; color: #888; padding: 10px; background: #1a1a1a; border-radius: 6px;">
+                        <summary class="alternative-upload-summary">
                             📁 Alternative: Lokale Dateinamen (für GitHub-Upload)
                         </summary>
                         <div style="margin-top: 10px;">
@@ -468,30 +713,30 @@
                     </div>
                     
                     <!-- Cloudinary Setup Anleitung -->
-                    <div id="cloudinary-setup" style="margin-top: 15px; padding: 20px; background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%); border: 2px solid #667eea; border-radius: 8px; display: none;">
-                        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
+                    <div id="cloudinary-setup" class="cloudinary-setup-box">
+                        <div class="cloudinary-setup-header">
                             <span style="font-size: 24px;">⚙️</span>
-                            <strong style="color: #667eea; font-size: 1.1em;">Cloudinary Einrichtung (einmalig - Schritt 3)</strong>
+                            <strong>Cloudinary Einrichtung (einmalig - Schritt 3)</strong>
                         </div>
                         <p style="color: #888; font-size: 0.9em; margin-bottom: 15px;">
                             Sie haben bereits ein Upload Preset erstellt. Jetzt müssen Sie nur noch die Daten hier eingeben:
                         </p>
-                        <div style="background: #1a1a1a; padding: 15px; border-radius: 6px; margin-bottom: 15px;">
-                            <div style="margin-bottom: 15px;">
-                                <label style="display: block; margin-bottom: 8px; color: #e0e0e0; font-size: 0.95em; font-weight: 500;">
-                                    <span style="color: #667eea;">1.</span> Cloud Name:
+                        <div class="cloudinary-setup-form">
+                            <div class="cloudinary-setup-field">
+                                <label>
+                                    <span>1.</span> Cloud Name:
                                 </label>
-                                <input type="text" id="cloudinary-cloud-name" placeholder="z.B. dnvqw9wif" style="width: 100%; padding: 12px; background: #2a2a2a; border: 2px solid #667eea; border-radius: 6px; color: #e0e0e0; font-size: 1em;">
-                                <small style="color: #888; font-size: 0.85em; margin-top: 5px; display: block;">
+                                <input type="text" id="cloudinary-cloud-name" placeholder="z.B. dnvqw9wif">
+                                <small>
                                     💡 Steht oben links in Ihrem Cloudinary Dashboard (z.B. "dnvqw9wif")
                                 </small>
                             </div>
-                            <div>
-                                <label style="display: block; margin-bottom: 8px; color: #e0e0e0; font-size: 0.95em; font-weight: 500;">
-                                    <span style="color: #667eea;">2.</span> Upload Preset Name:
+                            <div class="cloudinary-setup-field">
+                                <label>
+                                    <span>2.</span> Upload Preset Name:
                                 </label>
-                                <input type="text" id="cloudinary-upload-preset" placeholder="wb_foto_manager" value="wb_foto_manager" style="width: 100%; padding: 12px; background: #2a2a2a; border: 2px solid #667eea; border-radius: 6px; color: #e0e0e0; font-size: 1em;">
-                                <small style="color: #888; font-size: 0.85em; margin-top: 5px; display: block;">
+                                <input type="text" id="cloudinary-upload-preset" placeholder="wb_foto_manager" value="wb_foto_manager">
+                                <small>
                                     💡 Der Name Ihres Upload Presets (Sie haben "wb_foto_manager" erstellt)
                                 </small>
                             </div>
@@ -1901,6 +2146,88 @@
         }
         
         // Initialisierung - warte bis DOM geladen ist
+        // Admin Passwortschutz
+        const ADMIN_PASSWORD_HASH = '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918'; // SHA-256 von "admin" (Standard)
+        
+        // Einfache SHA-256 Hash-Funktion (für Client-seitige Passwort-Prüfung)
+        async function sha256(message) {
+            const msgBuffer = new TextEncoder().encode(message);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        }
+        
+        // Prüfe Admin-Passwort
+        async function checkAdminPassword() {
+            const passwordInput = document.getElementById('admin-password-input');
+            const errorEl = document.getElementById('admin-password-error');
+            const password = passwordInput.value;
+            
+            if (!password) {
+                errorEl.classList.add('show');
+                errorEl.textContent = 'Bitte geben Sie ein Passwort ein.';
+                return false;
+            }
+            
+            const hash = await sha256(password);
+            
+            // Prüfe gegen gespeichertes Passwort oder Standard-Passwort
+            const savedHash = localStorage.getItem('admin_password_hash');
+            const correctHash = savedHash || ADMIN_PASSWORD_HASH;
+            
+            if (hash === correctHash) {
+                // Passwort korrekt - speichere Session
+                sessionStorage.setItem('admin_authenticated', 'true');
+                sessionStorage.setItem('admin_auth_time', Date.now().toString());
+                
+                // Verstecke Passwort-Screen, zeige Admin-Content
+                document.getElementById('admin-password-screen').style.display = 'none';
+                document.getElementById('admin-content').style.display = 'block';
+                
+                return true;
+            } else {
+                errorEl.classList.add('show');
+                errorEl.textContent = 'Falsches Passwort. Bitte versuchen Sie es erneut.';
+                passwordInput.value = '';
+                passwordInput.focus();
+                return false;
+            }
+        }
+        
+        // Initialisiere Passwortschutz
+        function initPasswordProtection() {
+            // Prüfe ob bereits authentifiziert (Session)
+            const isAuthenticated = sessionStorage.getItem('admin_authenticated') === 'true';
+            const authTime = parseInt(sessionStorage.getItem('admin_auth_time') || '0');
+            const sessionTimeout = 30 * 60 * 1000; // 30 Minuten
+            
+            if (isAuthenticated && (Date.now() - authTime) < sessionTimeout) {
+                // Bereits authentifiziert und Session noch gültig
+                document.getElementById('admin-password-screen').style.display = 'none';
+                document.getElementById('admin-content').style.display = 'block';
+            } else {
+                // Nicht authentifiziert oder Session abgelaufen
+                sessionStorage.removeItem('admin_authenticated');
+                sessionStorage.removeItem('admin_auth_time');
+                document.getElementById('admin-password-screen').style.display = 'flex';
+                document.getElementById('admin-content').style.display = 'none';
+                
+                // Event Listener für Passwort-Eingabe
+                const passwordInput = document.getElementById('admin-password-input');
+                const submitBtn = document.getElementById('admin-password-submit');
+                
+                submitBtn.addEventListener('click', async () => {
+                    await checkAdminPassword();
+                });
+                
+                passwordInput.addEventListener('keypress', async (e) => {
+                    if (e.key === 'Enter') {
+                        await checkAdminPassword();
+                    }
+                });
+            }
+        }
+        
         function initAdmin() {
             // Event Listener für Download-Button
             const downloadBtn = document.getElementById('download-btn');
@@ -2013,10 +2340,16 @@
         
         // Starte Initialisierung wenn DOM bereit ist
         if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', initAdmin);
+            document.addEventListener('DOMContentLoaded', () => {
+                initPasswordProtection();
+                initAdmin();
+            });
         } else {
             // DOM ist bereits geladen, aber warte kurz damit alle Funktionen definiert sind
-            setTimeout(initAdmin, 0);
+            setTimeout(() => {
+                initPasswordProtection();
+                initAdmin();
+            }, 0);
         }
     </script>
 </body>
