@@ -50,6 +50,39 @@
             box-shadow: 0 8px 24px rgba(102, 126, 234, 0.2);
         }
         
+        body.light-mode .gallery-card h3 {
+            color: #1a1a1a !important;
+            font-weight: 700;
+        }
+        
+        body.light-mode .gallery-card p {
+            color: #444;
+        }
+        
+        body.light-mode .gallery-folder-header {
+            color: #1a1a1a !important;
+            font-weight: 600;
+            border-bottom-color: #ddd !important;
+        }
+        
+        /* Weitere Light Mode Verbesserungen */
+        body.light-mode h1 {
+            -webkit-text-fill-color: #1a1a1a;
+            color: #1a1a1a;
+        }
+        
+        body.light-mode .gallery-card {
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        body.light-mode .gallery-card:hover {
+            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.3);
+        }
+        
+        body.light-mode .gallery-card-preview {
+            background: #e0e0e0;
+        }
+        
         body.light-mode .gallery-item {
             background: var(--bg-secondary);
         }
@@ -124,9 +157,13 @@
         header {
             text-align: center;
             padding: 40px 20px;
-            border-bottom: 1px solid #333;
+            border-bottom: 1px solid var(--border);
             margin-bottom: 40px;
             position: relative;
+        }
+        
+        body.light-mode header {
+            border-bottom-color: var(--border);
         }
         
         /* Theme Toggle */
@@ -202,6 +239,13 @@
             background-clip: text;
         }
         
+        body.light-mode h1 {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
         .gallery-selector {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -240,7 +284,8 @@
         .gallery-card h3 {
             font-size: 1.5em;
             margin-bottom: 10px;
-            color: #e0e0e0;
+            color: var(--text-primary);
+            font-weight: 600;
         }
         
         .gallery-card p {
@@ -1734,7 +1779,10 @@
                 // Ordner-Header
                 const folderHeader = document.createElement('div');
                 folderHeader.className = 'gallery-folder-header';
-                folderHeader.style.cssText = 'grid-column: 1 / -1; color: #667eea; margin: 20px 0 10px 0; font-size: 1.2em; font-weight: 600; padding: 10px 0; border-bottom: 1px solid #333;';
+                const isLightMode = document.body.classList.contains('light-mode');
+                const headerColor = isLightMode ? '#1a1a1a' : '#667eea';
+                const borderColor = isLightMode ? '#ddd' : '#333';
+                folderHeader.style.cssText = `grid-column: 1 / -1; color: ${headerColor}; margin: 20px 0 10px 0; font-size: 1.2em; font-weight: 600; padding: 10px 0; border-bottom: 1px solid ${borderColor};`;
                 folderHeader.innerHTML = `📁 ${folder}`;
                 galleryList.appendChild(folderHeader);
                 
