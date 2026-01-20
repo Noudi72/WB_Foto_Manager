@@ -393,12 +393,21 @@
                     </div>
                     
                     <div style="margin-top: 15px; padding: 15px; background: #1a1a1a; border-radius: 6px; border-left: 3px solid #667eea;">
-                        <strong style="color: #667eea;">ℹ️ Wichtig:</strong>
-                        <p style="margin-top: 8px; color: #888; font-size: 0.9em;">
+                        <strong style="color: #667eea;">ℹ️ Wichtig - Bilder hochladen:</strong>
+                        <p style="margin-top: 8px; color: #888; font-size: 0.9em; margin-bottom: 10px;">
                             Das Drag-and-Drop extrahiert nur die <strong>Dateinamen</strong> der Bilder. 
-                            Die tatsächlichen Bilddateien müssen Sie manuell in den <code style="background: #2a2a2a; padding: 2px 6px; border-radius: 3px;">images/</code> Ordner 
-                            auf GitHub hochladen. Nach dem Erstellen der Galerie laden Sie die <code>gallery.json</code> herunter 
-                            und pushen beide (Bilder + gallery.json) zu GitHub.
+                            Die tatsächlichen Bilddateien müssen Sie zu GitHub hochladen.
+                        </p>
+                        <div style="background: #2a2a2a; padding: 10px; border-radius: 4px; font-family: monospace; font-size: 0.85em;">
+                            <div style="color: #667eea; margin-bottom: 5px;">📤 Schnellste Methode:</div>
+                            <code style="color: #e0e0e0;">./scripts/upload_to_github.sh</code>
+                        </div>
+                        <p style="margin-top: 10px; color: #888; font-size: 0.85em;">
+                            Oder manuell: Bilder in <code style="background: #2a2a2a; padding: 2px 6px; border-radius: 3px;">images/</code> Ordner kopieren, 
+                            dann <code>git add images/ gallery.json && git commit && git push</code>
+                        </p>
+                        <p style="margin-top: 8px; color: #888; font-size: 0.85em;">
+                            📖 Detaillierte Anleitung: <code>WebApp/UPLOAD_ANLEITUNG.md</code>
                         </p>
                     </div>
                 </div>
