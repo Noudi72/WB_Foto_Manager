@@ -517,7 +517,8 @@
                 item.className = 'gallery-item';
                 
                 // Verwende direkt die URL (Thumbnails können fehlen)
-                const imgSrc = image.url || `./images/${image.name}`;
+                // Priorität: thumbnailUrl > url > lokaler Pfad
+                const imgSrc = image.thumbnailUrl || image.url || `./images/${image.name}`;
                 const fullSrc = image.url || `./images/${image.name}`;
                 
                 const img = document.createElement('img');
@@ -525,8 +526,19 @@
                 img.alt = image.name || 'Bild';
                 img.loading = 'lazy';
                 img.onerror = function() {
-                    // Fallback: Versuche ohne ./ prefix
-                    this.src = imgSrc.replace('./', '/');
+                    // Fallback 1: Versuche ohne ./ prefix
+                    if (this.src.includes('./')) {
+                        this.src = this.src.replace('./', '/');
+                        return;
+                    }
+                    // Fallback 2: Versuche direkte URL wenn thumbnailUrl fehlgeschlagen
+                    if (image.thumbnailUrl && this.src === image.thumbnailUrl && image.url) {
+                        this.src = image.url;
+                        return;
+                    }
+                    // Fallback 3: Zeige Fehler-Placeholder
+                    this.onerror = null; // Verhindere Endlosschleife
+                    this.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="200" height="200"%3E%3Crect fill="%23222" width="200" height="200"/%3E%3Ctext fill="%23888" font-family="sans-serif" font-size="14" x="50%25" y="50%25" text-anchor="middle" dy=".3em"%3EBild nicht gefunden%3C/text%3E%3C/svg%3E';
                 };
                 
                 item.appendChild(img);
