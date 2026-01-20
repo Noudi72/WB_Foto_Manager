@@ -445,6 +445,14 @@
         document.getElementById('new-gallery-form').addEventListener('submit', (e) => {
             e.preventDefault();
             
+            console.log('Formular wird abgeschickt...');
+            
+            if (!galleryConfig) {
+                showAlert('Fehler: galleryConfig nicht geladen', 'error');
+                console.error('galleryConfig ist null');
+                return;
+            }
+            
             const name = document.getElementById('gallery-name').value.trim();
             const id = document.getElementById('gallery-id').value.trim().toLowerCase().replace(/\s+/g, '-');
             const description = document.getElementById('gallery-description').value.trim();
@@ -452,9 +460,16 @@
             const password = usePassword ? document.getElementById('gallery-password').value : null;
             const imagesText = document.getElementById('gallery-images').value.trim();
             
+            console.log('Formular-Daten:', { name, id, description, usePassword, password, imagesText });
+            
             if (!name || !id) {
                 showAlert('Bitte füllen Sie alle Pflichtfelder aus', 'error');
                 return;
+            }
+            
+            // Stelle sicher, dass galleries Array existiert
+            if (!galleryConfig.galleries) {
+                galleryConfig.galleries = [];
             }
             
             // Prüfe ob ID bereits existiert (außer beim Bearbeiten)
@@ -465,25 +480,42 @@
             
             // Parse Bilder
             const imageNames = imagesText.split(/[,\n]/).map(s => s.trim()).filter(s => s);
+            console.log('Geparste Bildnamen:', imageNames);
+            
+            if (imageNames.length === 0) {
+                showAlert('Bitte fügen Sie mindestens ein Bild hinzu', 'error');
+                return;
+            }
+            
             const images = imageNames.map((name, index) => {
                 // Versuche bestehende Bild-Daten zu finden
-                const existingImage = galleryConfig.galleries
-                    .flatMap(g => g.images || [])
-                    .find(img => img.name === name);
+                let existingImage = null;
+                if (galleryConfig.galleries) {
+                    for (const gallery of galleryConfig.galleries) {
+                        if (gallery.images) {
+                            existingImage = gallery.images.find(img => img.name === name);
+                            if (existingImage) break;
+                        }
+                    }
+                }
                 
                 if (existingImage) {
+                    console.log('Verwende bestehendes Bild:', name);
                     return existingImage;
                 }
                 
                 // Erstelle neues Bild-Objekt
+                console.log('Erstelle neues Bild-Objekt:', name);
                 return {
-                    id: `img_${index + 1}`,
+                    id: `img_${Date.now()}_${index}`,
                     name: name,
                     url: `./images/${name}`,
                     thumbnailUrl: `./images/thumbnails/thumb_${name}`,
                     uploadDate: new Date().toISOString()
                 };
             });
+            
+            console.log('Erstellte Bilder:', images);
             
             const gallery = {
                 id: id,
