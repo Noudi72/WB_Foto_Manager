@@ -688,18 +688,22 @@
                 const actions = document.createElement('div');
                 actions.className = 'gallery-item-actions';
                 
+                const imageId = image.id || `img_${index}`;
+                const isFavorite = feedbackData.favorites[imageId] || false;
+                const commentCount = (feedbackData.comments[imageId] || []).length;
+                
                 const likeBtn = document.createElement('button');
-                likeBtn.className = 'gallery-item-btn gallery-item-like';
-                likeBtn.innerHTML = '<span>🤍</span> <span>0</span>';
+                likeBtn.className = 'gallery-item-btn gallery-item-like' + (isFavorite ? ' active' : '');
+                likeBtn.innerHTML = `<span>${isFavorite ? '❤️' : '🤍'}</span> <span>${isFavorite ? '1' : '0'}</span>`;
                 likeBtn.onclick = (e) => {
                     e.stopPropagation();
-                    toggleFavorite(image.id || `img_${index}`);
+                    toggleFavorite(imageId);
                 };
                 actions.appendChild(likeBtn);
                 
                 const commentBtn = document.createElement('button');
                 commentBtn.className = 'gallery-item-btn';
-                commentBtn.innerHTML = '<span>💬</span> <span>0</span>';
+                commentBtn.innerHTML = `<span>💬</span> <span>${commentCount}</span>`;
                 commentBtn.onclick = (e) => {
                     e.stopPropagation();
                     openLightbox(index, fullSrc);
@@ -722,6 +726,52 @@
             updateAllImageBadges();
         }
         
+        // Update Badges für ein Bild
+        function updateImageBadges(item, imageId) {
+            if (!item || !imageId) return;
+            
+            // Entferne alte Badges
+            const oldBadges = item.querySelectorAll('.gallery-item-badge, .selection-badge');
+            oldBadges.forEach(b => b.remove());
+            
+            const flag = feedbackData.flags[imageId];
+            if (flag) {
+                const badge = document.createElement('div');
+                badge.className = 'gallery-item-badge';
+                const flagLabels = {
+                    'reject': '✗ Abgelehnt',
+                    'review': '⚠ Prüfen',
+                    'approve': '✓ Genehmigt',
+                    'final': '★ Final'
+                };
+                badge.textContent = flagLabels[flag] || flag;
+                badge.style.background = flag === 'reject' ? 'rgba(255,107,107,0.9)' :
+                                         flag === 'review' ? 'rgba(255,217,61,0.9)' :
+                                         flag === 'approve' ? 'rgba(107,207,127,0.9)' :
+                                         'rgba(51,51,51,0.9)';
+                item.appendChild(badge);
+            }
+            
+            const selections = feedbackData.selections[imageId] || [];
+            if (selections.length > 0) {
+                const selectionBadge = document.createElement('div');
+                selectionBadge.className = 'selection-badge';
+                selectionBadge.textContent = `📁 ${selections[0]}${selections.length > 1 ? ` +${selections.length - 1}` : ''}`;
+                item.appendChild(selectionBadge);
+            }
+        }
+        
+        // Update alle Badges
+        function updateAllImageBadges() {
+            const items = document.querySelectorAll('.gallery-item');
+            items.forEach(item => {
+                const imageId = item.dataset.imageId;
+                if (imageId) {
+                    updateImageBadges(item, imageId);
+                }
+            });
+        }
+        
         // Lightbox
         function openLightbox(index, fullImageUrl = null) {
             currentImageIndex = index;
@@ -737,6 +787,106 @@
             
             // Update Feedback-Sidebar für aktuelles Bild
             updateFeedbackSidebar();
+        }
+        
+        // Update Badges für ein Bild
+        function updateImageBadges(item, imageId) {
+            if (!item || !imageId) return;
+            
+            // Entferne alte Badges
+            const oldBadges = item.querySelectorAll('.gallery-item-badge, .selection-badge');
+            oldBadges.forEach(b => b.remove());
+            
+            const flag = feedbackData.flags[imageId];
+            if (flag) {
+                const badge = document.createElement('div');
+                badge.className = 'gallery-item-badge';
+                const flagLabels = {
+                    'reject': '✗ Abgelehnt',
+                    'review': '⚠ Prüfen',
+                    'approve': '✓ Genehmigt',
+                    'final': '★ Final'
+                };
+                badge.textContent = flagLabels[flag] || flag;
+                badge.style.background = flag === 'reject' ? 'rgba(255,107,107,0.9)' :
+                                         flag === 'review' ? 'rgba(255,217,61,0.9)' :
+                                         flag === 'approve' ? 'rgba(107,207,127,0.9)' :
+                                         'rgba(51,51,51,0.9)';
+                item.appendChild(badge);
+            }
+            
+            const selections = feedbackData.selections[imageId] || [];
+            if (selections.length > 0) {
+                const selectionBadge = document.createElement('div');
+                selectionBadge.className = 'selection-badge';
+                selectionBadge.textContent = `📁 ${selections[0]}${selections.length > 1 ? ` +${selections.length - 1}` : ''}`;
+                item.appendChild(selectionBadge);
+            }
+        }
+        
+        // Update alle Badges
+        function updateAllImageBadges() {
+            const items = document.querySelectorAll('.gallery-item');
+            items.forEach(item => {
+                const imageId = item.dataset.imageId;
+                if (imageId) {
+                    updateImageBadges(item, imageId);
+                }
+            });
+        }
+        
+        // Toggle Bild-Auswahl
+        function toggleImageSelection(imageId) {
+            const item = document.querySelector(`[data-image-id="${imageId}"]`);
+            if (!item) return;
+            
+            const checkbox = item.querySelector('.gallery-item-checkbox');
+            if (checkbox.classList.contains('checked')) {
+                checkbox.classList.remove('checked');
+                checkbox.textContent = '';
+                item.classList.remove('selected');
+            } else {
+                checkbox.classList.add('checked');
+                checkbox.textContent = '✓';
+                item.classList.add('selected');
+            }
+        }
+        
+        // Toggle Favorit
+        function toggleFavorite(imageId) {
+            if (feedbackData.favorites[imageId]) {
+                delete feedbackData.favorites[imageId];
+            } else {
+                feedbackData.favorites[imageId] = true;
+            }
+            saveFeedbackData();
+            updateFavoriteUI(imageId);
+            updateAllImageBadges();
+        }
+        
+        // Update Favorit-UI
+        function updateFavoriteUI(imageId) {
+            const isFavorite = feedbackData.favorites[imageId] || false;
+            
+            // Update in Gallery
+            const item = document.querySelector(`[data-image-id="${imageId}"]`);
+            if (item) {
+                const likeBtn = item.querySelector('.gallery-item-like');
+                if (likeBtn) {
+                    likeBtn.innerHTML = `<span>${isFavorite ? '❤️' : '🤍'}</span> <span>${isFavorite ? '1' : '0'}</span>`;
+                    likeBtn.classList.toggle('active', isFavorite);
+                }
+            }
+            
+            // Update in Sidebar
+            const favoriteBtn = document.getElementById('favorite-btn');
+            const favoriteIcon = document.getElementById('favorite-icon');
+            const favoriteText = document.getElementById('favorite-text');
+            if (favoriteBtn && favoriteIcon && favoriteText) {
+                favoriteIcon.textContent = isFavorite ? '❤️' : '🤍';
+                favoriteText.textContent = isFavorite ? 'Als Favorit entfernen' : 'Als Favorit markieren';
+                favoriteBtn.classList.toggle('active', isFavorite);
+            }
         }
         
         // Update Feedback-Sidebar
