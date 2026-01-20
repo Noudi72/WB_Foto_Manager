@@ -1,0 +1,14 @@
+{
+  "version": "2.0",
+  "generated": "2026-01-14T20:00:00Z",
+  "password": null,
+  "images": [
+    {
+      "id": "img_1",
+      "name": "beispiel.jpg",
+      "url": "./images/beispiel.jpg",
+      "thumbnailUrl": "./images/thumbnails/thumb_beispiel.jpg",
+      "uploadDate": "2026-01-14T20:00:00Z"
+    }
+  ]
+}
