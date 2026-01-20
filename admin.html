@@ -842,26 +842,65 @@
             try {
                 showAlert('Pushe gallery.json zu GitHub...', 'info');
                 
-                // Hole aktuelle Datei (für SHA)
-                const getResponse = await fetch(`https://api.github.com/repos/${githubConfig.username}/${githubConfig.repo}/contents/gallery.json`, {
+                // Prüfe zuerst ob Repository existiert
+                const repoCheck = await fetch(`https://api.github.com/repos/${githubConfig.username}/${githubConfig.repo}`, {
                     headers: {
                         'Authorization': `Bearer ${githubConfig.token}`,
-                        'X-GitHub-Api-Version': '2022-11-28',
-                        'Accept': 'application/vnd.github.v3+json'
+                        'X-GitHub-Api-Version': '2022-11-28'
                     }
                 });
                 
+                if (!repoCheck.ok) {
+                    if (repoCheck.status === 404) {
+                        showAlert('✗ Repository nicht gefunden. Bitte prüfen Sie den Repository-Namen.', 'error');
+                        return false;
+                    } else if (repoCheck.status === 403) {
+                        showAlert('✗ Kein Zugriff auf Repository. Token hat möglicherweise nicht die richtigen Berechtigungen.', 'error');
+                        return false;
+                    }
+                }
+                
+                // Hole aktuelle Datei (für SHA) - 404 ist OK wenn Datei noch nicht existiert
                 let sha = null;
-                if (getResponse.ok) {
-                    const fileData = await getResponse.json();
-                    sha = fileData.sha;
+                try {
+                    const getResponse = await fetch(`https://api.github.com/repos/${githubConfig.username}/${githubConfig.repo}/contents/gallery.json`, {
+                        headers: {
+                            'Authorization': `Bearer ${githubConfig.token}`,
+                            'X-GitHub-Api-Version': '2022-11-28',
+                            'Accept': 'application/vnd.github.v3+json'
+                        }
+                    });
+                    
+                    if (getResponse.ok) {
+                        const fileData = await getResponse.json();
+                        sha = fileData.sha;
+                    } else if (getResponse.status !== 404) {
+                        // 404 ist OK (Datei existiert noch nicht), andere Fehler sind problematisch
+                        const errorData = await getResponse.json().catch(() => ({}));
+                        console.warn('Fehler beim Abrufen der Datei:', errorData);
+                    }
+                } catch (e) {
+                    console.warn('Fehler beim Abrufen der Datei (fortsetzen):', e);
+                    // Fortsetzen, Datei wird neu erstellt
                 }
                 
                 // Erstelle JSON-String
                 const jsonContent = JSON.stringify(galleryConfig, null, 2);
-                const base64Content = btoa(unescape(encodeURIComponent(jsonContent)));
+                // Base64-Encoding ohne Zeilenumbrüche (GitHub API Anforderung)
+                const base64Content = btoa(unescape(encodeURIComponent(jsonContent))).replace(/\n/g, '');
                 
-                // Update Datei
+                // Erstelle Request-Body
+                const requestBody = {
+                    message: `WebApp: Galerie aktualisiert - ${new Date().toLocaleString('de-CH')}`,
+                    content: base64Content
+                };
+                
+                // SHA nur hinzufügen wenn Datei existiert (Update)
+                if (sha) {
+                    requestBody.sha = sha;
+                }
+                
+                // Update oder Erstelle Datei
                 const updateResponse = await fetch(`https://api.github.com/repos/${githubConfig.username}/${githubConfig.repo}/contents/gallery.json`, {
                     method: 'PUT',
                     headers: {
@@ -870,11 +909,7 @@
                         'Content-Type': 'application/json',
                         'Accept': 'application/vnd.github.v3+json'
                     },
-                    body: JSON.stringify({
-                        message: `WebApp: Galerie aktualisiert - ${new Date().toLocaleString('de-CH')}`,
-                        content: base64Content,
-                        sha: sha // Nur bei Update, nicht bei neuem File
-                    })
+                    body: JSON.stringify(requestBody)
                 });
                 
                 if (updateResponse.ok) {
