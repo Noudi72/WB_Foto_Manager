@@ -1179,6 +1179,9 @@
             const imageNames = gallery.images?.map(img => img.name).join('\n') || '';
             document.getElementById('gallery-images').value = imageNames;
             
+            // Aktiviere Bild-Upload-Bereich (Name und ID sind bereits ausgefüllt)
+            checkGalleryInfo();
+            
             // Reset Drag and Drop Vorschau
             const filePreview = document.getElementById('file-preview');
             if (filePreview) {
