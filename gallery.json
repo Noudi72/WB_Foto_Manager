@@ -1,6 +1,6 @@
 {
   "version": "3.0",
-  "generated": "2026-01-20T15:31:23.247Z",
+  "generated": "2026-01-20T15:33:09.278Z",
   "galleries": [
     {
       "id": "hockey",
@@ -543,8 +543,7 @@
           "source": "cloudinary"
         }
       ],
-      "description": "Portraits",
-      "password": "Rambo1972"
+      "description": "Portraits"
     }
   ]
 }
