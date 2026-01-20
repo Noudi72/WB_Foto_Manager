@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WB Foto Manager - Admin</title>
+    <!-- Cloudinary Upload Widget -->
+    <script src="https://widget.cloudinary.com/v2.0/global/all.js" type="text/javascript"></script>
     <style>
         * {
             margin: 0;
@@ -369,16 +371,38 @@
                 <div class="form-group">
                     <label for="gallery-images">Bilder hinzufügen</label>
                     
-                    <!-- Drag and Drop Bereich -->
-                    <div class="drop-zone" id="drop-zone">
-                        <div class="drop-zone-icon">📁</div>
-                        <div class="drop-zone-text">Bilder hier hineinziehen oder klicken zum Auswählen</div>
-                        <div class="drop-zone-hint">Unterstützt: JPG, PNG, HEIC, RAW</div>
-                        <input type="file" id="file-input" multiple accept="image/*" style="display: none;">
+                    <!-- Cloudinary Upload Option -->
+                    <div style="margin-bottom: 20px; padding: 15px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 8px;">
+                        <h3 style="color: white; margin-bottom: 10px;">🚀 Einfacher Upload (Empfohlen)</h3>
+                        <p style="color: rgba(255,255,255,0.9); margin-bottom: 15px; font-size: 0.9em;">
+                            Laden Sie Bilder direkt hoch - automatisch in der Cloud gespeichert, keine GitHub-Uploads nötig!
+                        </p>
+                        <button type="button" id="cloudinary-upload-btn" class="btn-primary" style="background: white; color: #667eea; font-weight: bold; padding: 12px 24px;">
+                            📤 Bilder hochladen (Cloudinary)
+                        </button>
+                        <p style="color: rgba(255,255,255,0.8); margin-top: 10px; font-size: 0.85em;">
+                            ⚙️ Erste Einrichtung: Siehe Anleitung unten
+                        </p>
                     </div>
                     
-                    <!-- Vorschau der ausgewählten Dateien -->
-                    <div id="file-preview" class="file-list" style="display: none;"></div>
+                    <!-- Alternative: Lokale Dateinamen (für GitHub) -->
+                    <details style="margin-bottom: 15px;">
+                        <summary style="cursor: pointer; color: #888; padding: 10px; background: #1a1a1a; border-radius: 6px;">
+                            📁 Alternative: Lokale Dateinamen (für GitHub-Upload)
+                        </summary>
+                        <div style="margin-top: 10px;">
+                            <!-- Drag and Drop Bereich -->
+                            <div class="drop-zone" id="drop-zone">
+                                <div class="drop-zone-icon">📁</div>
+                                <div class="drop-zone-text">Bilder hier hineinziehen oder klicken zum Auswählen</div>
+                                <div class="drop-zone-hint">Unterstützt: JPG, PNG, HEIC, RAW</div>
+                                <input type="file" id="file-input" multiple accept="image/*" style="display: none;">
+                            </div>
+                            
+                            <!-- Vorschau der ausgewählten Dateien -->
+                            <div id="file-preview" class="file-list" style="display: none;"></div>
+                        </div>
+                    </details>
                     
                     <!-- Textfeld für manuelle Eingabe -->
                     <label for="gallery-images" style="margin-top: 15px; display: block;">Oder Dateinamen manuell eingeben (eine pro Zeile oder kommagetrennt):</label>
@@ -392,23 +416,28 @@
                         <div id="images-list"></div>
                     </div>
                     
-                    <div style="margin-top: 15px; padding: 15px; background: #1a1a1a; border-radius: 6px; border-left: 3px solid #667eea;">
-                        <strong style="color: #667eea;">ℹ️ Wichtig - Bilder hochladen:</strong>
-                        <p style="margin-top: 8px; color: #888; font-size: 0.9em; margin-bottom: 10px;">
-                            Das Drag-and-Drop extrahiert nur die <strong>Dateinamen</strong> der Bilder. 
-                            Die tatsächlichen Bilddateien müssen Sie zu GitHub hochladen.
-                        </p>
-                        <div style="background: #2a2a2a; padding: 10px; border-radius: 4px; font-family: monospace; font-size: 0.85em;">
-                            <div style="color: #667eea; margin-bottom: 5px;">📤 Schnellste Methode:</div>
-                            <code style="color: #e0e0e0;">./scripts/upload_to_github.sh</code>
+                    <!-- Cloudinary Setup Anleitung -->
+                    <div id="cloudinary-setup" style="margin-top: 15px; padding: 15px; background: #1a1a1a; border-radius: 6px; border-left: 3px solid #667eea; display: none;">
+                        <strong style="color: #667eea;">⚙️ Cloudinary Einrichtung (einmalig):</strong>
+                        <ol style="margin-top: 10px; color: #888; font-size: 0.9em; padding-left: 20px;">
+                            <li style="margin-bottom: 8px;">Kostenloses Konto erstellen: <a href="https://cloudinary.com/users/register/free" target="_blank" style="color: #667eea;">cloudinary.com</a></li>
+                            <li style="margin-bottom: 8px;">Dashboard öffnen → Settings → Upload → Upload Presets</li>
+                            <li style="margin-bottom: 8px;">"Add upload preset" → Name: "wb_foto_manager", Signing Mode: "Unsigned"</li>
+                            <li style="margin-bottom: 8px;">Cloud Name und Upload Preset Name unten eingeben</li>
+                        </ol>
+                        <div style="margin-top: 15px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                            <div>
+                                <label style="display: block; margin-bottom: 5px; color: #e0e0e0; font-size: 0.9em;">Cloud Name:</label>
+                                <input type="text" id="cloudinary-cloud-name" placeholder="Ihr-Cloud-Name" style="width: 100%; padding: 8px; background: #2a2a2a; border: 1px solid #444; border-radius: 4px; color: #e0e0e0;">
+                            </div>
+                            <div>
+                                <label style="display: block; margin-bottom: 5px; color: #e0e0e0; font-size: 0.9em;">Upload Preset:</label>
+                                <input type="text" id="cloudinary-upload-preset" placeholder="wb_foto_manager" style="width: 100%; padding: 8px; background: #2a2a2a; border: 1px solid #444; border-radius: 4px; color: #e0e0e0;">
+                            </div>
                         </div>
-                        <p style="margin-top: 10px; color: #888; font-size: 0.85em;">
-                            Oder manuell: Bilder in <code style="background: #2a2a2a; padding: 2px 6px; border-radius: 3px;">images/</code> Ordner kopieren, 
-                            dann <code>git add images/ gallery.json && git commit && git push</code>
-                        </p>
-                        <p style="margin-top: 8px; color: #888; font-size: 0.85em;">
-                            📖 Detaillierte Anleitung: <code>WebApp/UPLOAD_ANLEITUNG.md</code>
-                        </p>
+                        <button type="button" id="save-cloudinary-config" class="btn-primary" style="margin-top: 10px; padding: 8px 16px; font-size: 0.9em;">
+                            Konfiguration speichern
+                        </button>
                     </div>
                 </div>
                 
@@ -441,6 +470,114 @@
     <script>
         let galleryConfig = null;
         let editingGalleryId = null;
+        let cloudinaryWidget = null;
+        let uploadedImages = []; // Speichert hochgeladene Cloudinary-URLs
+        
+        // Lade Cloudinary-Konfiguration aus localStorage
+        function loadCloudinaryConfig() {
+            const cloudName = localStorage.getItem('cloudinary_cloud_name');
+            const uploadPreset = localStorage.getItem('cloudinary_upload_preset');
+            
+            if (cloudName && uploadPreset) {
+                document.getElementById('cloudinary-cloud-name').value = cloudName;
+                document.getElementById('cloudinary-upload-preset').value = uploadPreset;
+                setupCloudinaryWidget(cloudName, uploadPreset);
+                document.getElementById('cloudinary-setup').style.display = 'none';
+            } else {
+                document.getElementById('cloudinary-setup').style.display = 'block';
+            }
+        }
+        
+        // Speichere Cloudinary-Konfiguration
+        function saveCloudinaryConfig() {
+            const cloudName = document.getElementById('cloudinary-cloud-name').value.trim();
+            const uploadPreset = document.getElementById('cloudinary-upload-preset').value.trim();
+            
+            if (!cloudName || !uploadPreset) {
+                showAlert('Bitte füllen Sie beide Felder aus', 'error');
+                return;
+            }
+            
+            localStorage.setItem('cloudinary_cloud_name', cloudName);
+            localStorage.setItem('cloudinary_upload_preset', uploadPreset);
+            
+            setupCloudinaryWidget(cloudName, uploadPreset);
+            document.getElementById('cloudinary-setup').style.display = 'none';
+            showAlert('Cloudinary-Konfiguration gespeichert!', 'success');
+        }
+        
+        // Setup Cloudinary Upload Widget
+        function setupCloudinaryWidget(cloudName, uploadPreset) {
+            cloudinaryWidget = cloudinary.createUploadWidget(
+                {
+                    cloudName: cloudName,
+                    uploadPreset: uploadPreset,
+                    multiple: true,
+                    maxFiles: 100,
+                    sources: ['local', 'camera', 'url'],
+                    showAdvancedOptions: false,
+                    cropping: false,
+                    resourceType: 'image'
+                },
+                (error, result) => {
+                    if (error) {
+                        console.error('Cloudinary Upload Fehler:', error);
+                        showAlert('Upload-Fehler: ' + error.message, 'error');
+                        return;
+                    }
+                    
+                    if (result && result.event === "success") {
+                        const imageInfo = result.info;
+                        const imageName = imageInfo.original_filename || imageInfo.public_id;
+                        const imageUrl = imageInfo.secure_url;
+                        const thumbnailUrl = imageInfo.thumbnail_url || imageInfo.secure_url;
+                        
+                        // Füge Bild zur Liste hinzu
+                        uploadedImages.push({
+                            name: imageName,
+                            url: imageUrl,
+                            thumbnailUrl: thumbnailUrl,
+                            publicId: imageInfo.public_id,
+                            width: imageInfo.width,
+                            height: imageInfo.height
+                        });
+                        
+                        // Füge Dateinamen zum Textfeld hinzu
+                        const textarea = document.getElementById('gallery-images');
+                        const current = textarea.value.trim();
+                        const newValue = current ? current + '\n' + imageName : imageName;
+                        textarea.value = newValue;
+                        
+                        showAlert(`Bild "${imageName}" erfolgreich hochgeladen!`, 'success');
+                    }
+                    
+                    if (result && result.event === "close") {
+                        // Upload abgeschlossen
+                        if (uploadedImages.length > 0) {
+                            showAlert(`${uploadedImages.length} Bild(er) erfolgreich hochgeladen!`, 'success');
+                        }
+                    }
+                }
+            );
+        }
+        
+        // Öffne Cloudinary Widget
+        function openCloudinaryUpload() {
+            const cloudName = localStorage.getItem('cloudinary_cloud_name');
+            const uploadPreset = localStorage.getItem('cloudinary_upload_preset');
+            
+            if (!cloudName || !uploadPreset) {
+                document.getElementById('cloudinary-setup').style.display = 'block';
+                showAlert('Bitte konfigurieren Sie zuerst Cloudinary', 'error');
+                return;
+            }
+            
+            if (!cloudinaryWidget) {
+                setupCloudinaryWidget(cloudName, uploadPreset);
+            }
+            
+            cloudinaryWidget.open();
+        }
         
         // Lade bestehende gallery.json
         async function loadGalleryConfig() {
@@ -543,6 +680,9 @@
             document.getElementById('new-gallery-form').reset();
             document.getElementById('password-group').style.display = 'none';
             editingGalleryId = null;
+            
+            // Reset hochgeladene Bilder
+            uploadedImages = [];
             
             // Reset Drag and Drop Vorschau
             const filePreview = document.getElementById('file-preview');
@@ -669,6 +809,22 @@
             }
             
             const images = imageNames.map((name, index) => {
+                // Prüfe zuerst ob Bild über Cloudinary hochgeladen wurde
+                const cloudinaryImage = uploadedImages.find(img => img.name === name);
+                if (cloudinaryImage) {
+                    console.log('Verwende Cloudinary-Bild:', name);
+                    return {
+                        id: `img_${Date.now()}_${index}`,
+                        name: name,
+                        url: cloudinaryImage.url,
+                        thumbnailUrl: cloudinaryImage.thumbnailUrl,
+                        uploadDate: new Date().toISOString(),
+                        width: cloudinaryImage.width,
+                        height: cloudinaryImage.height,
+                        source: 'cloudinary'
+                    };
+                }
+                
                 // Versuche bestehende Bild-Daten zu finden
                 let existingImage = null;
                 if (galleryConfig.galleries) {
@@ -685,14 +841,15 @@
                     return existingImage;
                 }
                 
-                // Erstelle neues Bild-Objekt
+                // Erstelle neues Bild-Objekt (für lokale Dateien)
                 console.log('Erstelle neues Bild-Objekt:', name);
                 return {
                     id: `img_${Date.now()}_${index}`,
                     name: name,
                     url: `./images/${name}`,
                     thumbnailUrl: `./images/thumbnails/thumb_${name}`,
-                    uploadDate: new Date().toISOString()
+                    uploadDate: new Date().toISOString(),
+                    source: 'local'
                 };
             });
             
@@ -936,6 +1093,21 @@
             if (downloadBtn) {
                 downloadBtn.addEventListener('click', downloadGalleryJson);
             }
+            
+            // Cloudinary Upload Button
+            const cloudinaryBtn = document.getElementById('cloudinary-upload-btn');
+            if (cloudinaryBtn) {
+                cloudinaryBtn.addEventListener('click', openCloudinaryUpload);
+            }
+            
+            // Cloudinary Config speichern
+            const saveConfigBtn = document.getElementById('save-cloudinary-config');
+            if (saveConfigBtn) {
+                saveConfigBtn.addEventListener('click', saveCloudinaryConfig);
+            }
+            
+            // Lade Cloudinary-Konfiguration
+            loadCloudinaryConfig();
             
             // Drag and Drop einrichten
             setupDragAndDrop();
