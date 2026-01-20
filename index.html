@@ -365,9 +365,66 @@
         <button class="lightbox-nav lightbox-prev" onclick="previousImage()">‹</button>
         <div class="lightbox-content">
             <img id="lightbox-image" src="" alt="">
-            <button class="download-btn" onclick="downloadImage()">Download</button>
+            <div style="position: absolute; bottom: 10px; left: 10px; display: flex; gap: 10px; z-index: 10;">
+                <button class="download-btn" onclick="downloadImage()">📥 Download</button>
+                <button class="download-btn" onclick="toggleSidebar()" id="feedback-toggle-btn">💬 Feedback</button>
+            </div>
         </div>
         <button class="lightbox-nav lightbox-next" onclick="nextImage()">›</button>
+        
+        <!-- Feedback-Sidebar -->
+        <div class="lightbox-sidebar" id="feedback-sidebar">
+            <button onclick="toggleSidebar()" style="position: absolute; top: 10px; right: 10px; background: none; border: none; color: #e0e0e0; font-size: 24px; cursor: pointer;">&times;</button>
+            <h3 id="feedback-image-name">Bild Feedback</h3>
+            
+            <!-- Bewertung -->
+            <div class="feedback-section">
+                <h4>⭐ Bewertung</h4>
+                <div class="rating-stars" id="rating-stars">
+                    <span class="star" data-rating="1" onclick="setRating(1)">★</span>
+                    <span class="star" data-rating="2" onclick="setRating(2)">★</span>
+                    <span class="star" data-rating="3" onclick="setRating(3)">★</span>
+                    <span class="star" data-rating="4" onclick="setRating(4)">★</span>
+                    <span class="star" data-rating="5" onclick="setRating(5)">★</span>
+                </div>
+                <p id="rating-text" style="color: #888; font-size: 0.9em; margin-top: 5px;">Keine Bewertung</p>
+            </div>
+            
+            <!-- Markierungen (Flags) -->
+            <div class="feedback-section">
+                <h4>🏷️ Markierung</h4>
+                <div class="flag-buttons">
+                    <button class="flag-btn red" data-flag="reject" title="Ablehnen" onclick="setFlag('reject')">✗ Ablehnen</button>
+                    <button class="flag-btn yellow" data-flag="review" title="Prüfen" onclick="setFlag('review')">⚠ Prüfen</button>
+                    <button class="flag-btn green" data-flag="approve" title="Genehmigen" onclick="setFlag('approve')">✓ Genehmigen</button>
+                    <button class="flag-btn black" data-flag="final" title="Final" onclick="setFlag('final')">★ Final</button>
+                </div>
+            </div>
+            
+            <!-- Favorit -->
+            <div class="feedback-section">
+                <h4>❤️ Favorit</h4>
+                <button class="gallery-item-btn gallery-item-like" id="favorite-btn" onclick="toggleFavorite()">
+                    <span id="favorite-icon">🤍</span> <span id="favorite-text">Als Favorit markieren</span>
+                </button>
+            </div>
+            
+            <!-- Kommentare -->
+            <div class="feedback-section">
+                <h4>💬 Kommentare</h4>
+                <textarea class="comment-input" id="comment-input" placeholder="Ihr Kommentar..."></textarea>
+                <button class="btn-primary" onclick="addComment()" style="width: 100%;">Kommentar hinzufügen</button>
+                <div class="comment-list" id="comment-list"></div>
+            </div>
+            
+            <!-- Auswahl -->
+            <div class="feedback-section">
+                <h4>📁 Auswahl</h4>
+                <input type="text" id="selection-name" placeholder="Auswahl-Name (z.B. 'Portraits')" style="width: 100%; padding: 10px; background: #1a1a1a; border: 1px solid #444; border-radius: 6px; color: #e0e0e0; margin-bottom: 10px;">
+                <button class="btn-secondary" onclick="addToSelection()" style="width: 100%;">Zu Auswahl hinzufügen</button>
+                <div id="current-selections" style="margin-top: 15px; font-size: 0.9em; color: #888;"></div>
+            </div>
+        </div>
     </div>
     
     <script>
@@ -376,6 +433,35 @@
         let currentGallery = null;
         let currentImages = [];
         let currentImageIndex = 0;
+        
+        // Feedback-Daten (wird in localStorage gespeichert)
+        let feedbackData = {
+            ratings: {},      // { imageId: rating (1-5) }
+            flags: {},        // { imageId: 'reject'|'review'|'approve'|'final' }
+            favorites: {},    // { imageId: true }
+            comments: {},    // { imageId: [{ author, text, date }] }
+            selections: {}    // { imageId: ['selection1', 'selection2'] }
+        };
+        
+        // Lade Feedback-Daten
+        function loadFeedbackData() {
+            const saved = localStorage.getItem('gallery_feedback');
+            if (saved) {
+                try {
+                    feedbackData = JSON.parse(saved);
+                } catch (e) {
+                    console.error('Fehler beim Laden der Feedback-Daten:', e);
+                }
+            }
+        }
+        
+        // Speichere Feedback-Daten
+        function saveFeedbackData() {
+            localStorage.setItem('gallery_feedback', JSON.stringify(feedbackData));
+        }
+        
+        // Initialisiere Feedback-System
+        loadFeedbackData();
         
         // Lade Konfiguration von gallery.json
         async function loadConfig() {
@@ -533,6 +619,7 @@
             images.forEach((image, index) => {
                 const item = document.createElement('div');
                 item.className = 'gallery-item';
+                item.dataset.imageId = image.id || `img_${index}`;
                 
                 // Erstelle hochwertiges Thumbnail-URL
                 let imgSrc = image.thumbnailUrl || image.url || `./images/${image.name}`;
@@ -584,10 +671,55 @@
                     this.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="200" height="200"%3E%3Crect fill="%23222" width="200" height="200"/%3E%3Ctext fill="%23888" font-family="sans-serif" font-size="14" x="50%25" y="50%25" text-anchor="middle" dy=".3em"%3EBild nicht gefunden%3C/text%3E%3C/svg%3E';
                 };
                 
+                // Overlay mit Features
+                const overlay = document.createElement('div');
+                overlay.className = 'gallery-item-overlay';
+                
+                // Checkbox für Auswahl
+                const checkbox = document.createElement('div');
+                checkbox.className = 'gallery-item-checkbox';
+                checkbox.onclick = (e) => {
+                    e.stopPropagation();
+                    toggleImageSelection(image.id || `img_${index}`);
+                };
+                overlay.appendChild(checkbox);
+                
+                // Actions (Like, Kommentare)
+                const actions = document.createElement('div');
+                actions.className = 'gallery-item-actions';
+                
+                const likeBtn = document.createElement('button');
+                likeBtn.className = 'gallery-item-btn gallery-item-like';
+                likeBtn.innerHTML = '<span>🤍</span> <span>0</span>';
+                likeBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    toggleFavorite(image.id || `img_${index}`);
+                };
+                actions.appendChild(likeBtn);
+                
+                const commentBtn = document.createElement('button');
+                commentBtn.className = 'gallery-item-btn';
+                commentBtn.innerHTML = '<span>💬</span> <span>0</span>';
+                commentBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    openLightbox(index, fullSrc);
+                    setTimeout(() => toggleSidebar(), 300);
+                };
+                actions.appendChild(commentBtn);
+                
+                overlay.appendChild(actions);
+                
+                // Badges für Markierungen
+                updateImageBadges(item, image.id || `img_${index}`);
+                
                 item.appendChild(img);
+                item.appendChild(overlay);
                 item.onclick = () => openLightbox(index, fullSrc);
                 gallery.appendChild(item);
             });
+            
+            // Update alle Badges nach dem Rendern
+            updateAllImageBadges();
         }
         
         // Lightbox
@@ -602,6 +734,204 @@
             img.src = imageUrl;
             img.alt = image.name || 'Bild';
             lightbox.classList.add('active');
+            
+            // Update Feedback-Sidebar für aktuelles Bild
+            updateFeedbackSidebar();
+        }
+        
+        // Update Feedback-Sidebar
+        function updateFeedbackSidebar() {
+            const image = currentImages[currentImageIndex];
+            if (!image) return;
+            
+            const imageId = image.id || `img_${currentImageIndex}`;
+            
+            // Bild-Name
+            document.getElementById('feedback-image-name').textContent = image.name || 'Bild Feedback';
+            
+            // Bewertung
+            const rating = feedbackData.ratings[imageId] || 0;
+            updateRatingStars(rating);
+            
+            // Markierung
+            const flag = feedbackData.flags[imageId] || null;
+            updateFlagButtons(flag);
+            
+            // Favorit
+            updateFavoriteUI(imageId);
+            
+            // Kommentare
+            displayComments(imageId);
+            
+            // Auswahlen
+            displaySelections(imageId);
+        }
+        
+        // Update Rating Stars
+        function updateRatingStars(rating) {
+            const stars = document.querySelectorAll('.star');
+            const ratingText = document.getElementById('rating-text');
+            
+            stars.forEach((star, index) => {
+                if (index < rating) {
+                    star.classList.add('active');
+                } else {
+                    star.classList.remove('active');
+                }
+            });
+            
+            if (ratingText) {
+                ratingText.textContent = rating > 0 ? `${rating} von 5 Sternen` : 'Keine Bewertung';
+            }
+        }
+        
+        // Update Flag Buttons
+        function updateFlagButtons(flag) {
+            const flagButtons = document.querySelectorAll('.flag-btn');
+            flagButtons.forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.flag === flag) {
+                    btn.classList.add('active');
+                }
+            });
+        }
+        
+        // Display Comments
+        function displayComments(imageId) {
+            const commentList = document.getElementById('comment-list');
+            const comments = feedbackData.comments[imageId] || [];
+            
+            commentList.innerHTML = '';
+            
+            if (comments.length === 0) {
+                commentList.innerHTML = '<p style="color: #888; font-size: 0.9em;">Noch keine Kommentare</p>';
+                return;
+            }
+            
+            comments.forEach(comment => {
+                const commentItem = document.createElement('div');
+                commentItem.className = 'comment-item';
+                commentItem.innerHTML = `
+                    <div class="comment-author">${comment.author || 'Anonym'}</div>
+                    <div class="comment-text">${comment.text}</div>
+                    <div class="comment-date">${new Date(comment.date).toLocaleString('de-CH')}</div>
+                `;
+                commentList.appendChild(commentItem);
+            });
+        }
+        
+        // Display Selections
+        function displaySelections(imageId) {
+            const selectionsDiv = document.getElementById('current-selections');
+            const selections = feedbackData.selections[imageId] || [];
+            
+            if (selections.length === 0) {
+                selectionsDiv.textContent = 'Nicht in einer Auswahl';
+            } else {
+                selectionsDiv.innerHTML = selections.map(s => `<span style="background: #667eea; padding: 4px 8px; border-radius: 4px; margin-right: 5px; font-size: 0.85em;">📁 ${s}</span>`).join('');
+            }
+        }
+        
+        // Toggle Sidebar
+        function toggleSidebar() {
+            const sidebar = document.getElementById('feedback-sidebar');
+            sidebar.classList.toggle('open');
+        }
+        
+        // Add Comment
+        function addComment() {
+            const image = currentImages[currentImageIndex];
+            if (!image) return;
+            
+            const imageId = image.id || `img_${currentImageIndex}`;
+            const commentInput = document.getElementById('comment-input');
+            const text = commentInput.value.trim();
+            
+            if (!text) {
+                alert('Bitte geben Sie einen Kommentar ein');
+                return;
+            }
+            
+            if (!feedbackData.comments[imageId]) {
+                feedbackData.comments[imageId] = [];
+            }
+            
+            feedbackData.comments[imageId].push({
+                author: 'Kunde', // Könnte später aus localStorage kommen
+                text: text,
+                date: new Date().toISOString()
+            });
+            
+            saveFeedbackData();
+            commentInput.value = '';
+            displayComments(imageId);
+            updateAllImageBadges();
+            
+            // Update Kommentar-Zähler in Gallery
+            const item = document.querySelector(`[data-image-id="${imageId}"]`);
+            if (item) {
+                const commentBtn = item.querySelector('.gallery-item-actions .gallery-item-btn:last-child');
+                if (commentBtn) {
+                    const count = feedbackData.comments[imageId].length;
+                    commentBtn.innerHTML = `<span>💬</span> <span>${count}</span>`;
+                }
+            }
+        }
+        
+        // Add to Selection
+        function addToSelection() {
+            const image = currentImages[currentImageIndex];
+            if (!image) return;
+            
+            const imageId = image.id || `img_${currentImageIndex}`;
+            const selectionName = document.getElementById('selection-name').value.trim();
+            
+            if (!selectionName) {
+                alert('Bitte geben Sie einen Auswahl-Namen ein');
+                return;
+            }
+            
+            if (!feedbackData.selections[imageId]) {
+                feedbackData.selections[imageId] = [];
+            }
+            
+            if (!feedbackData.selections[imageId].includes(selectionName)) {
+                feedbackData.selections[imageId].push(selectionName);
+                saveFeedbackData();
+                document.getElementById('selection-name').value = '';
+                displaySelections(imageId);
+                updateAllImageBadges();
+            }
+        }
+        
+        // Set Rating
+        function setRating(rating) {
+            const image = currentImages[currentImageIndex];
+            if (!image) return;
+            
+            const imageId = image.id || `img_${currentImageIndex}`;
+            feedbackData.ratings[imageId] = rating;
+            saveFeedbackData();
+            updateRatingStars(rating);
+        }
+        
+        // Set Flag
+        function setFlag(flag) {
+            const image = currentImages[currentImageIndex];
+            if (!image) return;
+            
+            const imageId = image.id || `img_${currentImageIndex}`;
+            
+            // Toggle: Wenn bereits gesetzt, entfernen
+            if (feedbackData.flags[imageId] === flag) {
+                delete feedbackData.flags[imageId];
+            } else {
+                feedbackData.flags[imageId] = flag;
+            }
+            
+            saveFeedbackData();
+            updateFlagButtons(feedbackData.flags[imageId] || null);
+            updateAllImageBadges();
         }
         
         function closeLightbox() {
@@ -613,6 +943,7 @@
             const image = currentImages[currentImageIndex];
             const imageUrl = image.url || `./images/${image.name}`;
             document.getElementById('lightbox-image').src = imageUrl;
+            updateFeedbackSidebar();
         }
         
         function previousImage() {
@@ -620,6 +951,7 @@
             const image = currentImages[currentImageIndex];
             const imageUrl = image.url || `./images/${image.name}`;
             document.getElementById('lightbox-image').src = imageUrl;
+            updateFeedbackSidebar();
         }
         
         async function downloadImage() {
