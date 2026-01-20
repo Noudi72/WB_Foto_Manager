@@ -1732,12 +1732,25 @@
                 // Zeige Unterkategorie-Input
                 if (subfolderInput) {
                     subfolderInput.style.display = 'block';
-                    subfolderInput.oninput = () => {
-                        const subfolder = subfolderInput.value.trim();
+                    // Entferne alte Event Listener
+                    const newSubfolderInput = subfolderInput.cloneNode(true);
+                    subfolderInput.parentNode.replaceChild(newSubfolderInput, subfolderInput);
+                    
+                    newSubfolderInput.oninput = () => {
+                        const subfolder = newSubfolderInput.value.trim().toLowerCase().replace(/[^a-z0-9-_]/g, '-');
                         hiddenInput.value = subfolder ? `${selectedFolder}/${subfolder}` : selectedFolder;
                     };
+                    
+                    // Update sofort wenn bereits ein Wert vorhanden ist
+                    if (newSubfolderInput.value) {
+                        const subfolder = newSubfolderInput.value.trim().toLowerCase().replace(/[^a-z0-9-_]/g, '-');
+                        hiddenInput.value = subfolder ? `${selectedFolder}/${subfolder}` : selectedFolder;
+                    } else {
+                        hiddenInput.value = selectedFolder;
+                    }
+                } else {
+                    hiddenInput.value = selectedFolder;
                 }
-                hiddenInput.value = selectedFolder;
             } else {
                 // Verstecke Unterkategorie-Input
                 if (subfolderInput) {
