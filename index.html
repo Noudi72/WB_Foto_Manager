@@ -438,13 +438,13 @@
         /* Lightbox Sidebar */
         .lightbox-sidebar {
             position: fixed;
-            left: -400px;
+            left: -320px;
             top: 0;
-            width: 360px;
+            width: 300px;
             height: 100vh;
             background: linear-gradient(180deg, #1a1a1a 0%, #2a2a2a 100%);
             border-right: 1px solid #333;
-            padding: 30px 20px;
+            padding: 15px;
             overflow-y: auto;
             transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             z-index: 1001;
@@ -456,35 +456,36 @@
         }
         
         .lightbox-sidebar h3 {
-            font-size: 1.3em;
-            margin-bottom: 30px;
+            font-size: 1em;
+            margin-bottom: 15px;
             color: #e0e0e0;
-            border-bottom: 2px solid #667eea;
-            padding-bottom: 10px;
+            border-bottom: 1px solid #667eea;
+            padding-bottom: 6px;
+            font-weight: 600;
         }
         
         .lightbox-sidebar h4 {
-            font-size: 1em;
-            margin-bottom: 15px;
+            font-size: 0.85em;
+            margin-bottom: 10px;
             color: #e0e0e0;
             font-weight: 600;
         }
         
         .feedback-section {
-            margin-bottom: 30px;
-            padding-bottom: 25px;
+            margin-bottom: 18px;
+            padding-bottom: 15px;
             border-bottom: 1px solid #333;
         }
         
         /* Rating Stars */
         .rating-stars {
             display: flex;
-            gap: 8px;
-            margin-bottom: 10px;
+            gap: 6px;
+            margin-bottom: 8px;
         }
         
         .star {
-            font-size: 28px;
+            font-size: 22px;
             color: #444;
             cursor: pointer;
             transition: all 0.2s;
@@ -504,15 +505,15 @@
         .flag-buttons {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 10px;
+            gap: 6px;
         }
         
         .flag-btn {
-            padding: 12px 16px;
+            padding: 8px 10px;
             border: 2px solid;
-            border-radius: 8px;
+            border-radius: 6px;
             cursor: pointer;
-            font-size: 14px;
+            font-size: 12px;
             font-weight: 600;
             transition: all 0.2s;
             background: rgba(0,0,0,0.3);
@@ -575,16 +576,16 @@
         /* Comment Input */
         .comment-input {
             width: 100%;
-            padding: 12px;
+            padding: 8px;
             background: #1a1a1a;
             border: 1px solid #444;
-            border-radius: 8px;
+            border-radius: 6px;
             color: #e0e0e0;
-            font-size: 14px;
+            font-size: 13px;
             font-family: inherit;
             resize: vertical;
-            min-height: 80px;
-            margin-bottom: 10px;
+            min-height: 60px;
+            margin-bottom: 8px;
             transition: border-color 0.2s;
         }
         
@@ -596,34 +597,34 @@
         
         /* Comment List */
         .comment-list {
-            margin-top: 15px;
+            margin-top: 10px;
         }
         
         .comment-item {
             background: #1a1a1a;
-            padding: 12px;
-            border-radius: 8px;
-            margin-bottom: 10px;
+            padding: 8px;
+            border-radius: 6px;
+            margin-bottom: 8px;
             border-left: 3px solid #667eea;
         }
         
         .comment-author {
             font-weight: 600;
             color: #667eea;
-            font-size: 0.9em;
-            margin-bottom: 5px;
+            font-size: 0.85em;
+            margin-bottom: 4px;
         }
         
         .comment-text {
             color: #e0e0e0;
-            font-size: 0.95em;
-            line-height: 1.5;
-            margin-bottom: 5px;
+            font-size: 0.9em;
+            line-height: 1.4;
+            margin-bottom: 4px;
         }
         
         .comment-date {
             color: #888;
-            font-size: 0.8em;
+            font-size: 0.75em;
         }
         
         /* Buttons */
@@ -631,10 +632,10 @@
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             border: none;
-            padding: 12px 20px;
-            border-radius: 8px;
+            padding: 8px 16px;
+            border-radius: 6px;
             cursor: pointer;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 600;
             transition: all 0.2s;
         }
@@ -648,10 +649,10 @@
             background: #2a2a2a;
             color: #e0e0e0;
             border: 1px solid #444;
-            padding: 12px 20px;
-            border-radius: 8px;
+            padding: 8px 16px;
+            border-radius: 6px;
             cursor: pointer;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 600;
             transition: all 0.2s;
         }
@@ -660,6 +661,53 @@
             background: #333;
             border-color: #667eea;
             transform: translateY(-2px);
+        }
+        
+        /* Favorit Button in Lightbox */
+        #favorite-btn {
+            background: rgba(0,0,0,0.6) !important;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2) !important;
+            color: #ffffff !important;
+            padding: 10px !important;
+        }
+        
+        #favorite-btn.active {
+            background: rgba(255, 107, 107, 0.8) !important;
+            border-color: #ff6b6b !important;
+            color: #ffffff !important;
+        }
+        
+        #favorite-btn:hover {
+            background: rgba(102, 126, 234, 0.8) !important;
+            border-color: #667eea !important;
+        }
+        
+        #favorite-btn.active:hover {
+            background: rgba(255, 107, 107, 1) !important;
+        }
+        
+        #favorite-text {
+            color: #ffffff !important;
+        }
+        
+        /* Current Selections in Lightbox */
+        #current-selections {
+            font-size: 0.85em !important;
+            color: #e0e0e0 !important;
+        }
+        
+        #current-selections span {
+            background: rgba(102, 126, 234, 0.3) !important;
+            color: #ffffff !important;
+            padding: 4px 8px !important;
+            border-radius: 4px !important;
+            margin-right: 5px !important;
+            margin-bottom: 5px !important;
+            display: inline-block !important;
+            font-size: 0.85em !important;
+            font-weight: 500 !important;
+            border: 1px solid rgba(102, 126, 234, 0.5) !important;
         }
         
         /* Gallery Sidebar (für Übersicht) */
@@ -1028,7 +1076,7 @@
         
         <!-- Feedback-Sidebar -->
         <div class="lightbox-sidebar" id="feedback-sidebar">
-            <button onclick="toggleSidebar()" style="position: absolute; top: 10px; left: 10px; background: none; border: none; color: #e0e0e0; font-size: 24px; cursor: pointer;">&times;</button>
+            <button onclick="toggleSidebar()" style="position: absolute; top: 12px; left: 12px; background: rgba(0,0,0,0.3); border: 1px solid #444; border-radius: 4px; color: #e0e0e0; font-size: 18px; cursor: pointer; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; transition: all 0.2s;">&times;</button>
             <h3 id="feedback-image-name">Bild Feedback</h3>
             
             <!-- Bewertung -->
@@ -1041,7 +1089,7 @@
                     <span class="star" data-rating="4" onclick="setRating(4)">★</span>
                     <span class="star" data-rating="5" onclick="setRating(5)">★</span>
                 </div>
-                <p id="rating-text" style="color: #888; font-size: 0.9em; margin-top: 5px;">Keine Bewertung</p>
+                <p id="rating-text" style="color: #888; font-size: 0.8em; margin-top: 5px;">Keine Bewertung</p>
             </div>
             
             <!-- Markierungen (Flags) -->
@@ -1058,7 +1106,7 @@
             <!-- Favorit -->
             <div class="feedback-section">
                 <h4>❤️ Favorit</h4>
-                <button class="gallery-item-btn gallery-item-like" id="favorite-btn" onclick="toggleFavorite()" style="width: 100%; justify-content: center; padding: 14px;">
+                <button class="gallery-item-btn gallery-item-like" id="favorite-btn" onclick="toggleFavorite()" style="width: 100%; justify-content: center;">
                     <span id="favorite-icon">🤍</span> <span id="favorite-text">Als Favorit markieren</span>
                 </button>
             </div>
@@ -1074,9 +1122,9 @@
             <!-- Auswahl -->
             <div class="feedback-section">
                 <h4>📁 Auswahl</h4>
-                <input type="text" id="selection-name" placeholder="Auswahl-Name (z.B. 'Portraits')" style="width: 100%; padding: 10px; background: #1a1a1a; border: 1px solid #444; border-radius: 6px; color: #e0e0e0; margin-bottom: 10px;">
+                <input type="text" id="selection-name" placeholder="Auswahl-Name (z.B. 'Portraits')" style="width: 100%; padding: 8px; background: #1a1a1a; border: 1px solid #444; border-radius: 6px; color: #e0e0e0; margin-bottom: 8px; font-size: 13px;">
                 <button class="btn-secondary" onclick="addToSelection()" style="width: 100%;">Zu Auswahl hinzufügen</button>
-                <div id="current-selections" style="margin-top: 15px; font-size: 0.9em; color: #888;"></div>
+                <div id="current-selections" style="margin-top: 10px;"></div>
             </div>
         </div>
     </div>
@@ -1885,9 +1933,9 @@
             const selections = feedbackData.selections[imageId] || [];
             
             if (selections.length === 0) {
-                selectionsDiv.textContent = 'Nicht in einer Auswahl';
+                selectionsDiv.innerHTML = '<p style="color: #888; font-size: 0.85em; margin: 0;">Nicht in einer Auswahl</p>';
             } else {
-                selectionsDiv.innerHTML = selections.map(s => `<span style="background: #667eea; padding: 4px 8px; border-radius: 4px; margin-right: 5px; font-size: 0.85em;">📁 ${s}</span>`).join('');
+                selectionsDiv.innerHTML = selections.map(s => `<span style="background: rgba(102, 126, 234, 0.3); color: #ffffff; padding: 4px 8px; border-radius: 4px; margin-right: 5px; margin-bottom: 5px; display: inline-block; font-size: 0.85em; font-weight: 500; border: 1px solid rgba(102, 126, 234, 0.5);">📁 ${s}</span>`).join('');
             }
         }
         
