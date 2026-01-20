@@ -622,14 +622,62 @@
             document.getElementById('lightbox-image').src = imageUrl;
         }
         
-        function downloadImage() {
+        async function downloadImage() {
             const image = currentImages[currentImageIndex];
             const imageUrl = image.url || `./images/${image.name}`;
-            const link = document.createElement('a');
-            link.href = imageUrl;
-            link.download = image.name || 'image.jpg';
-            link.target = '_blank';
-            link.click();
+            const fileName = image.name || 'image.jpg';
+            
+            try {
+                // Für Cloudinary-URLs: Lade Bild als Blob und starte Download
+                if (imageUrl.includes('res.cloudinary.com')) {
+                    // Entferne Transformationen für Original-Download
+                    let downloadUrl = imageUrl;
+                    // Entferne Transformationen aus der URL um Original zu bekommen
+                    if (downloadUrl.includes('/upload/')) {
+                        // Finde die Version/Public ID nach den Transformationen
+                        const match = downloadUrl.match(/\/upload\/[^\/]+\/(v\d+\/)?([^\/]+)$/);
+                        if (match) {
+                            // Erstelle URL ohne Transformationen (Original)
+                            const cloudName = downloadUrl.match(/res\.cloudinary\.com\/([^\/]+)/)?.[1];
+                            const version = match[1] || '';
+                            const publicId = match[2];
+                            downloadUrl = `https://res.cloudinary.com/${cloudName}/image/upload/${version}${publicId}`;
+                        }
+                    }
+                    
+                    // Lade Bild als Blob
+                    const response = await fetch(downloadUrl);
+                    if (!response.ok) {
+                        throw new Error('Bild konnte nicht geladen werden');
+                    }
+                    
+                    const blob = await response.blob();
+                    const blobUrl = window.URL.createObjectURL(blob);
+                    
+                    // Erstelle Download-Link
+                    const link = document.createElement('a');
+                    link.href = blobUrl;
+                    link.download = fileName;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    
+                    // Cleanup
+                    window.URL.revokeObjectURL(blobUrl);
+                } else {
+                    // Für lokale Bilder: Direkter Download
+                    const link = document.createElement('a');
+                    link.href = imageUrl;
+                    link.download = fileName;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                }
+            } catch (error) {
+                console.error('Download-Fehler:', error);
+                // Fallback: Öffne in neuem Tab
+                window.open(imageUrl, '_blank');
+            }
         }
         
         // Tastatur-Navigation
