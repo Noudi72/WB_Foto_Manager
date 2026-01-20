@@ -1,8 +1,7 @@
 # Bilder-Ordner
 
-Lade deine Bilder hier hinein!
+Dieser Ordner enthält die Bilddateien für die WebApp-Galerien.
 
-**Wichtig**: 
-- Dateinamen ohne Leerzeichen (z.B. `bild1.jpg` statt `bild 1.jpg`)
-- Bilder sollten nicht zu groß sein (max. 5-10 MB pro Bild)
-
+Bilder können hier hochgeladen werden:
+- Über die Admin-Seite (GitHub Direct Upload)
+- Oder manuell über Git
