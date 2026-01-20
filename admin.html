@@ -444,27 +444,40 @@
                     </div>
                     
                     <!-- Cloudinary Setup Anleitung -->
-                    <div id="cloudinary-setup" style="margin-top: 15px; padding: 15px; background: #1a1a1a; border-radius: 6px; border-left: 3px solid #667eea; display: none;">
-                        <strong style="color: #667eea;">⚙️ Cloudinary Einrichtung (einmalig):</strong>
-                        <ol style="margin-top: 10px; color: #888; font-size: 0.9em; padding-left: 20px;">
-                            <li style="margin-bottom: 8px;">Kostenloses Konto erstellen: <a href="https://cloudinary.com/users/register/free" target="_blank" style="color: #667eea;">cloudinary.com</a></li>
-                            <li style="margin-bottom: 8px;">Dashboard öffnen → Settings → Upload → Upload Presets</li>
-                            <li style="margin-bottom: 8px;">"Add upload preset" → Name: "wb_foto_manager", Signing Mode: "Unsigned"</li>
-                            <li style="margin-bottom: 8px;">Cloud Name und Upload Preset Name unten eingeben</li>
-                        </ol>
-                        <div style="margin-top: 15px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                            <div>
-                                <label style="display: block; margin-bottom: 5px; color: #e0e0e0; font-size: 0.9em;">Cloud Name:</label>
-                                <input type="text" id="cloudinary-cloud-name" placeholder="Ihr-Cloud-Name" style="width: 100%; padding: 8px; background: #2a2a2a; border: 1px solid #444; border-radius: 4px; color: #e0e0e0;">
+                    <div id="cloudinary-setup" style="margin-top: 15px; padding: 20px; background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%); border: 2px solid #667eea; border-radius: 8px; display: none;">
+                        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
+                            <span style="font-size: 24px;">⚙️</span>
+                            <strong style="color: #667eea; font-size: 1.1em;">Cloudinary Einrichtung (einmalig - Schritt 3)</strong>
+                        </div>
+                        <p style="color: #888; font-size: 0.9em; margin-bottom: 15px;">
+                            Sie haben bereits ein Upload Preset erstellt. Jetzt müssen Sie nur noch die Daten hier eingeben:
+                        </p>
+                        <div style="background: #1a1a1a; padding: 15px; border-radius: 6px; margin-bottom: 15px;">
+                            <div style="margin-bottom: 15px;">
+                                <label style="display: block; margin-bottom: 8px; color: #e0e0e0; font-size: 0.95em; font-weight: 500;">
+                                    <span style="color: #667eea;">1.</span> Cloud Name:
+                                </label>
+                                <input type="text" id="cloudinary-cloud-name" placeholder="z.B. dnvqw9wif" style="width: 100%; padding: 12px; background: #2a2a2a; border: 2px solid #667eea; border-radius: 6px; color: #e0e0e0; font-size: 1em;">
+                                <small style="color: #888; font-size: 0.85em; margin-top: 5px; display: block;">
+                                    💡 Steht oben links in Ihrem Cloudinary Dashboard (z.B. "dnvqw9wif")
+                                </small>
                             </div>
                             <div>
-                                <label style="display: block; margin-bottom: 5px; color: #e0e0e0; font-size: 0.9em;">Upload Preset:</label>
-                                <input type="text" id="cloudinary-upload-preset" placeholder="wb_foto_manager" style="width: 100%; padding: 8px; background: #2a2a2a; border: 1px solid #444; border-radius: 4px; color: #e0e0e0;">
+                                <label style="display: block; margin-bottom: 8px; color: #e0e0e0; font-size: 0.95em; font-weight: 500;">
+                                    <span style="color: #667eea;">2.</span> Upload Preset Name:
+                                </label>
+                                <input type="text" id="cloudinary-upload-preset" placeholder="wb_foto_manager" value="wb_foto_manager" style="width: 100%; padding: 12px; background: #2a2a2a; border: 2px solid #667eea; border-radius: 6px; color: #e0e0e0; font-size: 1em;">
+                                <small style="color: #888; font-size: 0.85em; margin-top: 5px; display: block;">
+                                    💡 Der Name Ihres Upload Presets (Sie haben "wb_foto_manager" erstellt)
+                                </small>
                             </div>
                         </div>
-                        <button type="button" id="save-cloudinary-config" class="btn-primary" style="margin-top: 10px; padding: 8px 16px; font-size: 0.9em;">
-                            Konfiguration speichern
+                        <button type="button" id="save-cloudinary-config" class="btn-primary" style="padding: 12px 24px; font-size: 1em; font-weight: bold; width: 100%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                            ✓ Konfiguration speichern
                         </button>
+                        <p style="color: #888; font-size: 0.85em; margin-top: 10px; text-align: center;">
+                            Nach dem Speichern können Sie sofort Bilder hochladen!
+                        </p>
                     </div>
                     
                     <!-- GitHub Auto-Push Setup -->
@@ -544,7 +557,12 @@
                 setupCloudinaryWidget(cloudName, uploadPreset);
                 document.getElementById('cloudinary-setup').style.display = 'none';
             } else {
+                // Zeige Setup-Box prominent an
                 document.getElementById('cloudinary-setup').style.display = 'block';
+                // Scroll zum Setup-Bereich
+                setTimeout(() => {
+                    document.getElementById('cloudinary-setup').scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }, 100);
             }
         }
         
