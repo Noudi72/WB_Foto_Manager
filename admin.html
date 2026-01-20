@@ -439,6 +439,39 @@
                             Konfiguration speichern
                         </button>
                     </div>
+                    
+                    <!-- GitHub Auto-Push Setup -->
+                    <div id="github-setup" style="margin-top: 15px; padding: 15px; background: #1a1a1a; border-radius: 6px; border-left: 3px solid #28a745; display: none;">
+                        <strong style="color: #28a745;">🚀 GitHub Auto-Push (optional, aber empfohlen):</strong>
+                        <p style="margin-top: 8px; color: #888; font-size: 0.9em; margin-bottom: 15px;">
+                            Wenn konfiguriert, wird <code>gallery.json</code> automatisch zu GitHub gepusht - kein manueller Download/Push mehr nötig!
+                        </p>
+                        <ol style="margin-top: 10px; color: #888; font-size: 0.9em; padding-left: 20px; margin-bottom: 15px;">
+                            <li style="margin-bottom: 8px;">GitHub → Settings → Developer settings → Personal access tokens → Tokens (classic)</li>
+                            <li style="margin-bottom: 8px;">"Generate new token" → Name: "WB Foto Manager", Scope: <code>repo</code> (vollständiger Zugriff)</li>
+                            <li style="margin-bottom: 8px;">Token kopieren und unten eingeben (wird lokal gespeichert)</li>
+                        </ol>
+                        <div style="margin-top: 15px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;">
+                            <div>
+                                <label style="display: block; margin-bottom: 5px; color: #e0e0e0; font-size: 0.9em;">GitHub Username:</label>
+                                <input type="text" id="github-username" placeholder="noudi72" style="width: 100%; padding: 8px; background: #2a2a2a; border: 1px solid #444; border-radius: 4px; color: #e0e0e0;">
+                            </div>
+                            <div>
+                                <label style="display: block; margin-bottom: 5px; color: #e0e0e0; font-size: 0.9em;">Repository Name:</label>
+                                <input type="text" id="github-repo" placeholder="WB_Foto_Manager" style="width: 100%; padding: 8px; background: #2a2a2a; border: 1px solid #444; border-radius: 4px; color: #e0e0e0;">
+                            </div>
+                            <div>
+                                <label style="display: block; margin-bottom: 5px; color: #e0e0e0; font-size: 0.9em;">Personal Access Token:</label>
+                                <input type="password" id="github-token" placeholder="ghp_..." style="width: 100%; padding: 8px; background: #2a2a2a; border: 1px solid #444; border-radius: 4px; color: #e0e0e0;">
+                            </div>
+                        </div>
+                        <button type="button" id="save-github-config" class="btn-primary" style="margin-top: 10px; padding: 8px 16px; font-size: 0.9em; background: #28a745;">
+                            GitHub-Konfiguration speichern
+                        </button>
+                        <button type="button" id="test-github-connection" class="btn-secondary" style="margin-top: 10px; margin-left: 10px; padding: 8px 16px; font-size: 0.9em;">
+                            Verbindung testen
+                        </button>
+                    </div>
                 </div>
                 
                 <div class="button-group">
@@ -456,14 +489,13 @@
             </div>
         </div>
         
-        <!-- gallery.json herunterladen -->
+        <!-- gallery.json exportieren -->
         <div class="admin-section">
             <h2>gallery.json exportieren</h2>
-            <p>
-                Nach dem Erstellen/Bearbeiten von Galerien können Sie die aktualisierte gallery.json herunterladen 
-                und zu GitHub hochladen.
+            <p id="export-description">
+                Nach dem Erstellen/Bearbeiten von Galerien wird <code>gallery.json</code> automatisch zu GitHub gepusht.
             </p>
-            <button class="btn-primary" id="download-btn">gallery.json herunterladen</button>
+            <button class="btn-primary" id="download-btn">gallery.json manuell herunterladen</button>
         </div>
     </div>
     
@@ -472,6 +504,7 @@
         let editingGalleryId = null;
         let cloudinaryWidget = null;
         let uploadedImages = []; // Speichert hochgeladene Cloudinary-URLs
+        let githubConfig = null; // GitHub-Konfiguration
         
         // Lade Cloudinary-Konfiguration aus localStorage
         function loadCloudinaryConfig() {
@@ -485,6 +518,149 @@
                 document.getElementById('cloudinary-setup').style.display = 'none';
             } else {
                 document.getElementById('cloudinary-setup').style.display = 'block';
+            }
+        }
+        
+        // Lade GitHub-Konfiguration aus localStorage
+        function loadGitHubConfig() {
+            const username = localStorage.getItem('github_username');
+            const repo = localStorage.getItem('github_repo');
+            const token = localStorage.getItem('github_token');
+            
+            if (username && repo && token) {
+                document.getElementById('github-username').value = username;
+                document.getElementById('github-repo').value = repo;
+                document.getElementById('github-token').value = token;
+                githubConfig = { username, repo, token };
+                document.getElementById('github-setup').style.display = 'none';
+                
+                // Update Export-Beschreibung
+                const desc = document.getElementById('export-description');
+                if (desc) {
+                    desc.innerHTML = '✓ <strong>Auto-Push aktiviert!</strong> Nach dem Erstellen/Bearbeiten wird <code>gallery.json</code> automatisch zu GitHub gepusht.';
+                }
+            } else {
+                document.getElementById('github-setup').style.display = 'block';
+                
+                // Update Export-Beschreibung
+                const desc = document.getElementById('export-description');
+                if (desc) {
+                    desc.innerHTML = 'Nach dem Erstellen/Bearbeiten von Galerien können Sie die aktualisierte gallery.json herunterladen und zu GitHub hochladen.<br><small style="color: #667eea;">💡 Tipp: Konfigurieren Sie GitHub Auto-Push oben für automatisches Pushen!</small>';
+                }
+            }
+        }
+        
+        // Speichere GitHub-Konfiguration
+        function saveGitHubConfig() {
+            const username = document.getElementById('github-username').value.trim();
+            const repo = document.getElementById('github-repo').value.trim();
+            const token = document.getElementById('github-token').value.trim();
+            
+            if (!username || !repo || !token) {
+                showAlert('Bitte füllen Sie alle Felder aus', 'error');
+                return;
+            }
+            
+            localStorage.setItem('github_username', username);
+            localStorage.setItem('github_repo', repo);
+            localStorage.setItem('github_token', token);
+            
+            githubConfig = { username, repo, token };
+            document.getElementById('github-setup').style.display = 'none';
+            showAlert('GitHub-Konfiguration gespeichert!', 'success');
+        }
+        
+        // Teste GitHub-Verbindung
+        async function testGitHubConnection() {
+            const username = document.getElementById('github-username').value.trim();
+            const repo = document.getElementById('github-repo').value.trim();
+            const token = document.getElementById('github-token').value.trim();
+            
+            if (!username || !repo || !token) {
+                showAlert('Bitte füllen Sie alle Felder aus', 'error');
+                return;
+            }
+            
+            try {
+                showAlert('Teste Verbindung...', 'info');
+                const response = await fetch(`https://api.github.com/repos/${username}/${repo}`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'X-GitHub-Api-Version': '2022-11-28'
+                    }
+                });
+                
+                if (response.ok) {
+                    showAlert('✓ Verbindung erfolgreich!', 'success');
+                } else if (response.status === 401) {
+                    showAlert('✗ Token ungültig oder abgelaufen', 'error');
+                } else if (response.status === 404) {
+                    showAlert('✗ Repository nicht gefunden', 'error');
+                } else {
+                    showAlert('✗ Fehler: ' + response.statusText, 'error');
+                }
+            } catch (error) {
+                showAlert('✗ Verbindungsfehler: ' + error.message, 'error');
+            }
+        }
+        
+        // Pushe gallery.json automatisch zu GitHub
+        async function pushGalleryJsonToGitHub() {
+            if (!githubConfig) {
+                return false; // Keine Konfiguration = kein Auto-Push
+            }
+            
+            try {
+                showAlert('Pushe gallery.json zu GitHub...', 'info');
+                
+                // Hole aktuelle Datei (für SHA)
+                const getResponse = await fetch(`https://api.github.com/repos/${githubConfig.username}/${githubConfig.repo}/contents/gallery.json`, {
+                    headers: {
+                        'Authorization': `Bearer ${githubConfig.token}`,
+                        'X-GitHub-Api-Version': '2022-11-28',
+                        'Accept': 'application/vnd.github.v3+json'
+                    }
+                });
+                
+                let sha = null;
+                if (getResponse.ok) {
+                    const fileData = await getResponse.json();
+                    sha = fileData.sha;
+                }
+                
+                // Erstelle JSON-String
+                const jsonContent = JSON.stringify(galleryConfig, null, 2);
+                const base64Content = btoa(unescape(encodeURIComponent(jsonContent)));
+                
+                // Update Datei
+                const updateResponse = await fetch(`https://api.github.com/repos/${githubConfig.username}/${githubConfig.repo}/contents/gallery.json`, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `Bearer ${githubConfig.token}`,
+                        'X-GitHub-Api-Version': '2022-11-28',
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/vnd.github.v3+json'
+                    },
+                    body: JSON.stringify({
+                        message: `WebApp: Galerie aktualisiert - ${new Date().toLocaleString('de-CH')}`,
+                        content: base64Content,
+                        sha: sha // Nur bei Update, nicht bei neuem File
+                    })
+                });
+                
+                if (updateResponse.ok) {
+                    showAlert('✓ gallery.json erfolgreich zu GitHub gepusht!', 'success');
+                    return true;
+                } else {
+                    const errorData = await updateResponse.json();
+                    console.error('GitHub API Fehler:', errorData);
+                    showAlert('✗ Fehler beim Pushen: ' + (errorData.message || updateResponse.statusText), 'error');
+                    return false;
+                }
+            } catch (error) {
+                console.error('Fehler beim GitHub Push:', error);
+                showAlert('✗ Fehler beim Pushen: ' + error.message, 'error');
+                return false;
             }
         }
         
@@ -897,10 +1073,15 @@
             
             displayGalleries();
             clearForm();
+            
+            // Versuche automatisch zu GitHub zu pushen
+            if (githubConfig) {
+                await pushGalleryJsonToGitHub();
+            }
         });
         
-        // gallery.json herunterladen
-        function downloadGalleryJson() {
+        // gallery.json herunterladen oder zu GitHub pushen
+        async function downloadGalleryJson() {
             if (!galleryConfig) {
                 showAlert('Keine Galerien vorhanden zum Exportieren', 'error');
                 return;
@@ -916,6 +1097,16 @@
                 }
                 galleryConfig.generated = new Date().toISOString();
                 
+                // Wenn GitHub konfiguriert ist, versuche automatisch zu pushen
+                if (githubConfig) {
+                    const success = await pushGalleryJsonToGitHub();
+                    if (success) {
+                        return; // Erfolgreich gepusht, kein Download nötig
+                    }
+                    // Falls Push fehlschlägt, biete Download als Fallback an
+                }
+                
+                // Fallback: Download als Datei
                 const json = JSON.stringify(galleryConfig, null, 2);
                 const blob = new Blob([json], { type: 'application/json;charset=utf-8' });
                 const url = URL.createObjectURL(blob);
@@ -927,7 +1118,11 @@
                 document.body.removeChild(a);
                 URL.revokeObjectURL(url);
                 
-                showAlert('gallery.json wurde heruntergeladen. Bitte laden Sie die Datei zu GitHub hoch.', 'success');
+                if (githubConfig) {
+                    showAlert('gallery.json wurde heruntergeladen (Auto-Push fehlgeschlagen).', 'warning');
+                } else {
+                    showAlert('gallery.json wurde heruntergeladen. Bitte laden Sie die Datei zu GitHub hoch.', 'success');
+                }
             } catch (error) {
                 console.error('Fehler beim Download:', error);
                 showAlert('Fehler beim Download: ' + error.message, 'error');
@@ -1106,8 +1301,21 @@
                 saveConfigBtn.addEventListener('click', saveCloudinaryConfig);
             }
             
-            // Lade Cloudinary-Konfiguration
+            // GitHub Config speichern
+            const saveGitHubBtn = document.getElementById('save-github-config');
+            if (saveGitHubBtn) {
+                saveGitHubBtn.addEventListener('click', saveGitHubConfig);
+            }
+            
+            // GitHub Verbindung testen
+            const testGitHubBtn = document.getElementById('test-github-connection');
+            if (testGitHubBtn) {
+                testGitHubBtn.addEventListener('click', testGitHubConnection);
+            }
+            
+            // Lade Konfigurationen
             loadCloudinaryConfig();
+            loadGitHubConfig();
             
             // Drag and Drop einrichten
             setupDragAndDrop();
