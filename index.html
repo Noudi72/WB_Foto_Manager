@@ -330,15 +330,18 @@
             position: absolute;
             bottom: 12px;
             left: 12px;
-            padding: 6px 12px;
-            background: rgba(102, 126, 234, 0.9);
+            padding: 8px 14px;
+            background: rgba(102, 126, 234, 0.95);
             backdrop-filter: blur(10px);
-            border-radius: 6px;
-            font-size: 12px;
-            font-weight: 600;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 700;
             color: white;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+            text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.1);
             z-index: 5;
+            white-space: nowrap;
+            letter-spacing: 0.3px;
         }
         
         .lightbox {
@@ -659,6 +662,181 @@
             transform: translateY(-2px);
         }
         
+        /* Gallery Sidebar (für Übersicht) */
+        .gallery-sidebar {
+            position: relative;
+            width: 320px;
+            min-width: 320px;
+            background: linear-gradient(180deg, #1a1a1a 0%, #2a2a2a 100%);
+            border-left: 1px solid #333;
+            padding: 20px;
+            overflow-y: auto;
+            max-height: calc(100vh - 200px);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: -4px 0 24px rgba(0,0,0,0.3);
+        }
+        
+        .gallery-sidebar.collapsed {
+            width: 50px;
+            min-width: 50px;
+            padding: 20px 10px;
+        }
+        
+        .gallery-sidebar.collapsed .sidebar-content {
+            display: none;
+        }
+        
+        .sidebar-toggle {
+            position: absolute;
+            top: 20px;
+            right: 10px;
+            background: rgba(102, 126, 234, 0.2);
+            border: 1px solid #667eea;
+            color: #667eea;
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            transition: all 0.2s;
+            z-index: 10;
+        }
+        
+        .sidebar-toggle:hover {
+            background: rgba(102, 126, 234, 0.4);
+            transform: scale(1.1);
+        }
+        
+        .gallery-sidebar.collapsed .sidebar-toggle {
+            right: 10px;
+        }
+        
+        .sidebar-content h3 {
+            font-size: 1.3em;
+            margin-bottom: 25px;
+            color: #e0e0e0;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+        
+        .sidebar-content h4 {
+            font-size: 1em;
+            margin-bottom: 15px;
+            color: #e0e0e0;
+            font-weight: 600;
+            margin-top: 25px;
+        }
+        
+        .sidebar-stats {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background: rgba(102, 126, 234, 0.1);
+            border-radius: 6px;
+            border-left: 3px solid #667eea;
+        }
+        
+        .stat-label {
+            color: #aaa;
+            font-size: 0.9em;
+        }
+        
+        .stat-value {
+            color: #e0e0e0;
+            font-weight: 700;
+            font-size: 1.1em;
+        }
+        
+        .sidebar-section {
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid #333;
+        }
+        
+        .flag-summary {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        
+        .flag-summary-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 6px;
+        }
+        
+        .flag-badge {
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: bold;
+        }
+        
+        .flag-badge.red {
+            background: rgba(255, 107, 107, 0.2);
+            color: #ff6b6b;
+        }
+        
+        .flag-badge.yellow {
+            background: rgba(255, 217, 61, 0.2);
+            color: #ffd93d;
+        }
+        
+        .flag-badge.green {
+            background: rgba(107, 207, 127, 0.2);
+            color: #6bcf7f;
+        }
+        
+        .flag-badge.black {
+            background: rgba(136, 136, 136, 0.2);
+            color: #aaa;
+        }
+        
+        .flag-count {
+            color: #e0e0e0;
+            font-weight: 600;
+            font-size: 1.1em;
+        }
+        
+        .selections-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .selection-item {
+            padding: 10px;
+            background: rgba(102, 126, 234, 0.1);
+            border-radius: 6px;
+            border-left: 3px solid #667eea;
+            color: #e0e0e0;
+            font-size: 0.95em;
+        }
+        
+        @media (max-width: 1200px) {
+            .gallery-sidebar {
+                width: 280px;
+                min-width: 280px;
+            }
+        }
+        
         @media (max-width: 768px) {
             .lightbox-nav {
                 padding: 15px;
@@ -676,6 +854,19 @@
             .logo-container {
                 flex-direction: column;
                 gap: 10px;
+            }
+            
+            .gallery-sidebar {
+                position: fixed;
+                right: -320px;
+                top: 0;
+                height: 100vh;
+                z-index: 999;
+                max-height: 100vh;
+            }
+            
+            .gallery-sidebar.open {
+                right: 0;
             }
         }
     </style>
@@ -714,7 +905,65 @@
             <button class="back-button" onclick="showGallerySelector()" id="back-button" style="display: none;">
                 ← Zurück zur Galerie-Auswahl
             </button>
-            <div class="gallery" id="gallery"></div>
+            <div style="display: flex; gap: 20px;">
+                <div class="gallery" id="gallery" style="flex: 1;"></div>
+                <!-- Sidebar für Galerie-Übersicht -->
+                <div class="gallery-sidebar" id="gallery-sidebar">
+                    <button class="sidebar-toggle" onclick="toggleGallerySidebar()" id="sidebar-toggle-btn">
+                        <span id="sidebar-toggle-icon">◀</span>
+                    </button>
+                    <div class="sidebar-content" id="sidebar-content">
+                        <h3>📊 Übersicht</h3>
+                        <div class="sidebar-stats">
+                            <div class="stat-item">
+                                <span class="stat-label">Bilder gesamt:</span>
+                                <span class="stat-value" id="stat-total">0</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Ausgewählt:</span>
+                                <span class="stat-value" id="stat-selected">0</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Favoriten:</span>
+                                <span class="stat-value" id="stat-favorites">0</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Kommentiert:</span>
+                                <span class="stat-value" id="stat-commented">0</span>
+                            </div>
+                        </div>
+                        
+                        <div class="sidebar-section">
+                            <h4>🏷️ Markierungen</h4>
+                            <div class="flag-summary" id="flag-summary">
+                                <div class="flag-summary-item">
+                                    <span class="flag-badge red">✗</span>
+                                    <span class="flag-count" id="flag-reject">0</span>
+                                </div>
+                                <div class="flag-summary-item">
+                                    <span class="flag-badge yellow">⚠</span>
+                                    <span class="flag-count" id="flag-review">0</span>
+                                </div>
+                                <div class="flag-summary-item">
+                                    <span class="flag-badge green">✓</span>
+                                    <span class="flag-count" id="flag-approve">0</span>
+                                </div>
+                                <div class="flag-summary-item">
+                                    <span class="flag-badge black">★</span>
+                                    <span class="flag-count" id="flag-final">0</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="sidebar-section">
+                            <h4>📁 Auswahlen</h4>
+                            <div class="selections-list" id="selections-list">
+                                <p style="color: #888; font-size: 0.9em;">Keine Auswahlen erstellt</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
         
         <div id="loading" class="loading" style="display: none;">
@@ -1090,6 +1339,78 @@
             
             // Update alle Badges nach dem Rendern
             updateAllImageBadges();
+            
+            // Update Sidebar-Statistiken
+            updateSidebarStats();
+        }
+        
+        // Toggle Gallery Sidebar
+        function toggleGallerySidebar() {
+            const sidebar = document.getElementById('gallery-sidebar');
+            const toggleIcon = document.getElementById('sidebar-toggle-icon');
+            sidebar.classList.toggle('collapsed');
+            toggleIcon.textContent = sidebar.classList.contains('collapsed') ? '▶' : '◀';
+        }
+        
+        // Update Sidebar Statistiken
+        function updateSidebarStats() {
+            const total = currentImages.length;
+            const selected = document.querySelectorAll('.gallery-item.selected').length;
+            const favorites = Object.keys(feedbackData.favorites).filter(id => {
+                return currentImages.some(img => (img.id || `img_${currentImages.indexOf(img)}`) === id);
+            }).length;
+            const commented = Object.keys(feedbackData.comments).filter(id => {
+                const comments = feedbackData.comments[id] || [];
+                return comments.length > 0 && currentImages.some(img => (img.id || `img_${currentImages.indexOf(img)}`) === id);
+            }).length;
+            
+            // Flag-Zähler
+            const flagCounts = {
+                reject: 0,
+                review: 0,
+                approve: 0,
+                final: 0
+            };
+            
+            currentImages.forEach((img, index) => {
+                const imageId = img.id || `img_${index}`;
+                const flag = feedbackData.flags[imageId];
+                if (flag && flagCounts.hasOwnProperty(flag)) {
+                    flagCounts[flag]++;
+                }
+            });
+            
+            // Update DOM
+            document.getElementById('stat-total').textContent = total;
+            document.getElementById('stat-selected').textContent = selected;
+            document.getElementById('stat-favorites').textContent = favorites;
+            document.getElementById('stat-commented').textContent = commented;
+            
+            document.getElementById('flag-reject').textContent = flagCounts.reject;
+            document.getElementById('flag-review').textContent = flagCounts.review;
+            document.getElementById('flag-approve').textContent = flagCounts.approve;
+            document.getElementById('flag-final').textContent = flagCounts.final;
+            
+            // Update Auswahlen-Liste
+            const selectionsSet = new Set();
+            currentImages.forEach((img, index) => {
+                const imageId = img.id || `img_${index}`;
+                const selections = feedbackData.selections[imageId] || [];
+                selections.forEach(s => selectionsSet.add(s));
+            });
+            
+            const selectionsList = document.getElementById('selections-list');
+            if (selectionsSet.size === 0) {
+                selectionsList.innerHTML = '<p style="color: #888; font-size: 0.9em;">Keine Auswahlen erstellt</p>';
+            } else {
+                selectionsList.innerHTML = Array.from(selectionsSet).map(s => {
+                    const count = currentImages.filter((img, index) => {
+                        const imageId = img.id || `img_${index}`;
+                        return (feedbackData.selections[imageId] || []).includes(s);
+                    }).length;
+                    return `<div class="selection-item">📁 ${s} <span style="float: right; color: #667eea; font-weight: 600;">${count}</span></div>`;
+                }).join('');
+            }
         }
         
         // Update Badges für ein Bild
@@ -1216,6 +1537,9 @@
                 checkbox.textContent = '✓';
                 item.classList.add('selected');
             }
+            
+            // Update Sidebar-Statistiken
+            updateSidebarStats();
         }
         
         // Toggle Favorit
@@ -1245,6 +1569,7 @@
             saveFeedbackData();
             updateFavoriteUI(imageId);
             updateAllImageBadges();
+            updateSidebarStats();
         }
         
         // Update Favorit-UI
@@ -1434,6 +1759,7 @@
                 document.getElementById('selection-name').value = '';
                 displaySelections(imageId);
                 updateAllImageBadges();
+                updateSidebarStats();
             }
         }
         
@@ -1465,6 +1791,7 @@
             saveFeedbackData();
             updateFlagButtons(feedbackData.flags[imageId] || null);
             updateAllImageBadges();
+            updateSidebarStats();
         }
         
         function closeLightbox() {
