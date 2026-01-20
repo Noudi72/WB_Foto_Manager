@@ -1574,7 +1574,9 @@
             } else {
                 // Neu erstellen
                 galleryConfig.galleries.push(gallery);
-                showAlert('Galerie erstellt! Vergessen Sie nicht, die gallery.json herunterzuladen.', 'success');
+                console.log('Galerie erstellt:', gallery);
+                console.log('Aktuelle Galerien:', galleryConfig.galleries.length);
+                showAlert(`Galerie "${gallery.name}" erfolgreich erstellt! (${gallery.images?.length || 0} Bilder)`, 'success');
             }
             
             galleryConfig.generated = new Date().toISOString();
@@ -1582,6 +1584,12 @@
                 galleryConfig.version = '3.0';
             }
             
+            // Stelle sicher, dass galleries Array existiert
+            if (!galleryConfig.galleries) {
+                galleryConfig.galleries = [];
+            }
+            
+            console.log('Aktualisierte galleryConfig:', galleryConfig);
             displayGalleries();
             clearForm();
             
@@ -1596,14 +1604,18 @@
             
             // Versuche automatisch zu GitHub zu pushen (nicht-blockierend)
             if (githubConfig) {
+                console.log('Versuche GitHub-Push...', githubConfig);
                 // Push im Hintergrund, blockiert nicht die Galerie-Erstellung
                 pushGalleryJsonToGitHub().then(success => {
-                    if (!success) {
-                        showAlert('⚠️ Galerie wurde erstellt, aber GitHub-Push fehlgeschlagen. Bitte laden Sie gallery.json manuell herunter und pushen Sie es zu GitHub.', 'warning');
+                    if (success) {
+                        console.log('✓ GitHub-Push erfolgreich');
+                    } else {
+                        console.warn('✗ GitHub-Push fehlgeschlagen');
+                        showAlert('⚠️ Galerie wurde erstellt, aber GitHub-Push fehlgeschlagen. Bitte laden Sie gallery.json manuell herunter und pushen Sie es zu GitHub. Die Galerie ist lokal gespeichert.', 'warning');
                     }
                 }).catch(error => {
                     console.error('GitHub Push Fehler (nicht kritisch):', error);
-                    showAlert('⚠️ Galerie wurde erstellt, aber GitHub-Push fehlgeschlagen. Bitte laden Sie gallery.json manuell herunter und pushen Sie es zu GitHub.', 'warning');
+                    showAlert('⚠️ Galerie wurde erstellt, aber GitHub-Push fehlgeschlagen. Bitte laden Sie gallery.json manuell herunter und pushen Sie es zu GitHub. Die Galerie ist lokal gespeichert.', 'warning');
                 });
             } else {
                 showAlert('💡 Tipp: Konfigurieren Sie GitHub Auto-Push, damit gallery.json automatisch gespeichert wird. Aktuell müssen Sie gallery.json manuell herunterladen und zu GitHub pushen.', 'info');
