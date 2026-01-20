@@ -633,8 +633,31 @@
         
         // Zeige GitHub-Konfiguration zum Bearbeiten
         function showGitHubConfig() {
-            document.getElementById('github-setup').style.display = 'block';
-            document.getElementById('github-setup').scrollIntoView({ behavior: 'smooth', block: 'center' });
+            const setupBox = document.getElementById('github-setup');
+            if (!setupBox) {
+                console.error('GitHub-Setup-Box nicht gefunden');
+                showAlert('Fehler: GitHub-Setup-Box nicht gefunden', 'error');
+                return;
+            }
+            
+            // Zeige Box
+            setupBox.style.display = 'block';
+            
+            // Lade aktuelle Werte in die Felder
+            const username = localStorage.getItem('github_username') || '';
+            const repo = localStorage.getItem('github_repo') || '';
+            const token = localStorage.getItem('github_token') || '';
+            
+            document.getElementById('github-username').value = username;
+            document.getElementById('github-repo').value = repo;
+            document.getElementById('github-token').value = token;
+            
+            // Scroll zur Box
+            setTimeout(() => {
+                setupBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 100);
+            
+            showAlert('GitHub-Konfiguration kann jetzt bearbeitet werden', 'info');
         }
         
         // Speichere GitHub-Konfiguration
@@ -1654,8 +1677,14 @@
             // GitHub-Konfiguration bearbeiten Button
             const editGitHubBtn = document.getElementById('edit-github-config-btn');
             if (editGitHubBtn) {
-                editGitHubBtn.addEventListener('click', showGitHubConfig);
+                editGitHubBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    showGitHubConfig();
+                });
             }
+            
+            // Globale Funktion für onclick (falls nötig)
+            window.showGitHubConfig = showGitHubConfig;
             
             // Lade Konfigurationen
             loadCloudinaryConfig();
