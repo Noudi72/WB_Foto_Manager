@@ -309,7 +309,30 @@
             try {
                 const response = await fetch('./gallery.json');
                 if (response.ok) {
-                    galleryConfig = await response.json();
+                    const data = await response.json();
+                    
+                    // Unterstütze alte Struktur (Version 2.0 mit direktem images Array)
+                    if (data.images && !data.galleries) {
+                        // Konvertiere alte Struktur zu neuer
+                        galleryConfig = {
+                            version: '3.0',
+                            generated: new Date().toISOString(),
+                            galleries: [{
+                                id: 'gallery1',
+                                name: 'Galerie',
+                                description: 'Hauptgalerie',
+                                password: data.password || null,
+                                images: data.images || []
+                            }]
+                        };
+                        showAlert('Alte gallery.json Struktur wurde konvertiert', 'info');
+                    } else {
+                        // Neue Struktur (Version 3.0)
+                        galleryConfig = data;
+                        if (!galleryConfig.galleries) {
+                            galleryConfig.galleries = [];
+                        }
+                    }
                     displayGalleries();
                 } else {
                     // Erstelle neue Struktur falls nicht vorhanden
@@ -319,10 +342,11 @@
                         galleries: []
                     };
                     displayGalleries();
+                    showAlert('Keine gallery.json gefunden. Erstellen Sie eine neue Galerie.', 'info');
                 }
             } catch (error) {
                 console.error('Fehler beim Laden:', error);
-                showAlert('Fehler beim Laden der gallery.json', 'error');
+                showAlert('Fehler beim Laden der gallery.json: ' + error.message, 'error');
                 galleryConfig = {
                     version: '3.0',
                     generated: new Date().toISOString(),
@@ -336,7 +360,7 @@
         function displayGalleries() {
             const galleryList = document.getElementById('gallery-list');
             
-            if (!galleryConfig.galleries || galleryConfig.galleries.length === 0) {
+            if (!galleryConfig || !galleryConfig.galleries || galleryConfig.galleries.length === 0) {
                 galleryList.innerHTML = '<p style="color: #888; text-align: center;">Noch keine Galerien vorhanden</p>';
                 return;
             }
@@ -346,15 +370,21 @@
             galleryConfig.galleries.forEach((gallery) => {
                 const item = document.createElement('div');
                 item.className = 'gallery-item';
+                const galleryId = gallery.id || 'unknown';
+                const galleryName = gallery.name || 'Unbenannte Galerie';
+                const imageCount = gallery.images?.length || 0;
+                const hasPassword = gallery.password ? '🔒' : '';
+                const description = gallery.description ? `<p style="margin-top: 5px;">${gallery.description}</p>` : '';
+                
                 item.innerHTML = `
                     <div class="gallery-item-info">
-                        <h3>${gallery.name || 'Unbenannte Galerie'} ${gallery.password ? '🔒' : ''}</h3>
-                        <p>ID: ${gallery.id} | ${gallery.images?.length || 0} Bilder</p>
-                        ${gallery.description ? `<p style="margin-top: 5px;">${gallery.description}</p>` : ''}
+                        <h3>${galleryName} ${hasPassword}</h3>
+                        <p>ID: ${galleryId} | ${imageCount} Bilder</p>
+                        ${description}
                     </div>
                     <div class="gallery-item-actions">
-                        <button class="btn-secondary" onclick="editGallery('${gallery.id}')">Bearbeiten</button>
-                        <button class="btn-danger" onclick="deleteGallery('${gallery.id}')">Löschen</button>
+                        <button class="btn-secondary" onclick="editGallery('${galleryId}')">Bearbeiten</button>
+                        <button class="btn-danger" onclick="deleteGallery('${galleryId}')">Löschen</button>
                     </div>
                 `;
                 galleryList.appendChild(item);
@@ -469,36 +499,69 @@
                 gallery.password = password;
             }
             
+            // Stelle sicher, dass galleries Array existiert
+            if (!galleryConfig.galleries) {
+                galleryConfig.galleries = [];
+            }
+            
             if (editingGalleryId) {
                 // Bearbeiten
                 const index = galleryConfig.galleries.findIndex(g => g.id === editingGalleryId);
                 if (index !== -1) {
                     galleryConfig.galleries[index] = gallery;
                     showAlert('Galerie aktualisiert', 'success');
+                } else {
+                    showAlert('Galerie zum Bearbeiten nicht gefunden', 'error');
+                    return;
                 }
             } else {
                 // Neu erstellen
                 galleryConfig.galleries.push(gallery);
-                showAlert('Galerie erstellt', 'success');
+                showAlert('Galerie erstellt! Vergessen Sie nicht, die gallery.json herunterzuladen.', 'success');
             }
             
             galleryConfig.generated = new Date().toISOString();
+            if (!galleryConfig.version) {
+                galleryConfig.version = '3.0';
+            }
+            
             displayGalleries();
             clearForm();
         });
         
         // gallery.json herunterladen
         function downloadGalleryJson() {
-            const json = JSON.stringify(galleryConfig, null, 2);
-            const blob = new Blob([json], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'gallery.json';
-            a.click();
-            URL.revokeObjectURL(url);
+            if (!galleryConfig) {
+                showAlert('Keine Galerien vorhanden zum Exportieren', 'error');
+                return;
+            }
             
-            showAlert('gallery.json wurde heruntergeladen. Bitte laden Sie die Datei zu GitHub hoch.', 'info');
+            try {
+                // Stelle sicher, dass die Struktur korrekt ist
+                if (!galleryConfig.galleries) {
+                    galleryConfig.galleries = [];
+                }
+                if (!galleryConfig.version) {
+                    galleryConfig.version = '3.0';
+                }
+                galleryConfig.generated = new Date().toISOString();
+                
+                const json = JSON.stringify(galleryConfig, null, 2);
+                const blob = new Blob([json], { type: 'application/json;charset=utf-8' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'gallery.json';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                
+                showAlert('gallery.json wurde heruntergeladen. Bitte laden Sie die Datei zu GitHub hoch.', 'success');
+            } catch (error) {
+                console.error('Fehler beim Download:', error);
+                showAlert('Fehler beim Download: ' + error.message, 'error');
+            }
         }
         
         // Verfügbare Bilder anzeigen
