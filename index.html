@@ -261,7 +261,10 @@
                 const response = await fetch('./gallery.json');
                 if (response.ok) {
                     galleryConfig = await response.json();
+                    console.log('gallery.json geladen:', galleryConfig.images?.length || 0, 'Bilder');
                     return true;
+                } else {
+                    console.error('gallery.json konnte nicht geladen werden:', response.status, response.statusText);
                 }
                 return false;
             } catch (error) {
@@ -312,11 +315,13 @@
                 if (galleryConfig && galleryConfig.images && galleryConfig.images.length > 0) {
                     // Verwende Bilder aus gallery.json
                     currentImages = galleryConfig.images;
+                    console.log('Lade', currentImages.length, 'Bilder');
                     displayGallery(currentImages);
                 } else {
                     // Fallback: Versuche Bilder aus images/ Ordner zu laden
                     // Dies funktioniert nur, wenn ein Server die Dateien auflistet
                     // Für GitHub Pages: Verwenden Sie gallery.json
+                    console.error('Keine Bilder in gallery.json gefunden. galleryConfig:', galleryConfig);
                     throw new Error('Keine Bilder in gallery.json gefunden. Bitte generieren Sie gallery.json mit dem Skript.');
                 }
             } catch (error) {
