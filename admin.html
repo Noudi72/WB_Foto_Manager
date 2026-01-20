@@ -98,6 +98,54 @@
         .form-group small {
             display: block;
             margin-top: 5px;
+        }
+        
+        /* CSS für inline styles - behebt Linter-Warnungen */
+        #password-group {
+            display: none;
+        }
+        
+        .btn-secondary.inline {
+            margin-top: 10px;
+            width: auto;
+            padding: 8px 16px;
+            font-size: 14px;
+        }
+        
+        #available-images {
+            display: none;
+            margin-top: 10px;
+            padding: 10px;
+            background: #1a1a1a;
+            border-radius: 6px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        
+        #available-images p {
+            color: #888;
+            font-size: 0.9em;
+            margin-bottom: 10px;
+        }
+        
+        #images-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 10px;
+        }
+        
+        .gallery-list p {
+            color: #888;
+            text-align: center;
+        }
+        
+        .admin-section p {
+            margin-bottom: 20px;
+            color: #888;
+        }
+        
+        .gallery-description {
+            margin-top: 5px;
             color: #888;
             font-size: 0.9em;
         }
@@ -255,7 +303,7 @@
                     </div>
                 </div>
                 
-                <div class="form-group" id="password-group" style="display: none;">
+                <div class="form-group" id="password-group">
                     <label for="gallery-password">Passwort</label>
                     <input type="password" id="gallery-password" placeholder="Passwort eingeben">
                     <small>⚠️ Nur für einfachen Schutz - nicht sicher!</small>
@@ -265,12 +313,12 @@
                     <label for="gallery-images">Bilder (eine pro Zeile oder kommagetrennt)</label>
                     <textarea id="gallery-images" placeholder="2J4A0331.JPG&#10;2J4A0354.JPG&#10;2J4A0369.JPG"></textarea>
                     <small>Dateinamen der Bilder, die in dieser Galerie angezeigt werden sollen</small>
-                    <button type="button" class="btn-secondary" onclick="showAvailableImages()" style="margin-top: 10px; width: auto; padding: 8px 16px; font-size: 14px;">
+                    <button type="button" class="btn-secondary inline" onclick="showAvailableImages()">
                         Verfügbare Bilder anzeigen
                     </button>
-                    <div id="available-images" style="display: none; margin-top: 10px; padding: 10px; background: #1a1a1a; border-radius: 6px; max-height: 200px; overflow-y: auto;">
-                        <p style="color: #888; font-size: 0.9em; margin-bottom: 10px;">Klicken Sie auf ein Bild, um es hinzuzufügen:</p>
-                        <div id="images-list" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 10px;"></div>
+                    <div id="available-images">
+                        <p>Klicken Sie auf ein Bild, um es hinzuzufügen:</p>
+                        <div id="images-list"></div>
                     </div>
                 </div>
                 
@@ -285,14 +333,14 @@
         <div class="admin-section">
             <h2>Bestehende Galerien</h2>
             <div id="gallery-list" class="gallery-list">
-                <p style="color: #888; text-align: center;">Lade Galerien...</p>
+                <p>Lade Galerien...</p>
             </div>
         </div>
         
         <!-- gallery.json herunterladen -->
         <div class="admin-section">
             <h2>gallery.json exportieren</h2>
-            <p style="margin-bottom: 20px; color: #888;">
+            <p>
                 Nach dem Erstellen/Bearbeiten von Galerien können Sie die aktualisierte gallery.json herunterladen 
                 und zu GitHub hochladen.
             </p>
@@ -361,7 +409,7 @@
             const galleryList = document.getElementById('gallery-list');
             
             if (!galleryConfig || !galleryConfig.galleries || galleryConfig.galleries.length === 0) {
-                galleryList.innerHTML = '<p style="color: #888; text-align: center;">Noch keine Galerien vorhanden</p>';
+                galleryList.innerHTML = '<p>Noch keine Galerien vorhanden</p>';
                 return;
             }
             
@@ -374,7 +422,7 @@
                 const galleryName = gallery.name || 'Unbenannte Galerie';
                 const imageCount = gallery.images?.length || 0;
                 const hasPassword = gallery.password ? '🔒' : '';
-                const description = gallery.description ? `<p style="margin-top: 5px;">${gallery.description}</p>` : '';
+                const description = gallery.description ? `<p class="gallery-description">${gallery.description}</p>` : '';
                 
                 item.innerHTML = `
                     <div class="gallery-item-info">
@@ -451,13 +499,6 @@
             displayGalleries();
             showAlert('Galerie gelöscht', 'success');
         }
-        
-        // Globale Funktionen für onclick (müssen im globalen Scope sein)
-        window.editGallery = editGallery;
-        window.deleteGallery = deleteGallery;
-        window.downloadGalleryJson = downloadGalleryJson;
-        window.togglePasswordField = togglePasswordField;
-        window.showAvailableImages = showAvailableImages;
         
         // Neue Galerie erstellen / Bearbeiten
         document.getElementById('new-gallery-form').addEventListener('submit', (e) => {
@@ -683,12 +724,6 @@
         }
         
         // Initialisierung - warte bis DOM geladen ist
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', initAdmin);
-        } else {
-            initAdmin();
-        }
-        
         function initAdmin() {
             // Event Listener für Download-Button
             const downloadBtn = document.getElementById('download-btn');
@@ -697,14 +732,24 @@
             }
             
             // Globale Funktionen für onclick (müssen im globalen Scope sein)
+            // WICHTIG: Alle Funktionen müssen zu diesem Zeitpunkt bereits definiert sein!
             window.editGallery = editGallery;
             window.deleteGallery = deleteGallery;
             window.downloadGalleryJson = downloadGalleryJson;
             window.togglePasswordField = togglePasswordField;
             window.showAvailableImages = showAvailableImages;
+            window.clearForm = clearForm;
             
             // Lade Konfiguration
             loadGalleryConfig();
+        }
+        
+        // Starte Initialisierung wenn DOM bereit ist
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initAdmin);
+        } else {
+            // DOM ist bereits geladen, aber warte kurz damit alle Funktionen definiert sind
+            setTimeout(initAdmin, 0);
         }
     </script>
 </body>
