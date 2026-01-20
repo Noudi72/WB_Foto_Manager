@@ -385,6 +385,9 @@
                             <button type="button" id="cloudinary-upload-btn" class="btn-primary" style="background: white; color: #667eea; font-weight: bold; padding: 10px 20px; width: 100%;">
                                 📤 Bilder hochladen
                             </button>
+                            <p style="color: rgba(255,255,255,0.7); margin-top: 8px; font-size: 0.75em; text-align: center;">
+                                ✓ Bereits konfiguriert
+                            </p>
                         </div>
                         
                         <!-- GitHub Direct Upload Option -->
@@ -546,24 +549,32 @@
         let uploadedImages = []; // Speichert hochgeladene Cloudinary-URLs
         let githubConfig = null; // GitHub-Konfiguration
         
-        // Lade Cloudinary-Konfiguration aus localStorage
+        // Lade Cloudinary-Konfiguration aus localStorage oder verwende Standardwerte
         function loadCloudinaryConfig() {
-            const cloudName = localStorage.getItem('cloudinary_cloud_name');
-            const uploadPreset = localStorage.getItem('cloudinary_upload_preset');
+            // Standardwerte (können überschrieben werden)
+            const defaultCloudName = 'dnvqw9wif';
+            const defaultUploadPreset = 'wb_foto_manager';
             
-            if (cloudName && uploadPreset) {
-                document.getElementById('cloudinary-cloud-name').value = cloudName;
-                document.getElementById('cloudinary-upload-preset').value = uploadPreset;
-                setupCloudinaryWidget(cloudName, uploadPreset);
-                document.getElementById('cloudinary-setup').style.display = 'none';
-            } else {
-                // Zeige Setup-Box prominent an
-                document.getElementById('cloudinary-setup').style.display = 'block';
-                // Scroll zum Setup-Bereich
-                setTimeout(() => {
-                    document.getElementById('cloudinary-setup').scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }, 100);
+            let cloudName = localStorage.getItem('cloudinary_cloud_name') || defaultCloudName;
+            let uploadPreset = localStorage.getItem('cloudinary_upload_preset') || defaultUploadPreset;
+            
+            // Speichere Standardwerte falls noch nicht vorhanden
+            if (!localStorage.getItem('cloudinary_cloud_name')) {
+                localStorage.setItem('cloudinary_cloud_name', defaultCloudName);
             }
+            if (!localStorage.getItem('cloudinary_upload_preset')) {
+                localStorage.setItem('cloudinary_upload_preset', defaultUploadPreset);
+            }
+            
+            // Setze Werte in Input-Feldern
+            document.getElementById('cloudinary-cloud-name').value = cloudName;
+            document.getElementById('cloudinary-upload-preset').value = uploadPreset;
+            
+            // Setup Widget direkt
+            setupCloudinaryWidget(cloudName, uploadPreset);
+            document.getElementById('cloudinary-setup').style.display = 'none';
+            
+            console.log('Cloudinary konfiguriert:', { cloudName, uploadPreset });
         }
         
         // Lade GitHub-Konfiguration aus localStorage
