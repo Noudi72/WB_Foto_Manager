@@ -1750,17 +1750,40 @@
         
         // Erstelle neuen Ordner
         function createNewFolder() {
-            const folderName = prompt('Geben Sie den Namen des neuen Ordners ein:');
+            const folderName = prompt('Geben Sie den Namen des neuen Hauptordners ein:\n(z.B. "sport", "events", "portraits")');
             if (folderName && folderName.trim()) {
+                const cleanName = folderName.trim().toLowerCase().replace(/[^a-z0-9-_]/g, '-');
+                if (cleanName !== folderName.trim()) {
+                    if (!confirm(`Ordner-Name wird zu "${cleanName}" normalisiert. Fortfahren?`)) {
+                        return;
+                    }
+                }
+                
                 const select = document.getElementById('gallery-folder-select');
                 if (select) {
+                    // Prüfe ob bereits vorhanden
+                    const exists = Array.from(select.options).some(opt => opt.value === cleanName);
+                    if (exists) {
+                        alert('Dieser Ordner existiert bereits!');
+                        select.value = cleanName;
+                        updateFolderInput();
+                        return;
+                    }
+                    
                     // Füge neuen Ordner hinzu
                     const option = document.createElement('option');
-                    option.value = folderName.trim();
-                    option.textContent = folderName.trim();
+                    option.value = cleanName;
+                    option.textContent = cleanName;
                     option.selected = true;
                     select.appendChild(option);
                     updateFolderInput();
+                    
+                    // Zeige Unterkategorie-Input
+                    const subfolderInput = document.getElementById('gallery-folder-subfolder');
+                    if (subfolderInput) {
+                        subfolderInput.style.display = 'block';
+                        subfolderInput.placeholder = 'Unterkategorie (optional, z.B. "hockey")';
+                    }
                 }
             }
         }
@@ -2609,6 +2632,15 @@
         
         // Initialisiere Passwortschutz
         function initPasswordProtection() {
+            // WICHTIG: Verstecke Admin-Content zuerst, zeige Passwort-Screen
+            const passwordScreen = document.getElementById('admin-password-screen');
+            const adminContent = document.getElementById('admin-content');
+            
+            if (!passwordScreen || !adminContent) {
+                console.error('Admin-Passwort-Elemente nicht gefunden!');
+                return;
+            }
+            
             // Prüfe ob bereits authentifiziert (Session)
             const isAuthenticated = sessionStorage.getItem('admin_authenticated') === 'true';
             const authTime = parseInt(sessionStorage.getItem('admin_auth_time') || '0');
@@ -2616,28 +2648,43 @@
             
             if (isAuthenticated && (Date.now() - authTime) < sessionTimeout) {
                 // Bereits authentifiziert und Session noch gültig
-                document.getElementById('admin-password-screen').style.display = 'none';
-                document.getElementById('admin-content').style.display = 'block';
+                passwordScreen.style.display = 'none';
+                adminContent.style.display = 'block';
             } else {
                 // Nicht authentifiziert oder Session abgelaufen
                 sessionStorage.removeItem('admin_authenticated');
                 sessionStorage.removeItem('admin_auth_time');
-                document.getElementById('admin-password-screen').style.display = 'flex';
-                document.getElementById('admin-content').style.display = 'none';
                 
-                // Event Listener für Passwort-Eingabe
+                // Zeige Passwort-Screen, verstecke Admin-Content
+                passwordScreen.style.display = 'flex';
+                adminContent.style.display = 'none';
+                
+                // Event Listener für Passwort-Eingabe (nur einmal hinzufügen)
                 const passwordInput = document.getElementById('admin-password-input');
                 const submitBtn = document.getElementById('admin-password-submit');
                 
-                submitBtn.addEventListener('click', async () => {
-                    await checkAdminPassword();
-                });
-                
-                passwordInput.addEventListener('keypress', async (e) => {
-                    if (e.key === 'Enter') {
+                if (passwordInput && submitBtn) {
+                    // Entferne alte Event Listener (falls vorhanden)
+                    const newSubmitBtn = submitBtn.cloneNode(true);
+                    submitBtn.parentNode.replaceChild(newSubmitBtn, submitBtn);
+                    
+                    const newPasswordInput = passwordInput.cloneNode(true);
+                    passwordInput.parentNode.replaceChild(newPasswordInput, passwordInput);
+                    
+                    // Füge neue Event Listener hinzu
+                    newSubmitBtn.addEventListener('click', async () => {
                         await checkAdminPassword();
-                    }
-                });
+                    });
+                    
+                    newPasswordInput.addEventListener('keypress', async (e) => {
+                        if (e.key === 'Enter') {
+                            await checkAdminPassword();
+                        }
+                    });
+                    
+                    // Focus auf Input
+                    newPasswordInput.focus();
+                }
             }
         }
         
@@ -2763,17 +2810,30 @@
         }
         
         // Starte Initialisierung wenn DOM bereit ist
+        // WICHTIG: Passwortschutz IMMER zuerst initialisieren
+        function initializeAdminPage() {
+            // Verstecke Admin-Content sofort beim Laden
+            const adminContent = document.getElementById('admin-content');
+            if (adminContent) {
+                adminContent.style.display = 'none';
+            }
+            
+            // Initialisiere Passwortschutz
+            initPasswordProtection();
+            
+            // Dann initialisiere Admin-Funktionen (nur wenn authentifiziert)
+            if (sessionStorage.getItem('admin_authenticated') === 'true') {
+                initAdmin();
+            }
+        }
+        
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', () => {
-                initPasswordProtection();
-                initAdmin();
+                initializeAdminPage();
             });
         } else {
-            // DOM ist bereits geladen, aber warte kurz damit alle Funktionen definiert sind
-            setTimeout(() => {
-                initPasswordProtection();
-                initAdmin();
-            }, 0);
+            // DOM ist bereits geladen
+            initializeAdminPage();
         }
     </script>
 </body>
