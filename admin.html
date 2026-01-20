@@ -548,7 +548,10 @@
             <p id="export-description">
                 Nach dem Erstellen/Bearbeiten von Galerien wird <code>gallery.json</code> automatisch zu GitHub gepusht.
             </p>
-            <button class="btn-primary" id="download-btn">gallery.json manuell herunterladen</button>
+            <div style="display: flex; gap: 10px; margin-top: 15px;">
+                <button class="btn-primary" id="download-btn">gallery.json manuell herunterladen</button>
+                <button class="btn-secondary" id="edit-github-config-btn" style="display: none;">⚙️ GitHub-Konfiguration bearbeiten</button>
+            </div>
         </div>
     </div>
     
@@ -600,13 +603,25 @@
                 githubConfig = { username, repo, token };
                 document.getElementById('github-setup').style.display = 'none';
                 
+                // Zeige "Bearbeiten"-Button
+                const editBtn = document.getElementById('edit-github-config-btn');
+                if (editBtn) {
+                    editBtn.style.display = 'block';
+                }
+                
                 // Update Export-Beschreibung
                 const desc = document.getElementById('export-description');
                 if (desc) {
-                    desc.innerHTML = '✓ <strong>Auto-Push aktiviert!</strong> Nach dem Erstellen/Bearbeiten wird <code>gallery.json</code> automatisch zu GitHub gepusht.';
+                    desc.innerHTML = `✓ <strong>Auto-Push aktiviert!</strong> Nach dem Erstellen/Bearbeiten wird <code>gallery.json</code> automatisch zu GitHub gepusht.<br><small style="color: #888;">Repository: <code>${username}/${repo}</code></small>`;
                 }
             } else {
                 document.getElementById('github-setup').style.display = 'block';
+                
+                // Verstecke "Bearbeiten"-Button
+                const editBtn = document.getElementById('edit-github-config-btn');
+                if (editBtn) {
+                    editBtn.style.display = 'none';
+                }
                 
                 // Update Export-Beschreibung
                 const desc = document.getElementById('export-description');
@@ -614,6 +629,12 @@
                     desc.innerHTML = 'Nach dem Erstellen/Bearbeiten von Galerien können Sie die aktualisierte gallery.json herunterladen und zu GitHub hochladen.<br><small style="color: #667eea;">💡 Tipp: Konfigurieren Sie GitHub Auto-Push oben für automatisches Pushen!</small>';
                 }
             }
+        }
+        
+        // Zeige GitHub-Konfiguration zum Bearbeiten
+        function showGitHubConfig() {
+            document.getElementById('github-setup').style.display = 'block';
+            document.getElementById('github-setup').scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
         
         // Speichere GitHub-Konfiguration
@@ -1628,6 +1649,12 @@
             const testGitHubBtn = document.getElementById('test-github-connection');
             if (testGitHubBtn) {
                 testGitHubBtn.addEventListener('click', testGitHubConnection);
+            }
+            
+            // GitHub-Konfiguration bearbeiten Button
+            const editGitHubBtn = document.getElementById('edit-github-config-btn');
+            if (editGitHubBtn) {
+                editGitHubBtn.addEventListener('click', showGitHubConfig);
             }
             
             // Lade Konfigurationen
