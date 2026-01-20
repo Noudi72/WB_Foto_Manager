@@ -1,0 +1,1024 @@
+{
+  "adjustmentPresets" : [
+    {
+      "adjustments" : {
+        "blacks" : 0,
+        "chromaticAberration" : 0,
+        "clarity" : 0.2,
+        "contrast" : 1.15,
+        "defringeAmount" : 0,
+        "defringeHue" : 0,
+        "dehaze" : 0,
+        "exposure" : 0.1,
+        "grain" : {
+          "amount" : 18,
+          "colored" : 15,
+          "highlights" : 55,
+          "roughness" : 45,
+          "seed" : 1,
+          "shadows" : 35,
+          "size" : 35
+        },
+        "highlights" : 0,
+        "hslAdjustments" : {
+          "adjustments" : {
+
+          }
+        },
+        "lensDistortion" : 0,
+        "noiseReduction" : 0,
+        "noiseReductionDetail" : 40,
+        "saturation" : 25,
+        "shadows" : 0,
+        "sharpening" : 0,
+        "sharpeningRadius" : 0,
+        "splitToning" : {
+          "balance" : 0,
+          "highlightHue" : 0,
+          "highlightSaturation" : 0,
+          "shadowHue" : 0,
+          "shadowSaturation" : 0
+        },
+        "temperature" : 0,
+        "texture" : 0,
+        "tint" : 0,
+        "toneCurve" : {
+          "controlPointsArray" : [
+            {
+              "input" : 0,
+              "output" : 0
+            },
+            {
+              "input" : 1,
+              "output" : 1
+            }
+          ]
+        },
+        "vibrance" : 0.3,
+        "vignette" : 0,
+        "whites" : 0
+      },
+      "createdAt" : "2026-01-01T11:41:02Z",
+      "group" : "Farbe",
+      "id" : "4A06A112-EB81-472B-BC25-5BC3CF8E06C2",
+      "modifiedAt" : "2026-01-01T11:41:02Z",
+      "name" : "Vivid",
+      "version" : 1
+    },
+    {
+      "adjustments" : {
+        "blacks" : 0,
+        "chromaticAberration" : 0,
+        "clarity" : 0.15,
+        "contrast" : 1.05,
+        "defringeAmount" : 0,
+        "defringeHue" : 0,
+        "dehaze" : 0,
+        "exposure" : 0.2,
+        "grain" : {
+          "amount" : 18,
+          "colored" : 15,
+          "highlights" : 55,
+          "roughness" : 45,
+          "seed" : 1,
+          "shadows" : 35,
+          "size" : 35
+        },
+        "highlights" : 0,
+        "hslAdjustments" : {
+          "adjustments" : {
+
+          }
+        },
+        "lensDistortion" : 0,
+        "noiseReduction" : 0,
+        "noiseReductionDetail" : 40,
+        "saturation" : 0,
+        "shadows" : 0,
+        "sharpening" : 0,
+        "sharpeningRadius" : 0,
+        "splitToning" : {
+          "balance" : 0,
+          "highlightHue" : 0,
+          "highlightSaturation" : 0,
+          "shadowHue" : 0,
+          "shadowSaturation" : 0
+        },
+        "temperature" : 200,
+        "texture" : 10,
+        "tint" : 0,
+        "toneCurve" : {
+          "controlPointsArray" : [
+            {
+              "input" : 0,
+              "output" : 0
+            },
+            {
+              "input" : 1,
+              "output" : 1
+            }
+          ]
+        },
+        "vibrance" : 0,
+        "vignette" : 0,
+        "whites" : 0
+      },
+      "createdAt" : "2026-01-01T11:41:02Z",
+      "group" : "Portrait",
+      "id" : "829E7F0A-3154-4B50-92B0-2EF5473AB3D1",
+      "modifiedAt" : "2026-01-01T11:41:02Z",
+      "name" : "Portrait",
+      "version" : 1
+    },
+    {
+      "adjustments" : {
+        "blacks" : 0,
+        "chromaticAberration" : 0,
+        "clarity" : 0.3,
+        "contrast" : 1.2,
+        "defringeAmount" : 0,
+        "defringeHue" : 0,
+        "dehaze" : 15,
+        "exposure" : 0.1,
+        "grain" : {
+          "amount" : 18,
+          "colored" : 15,
+          "highlights" : 55,
+          "roughness" : 45,
+          "seed" : 1,
+          "shadows" : 35,
+          "size" : 35
+        },
+        "highlights" : 0,
+        "hslAdjustments" : {
+          "adjustments" : {
+
+          }
+        },
+        "lensDistortion" : 0,
+        "noiseReduction" : 0,
+        "noiseReductionDetail" : 40,
+        "saturation" : 20,
+        "shadows" : 0,
+        "sharpening" : 0,
+        "sharpeningRadius" : 0,
+        "splitToning" : {
+          "balance" : 0,
+          "highlightHue" : 0,
+          "highlightSaturation" : 0,
+          "shadowHue" : 0,
+          "shadowSaturation" : 0
+        },
+        "temperature" : 0,
+        "texture" : 0,
+        "tint" : 0,
+        "toneCurve" : {
+          "controlPointsArray" : [
+            {
+              "input" : 0,
+              "output" : 0
+            },
+            {
+              "input" : 1,
+              "output" : 1
+            }
+          ]
+        },
+        "vibrance" : 0,
+        "vignette" : 0,
+        "whites" : 0
+      },
+      "createdAt" : "2026-01-01T11:41:02Z",
+      "group" : "Stil",
+      "id" : "FB202E99-EE6C-4C2D-8DC3-C6459D669CCB",
+      "modifiedAt" : "2026-01-01T11:41:02Z",
+      "name" : "Landschaft",
+      "version" : 1
+    },
+    {
+      "adjustments" : {
+        "blacks" : 0,
+        "chromaticAberration" : 0,
+        "clarity" : 0.25,
+        "contrast" : 1.3,
+        "defringeAmount" : 0,
+        "defringeHue" : 0,
+        "dehaze" : 0,
+        "exposure" : 0.1,
+        "grain" : {
+          "amount" : 18,
+          "colored" : 15,
+          "highlights" : 55,
+          "roughness" : 45,
+          "seed" : 1,
+          "shadows" : 35,
+          "size" : 35
+        },
+        "highlights" : 0,
+        "hslAdjustments" : {
+          "adjustments" : {
+
+          }
+        },
+        "lensDistortion" : 0,
+        "noiseReduction" : 0,
+        "noiseReductionDetail" : 40,
+        "saturation" : -100,
+        "shadows" : 0,
+        "sharpening" : 0,
+        "sharpeningRadius" : 0,
+        "splitToning" : {
+          "balance" : 0,
+          "highlightHue" : 0,
+          "highlightSaturation" : 0,
+          "shadowHue" : 0,
+          "shadowSaturation" : 0
+        },
+        "temperature" : 0,
+        "texture" : 0,
+        "tint" : 0,
+        "toneCurve" : {
+          "controlPointsArray" : [
+            {
+              "input" : 0,
+              "output" : 0
+            },
+            {
+              "input" : 1,
+              "output" : 1
+            }
+          ]
+        },
+        "vibrance" : 0,
+        "vignette" : 0,
+        "whites" : 0
+      },
+      "createdAt" : "2026-01-01T11:41:02Z",
+      "group" : "Stil",
+      "id" : "7634B320-8C8E-4132-9163-22EC446CB205",
+      "modifiedAt" : "2026-01-01T11:41:02Z",
+      "name" : "Schwarz-Weiß",
+      "version" : 1
+    },
+    {
+      "adjustments" : {
+        "blacks" : 0,
+        "chromaticAberration" : 0,
+        "clarity" : 0,
+        "contrast" : 1,
+        "defringeAmount" : 0,
+        "defringeHue" : 0,
+        "dehaze" : 0,
+        "exposure" : 0,
+        "grain" : {
+          "amount" : 18,
+          "colored" : 15,
+          "highlights" : 55,
+          "roughness" : 45,
+          "seed" : 1,
+          "shadows" : 35,
+          "size" : 35
+        },
+        "highlights" : 0,
+        "hslAdjustments" : {
+          "adjustments" : {
+
+          }
+        },
+        "lensDistortion" : 0,
+        "noiseReduction" : 0,
+        "noiseReductionDetail" : 40,
+        "saturation" : 0,
+        "shadows" : 0,
+        "sharpening" : 0,
+        "sharpeningRadius" : 0,
+        "splitToning" : {
+          "balance" : 0,
+          "highlightHue" : 0,
+          "highlightSaturation" : 0,
+          "shadowHue" : 0,
+          "shadowSaturation" : 0
+        },
+        "temperature" : 500,
+        "texture" : 0,
+        "tint" : 10,
+        "toneCurve" : {
+          "controlPointsArray" : [
+            {
+              "input" : 0,
+              "output" : 0
+            },
+            {
+              "input" : 1,
+              "output" : 1
+            }
+          ]
+        },
+        "vibrance" : 0.2,
+        "vignette" : 0,
+        "whites" : 0
+      },
+      "createdAt" : "2026-01-01T11:41:02Z",
+      "group" : "Farbe",
+      "id" : "95664AD2-6210-4F90-97BB-77E90C565237",
+      "modifiedAt" : "2026-01-01T11:41:02Z",
+      "name" : "Warm",
+      "version" : 1
+    },
+    {
+      "adjustments" : {
+        "blacks" : 0,
+        "chromaticAberration" : 0,
+        "clarity" : 0,
+        "contrast" : 1,
+        "defringeAmount" : 0,
+        "defringeHue" : 0,
+        "dehaze" : 0,
+        "exposure" : 0,
+        "grain" : {
+          "amount" : 18,
+          "colored" : 15,
+          "highlights" : 55,
+          "roughness" : 45,
+          "seed" : 1,
+          "shadows" : 35,
+          "size" : 35
+        },
+        "highlights" : 0,
+        "hslAdjustments" : {
+          "adjustments" : {
+
+          }
+        },
+        "lensDistortion" : 0,
+        "noiseReduction" : 0,
+        "noiseReductionDetail" : 40,
+        "saturation" : 0,
+        "shadows" : 0,
+        "sharpening" : 0,
+        "sharpeningRadius" : 0,
+        "splitToning" : {
+          "balance" : 0,
+          "highlightHue" : 0,
+          "highlightSaturation" : 0,
+          "shadowHue" : 0,
+          "shadowSaturation" : 0
+        },
+        "temperature" : -500,
+        "texture" : 0,
+        "tint" : -10,
+        "toneCurve" : {
+          "controlPointsArray" : [
+            {
+              "input" : 0,
+              "output" : 0
+            },
+            {
+              "input" : 1,
+              "output" : 1
+            }
+          ]
+        },
+        "vibrance" : 0.15,
+        "vignette" : 0,
+        "whites" : 0
+      },
+      "createdAt" : "2026-01-01T11:41:02Z",
+      "group" : "Farbe",
+      "id" : "B9B8B242-AF06-42D5-902C-DF933278C3A4",
+      "modifiedAt" : "2026-01-01T11:41:02Z",
+      "name" : "Cool",
+      "version" : 1
+    },
+    {
+      "adjustments" : {
+        "blacks" : -5,
+        "chromaticAberration" : 0,
+        "clarity" : 0.2,
+        "contrast" : 1.14,
+        "defringeAmount" : 0,
+        "defringeHue" : 0,
+        "dehaze" : 3,
+        "exposure" : 0.2,
+        "grain" : {
+          "amount" : 18,
+          "colored" : 15,
+          "highlights" : 55,
+          "roughness" : 45,
+          "seed" : 1,
+          "shadows" : 35,
+          "size" : 35
+        },
+        "highlights" : -22,
+        "hslAdjustments" : {
+          "adjustments" : {
+
+          }
+        },
+        "lensDistortion" : 0,
+        "noiseReduction" : 0,
+        "noiseReductionDetail" : 40,
+        "saturation" : 4,
+        "shadows" : 22,
+        "sharpening" : 0,
+        "sharpeningRadius" : 0,
+        "splitToning" : {
+          "balance" : 0,
+          "highlightHue" : 0,
+          "highlightSaturation" : 0,
+          "shadowHue" : 0,
+          "shadowSaturation" : 0
+        },
+        "temperature" : -120,
+        "texture" : 12,
+        "tint" : 8,
+        "toneCurve" : {
+          "controlPointsArray" : [
+            {
+              "input" : 0,
+              "output" : 0
+            },
+            {
+              "input" : 1,
+              "output" : 1
+            }
+          ]
+        },
+        "vibrance" : 0.16,
+        "vignette" : 0,
+        "whites" : -6
+      },
+      "createdAt" : "2026-01-01T11:41:02Z",
+      "group" : "Sport",
+      "id" : "5D8C6A8D-6F89-4B0D-AE8D-1A9C8D2A6E3F",
+      "modifiedAt" : "2026-01-01T11:41:02Z",
+      "name" : "Halle – stark beleuchtet",
+      "version" : 1
+    },
+    {
+      "adjustments" : {
+        "blacks" : 25,
+        "chromaticAberration" : 0,
+        "clarity" : 0.65,
+        "contrast" : 1.4,
+        "defringeAmount" : 0,
+        "defringeHue" : 0,
+        "dehaze" : 0,
+        "exposure" : -0.2,
+        "grain" : {
+          "amount" : 18,
+          "colored" : 15,
+          "highlights" : 55,
+          "roughness" : 45,
+          "seed" : 1,
+          "shadows" : 35,
+          "size" : 35
+        },
+        "highlights" : 0,
+        "hslAdjustments" : {
+          "adjustments" : {
+
+          }
+        },
+        "lensDistortion" : 0,
+        "noiseReduction" : 0,
+        "noiseReductionDetail" : 40,
+        "saturation" : -100,
+        "shadows" : 0,
+        "sharpening" : 25,
+        "sharpeningRadius" : 0,
+        "splitToning" : {
+          "balance" : 0,
+          "highlightHue" : 0,
+          "highlightSaturation" : 0,
+          "shadowHue" : 0,
+          "shadowSaturation" : 0
+        },
+        "temperature" : 0,
+        "texture" : 28,
+        "tint" : 0,
+        "toneCurve" : {
+          "controlPointsArray" : [
+            {
+              "input" : 0,
+              "output" : 0
+            },
+            {
+              "input" : 1,
+              "output" : 1
+            }
+          ]
+        },
+        "vibrance" : 0,
+        "vignette" : 40,
+        "whites" : 5
+      },
+      "createdAt" : "2026-01-01T11:41:02Z",
+      "group" : "B&W",
+      "id" : "A9F8D1B0-8B9F-4B7D-9C2E-3AE1C5C9E8D7",
+      "modifiedAt" : "2026-01-01T11:41:02Z",
+      "name" : "Noir Portrait",
+      "version" : 1
+    },
+    {
+      "adjustments" : {
+        "blacks" : -55,
+        "chromaticAberration" : 0,
+        "clarity" : 0.25,
+        "contrast" : 1.4,
+        "defringeAmount" : 0,
+        "defringeHue" : 0,
+        "dehaze" : 12,
+        "exposure" : 0,
+        "grain" : {
+          "amount" : 18,
+          "colored" : 15,
+          "highlights" : 55,
+          "roughness" : 45,
+          "seed" : 1,
+          "shadows" : 35,
+          "size" : 35
+        },
+        "highlights" : -35,
+        "hslAdjustments" : {
+          "adjustments" : {
+
+          }
+        },
+        "lensDistortion" : 0,
+        "noiseReduction" : 10,
+        "noiseReductionDetail" : 40,
+        "saturation" : -100,
+        "shadows" : -45,
+        "sharpening" : 55,
+        "sharpeningRadius" : 0,
+        "splitToning" : {
+          "balance" : 0,
+          "highlightHue" : 0,
+          "highlightSaturation" : 0,
+          "shadowHue" : 0,
+          "shadowSaturation" : 0
+        },
+        "temperature" : 0,
+        "texture" : 35,
+        "tint" : 0,
+        "toneCurve" : {
+          "controlPointsArray" : [
+            {
+              "input" : 0,
+              "output" : 0
+            },
+            {
+              "input" : 1,
+              "output" : 1
+            }
+          ]
+        },
+        "vibrance" : 0,
+        "vignette" : 18,
+        "whites" : 20
+      },
+      "createdAt" : "2026-01-01T11:41:02Z",
+      "group" : "B&W",
+      "id" : "2B34C89A-6E2A-4F2C-9A5B-0A7D2E4B6C11",
+      "modifiedAt" : "2026-01-01T11:41:02Z",
+      "name" : "Film Punch",
+      "version" : 1
+    }
+  ],
+  "createdByDeviceID" : "1A8C7CC7-2ED3-4838-8F1B-78966E011409",
+  "exportPresets" : [
+    {
+      "format" : "JPEG",
+      "id" : "678EF006-59E7-4326-8DFC-989353D6D4DE",
+      "maxDimension" : 3500,
+      "name" : "Agentur",
+      "quality" : 1,
+      "uploadTargets" : [
+
+      ]
+    },
+    {
+      "format" : "JPEG",
+      "id" : "67942B12-1CD6-4C1A-9F13-1FA4E1708C03",
+      "maxDimension" : 2048,
+      "name" : "Social",
+      "quality" : 1,
+      "uploadTargets" : [
+
+      ],
+      "watermarkSettings" : {
+        "logoBookmarkData" : "Ym9vazwEAAAAAAUQQAAAAA37jENYOkHye4ePsfwpQ+xW+T9qj5EM+TS5ZwX64sm7AAAAAAAAAAAAAAAAAAAAABADAAAEAAAAAwMAAAAIACgFAAAAAQEAAFVzZXJzAAAACQAAAAEBAABub2VsZ3V5YXoAAAAHAAAAAQEAAExpYnJhcnkADAAAAAEBAABDbG91ZFN0b3JhZ2UVAAAAAQEAAE9uZURyaXZlLVBlcnNvzIhubGljaAAAAAQAAAABAQAAV2FsaREAAAABAQAAQmxhdXJvY2sgU2hvb3RpbmcAAAAEAAAAAQEAAExvZ28bAAAAAQEAAExvZ28gQmxhdXJvY2tfZGVmX3doaXRlLnBuZwAkAAAAAQYAABAAAAAgAAAANAAAAEQAAABYAAAAeAAAAIQAAACgAAAArAAAAAgAAAAEAwAAWUIAAAAAAAAIAAAABAMAALMQBAAAAAAACAAAAAQDAAC6EAQAAAAAAAgAAAAEAwAAkpkEAAAAAAAIAAAABAMAADTpEgAAAAAACAAAAAQDAAB6LxMAAAAAAAgAAAAEAwAALGkTAAAAAAAIAAAABAMAAP3aIgAAAAAACAAAAAQDAACSfWgBAAAAACQAAAABBgAA\/AAAAAwBAAAcAQAALAEAADwBAABMAQAAXAEAAGwBAAB8AQAACAAAAAAEAABBxy\/RCwAAABgAAAABAgAAAQAAAAAAAAAPAAAAAAAAAAAAAAAAAAAACAAAAAQDAAAHAAAAAAAAAAQAAAADAwAA9QEAAAgAAAABCQAAZmlsZTovLy8MAAAAAQEAAE1hY2ludG9zaCBIRAgAAAAEAwAAACBFjNABAAAIAAAAAAQAAEHHaPt0AAAAJAAAAAEBAABCRTQ4QjkwMi00QkNBLTQ1MEItOUNFNy0wRTlCNEU1NkQ2REYYAAAAAQIAAIEAAAABAAAA7xMAAAEAAAAAAAAAAAAAAAEAAAABAQAALwAAAAAAAAABBQAAGgAAAAEBAABOU1VSTERvY3VtZW50SWRlbnRpZmllcktleQAABAAAAAMDAABfiwEALwAAAAEBAABOU1VSTEJvb2ttYXJrUXVhcmFudGluZU1vdW50ZWROZXR3b3JrVm9sdW1lc0tleQDkAAAA\/v\/\/\/wEAAAAAAAAAEgAAAAQQAADQAAAAAAAAAAUQAACMAQAAAAAAABAQAADIAQAAAAAAAEAQAAC4AQAAAAAAAAIgAACUAgAAAAAAAAUgAAAEAgAAAAAAABAgAAAUAgAAAAAAABEgAABIAgAAAAAAABIgAAAoAgAAAAAAABMgAAA4AgAAAAAAACAgAAB0AgAAAAAAADAgAACgAgAAAAAAAAHAAADoAQAAAAAAABHAAAAgAAAAAAAAABLAAAD4AQAAAAAAABDQAAAEAAAAAAAAAKgCAIDMAgAAAAAAANgCAICgAgAAAAAAAA==",
+        "logoURL" : "file:\/\/\/Users\/noelguyaz\/Library\/CloudStorage\/OneDrive-Perso%CC%88nlich\/Wali\/Blaurock%20Shooting\/Logo\/Logo%20Blaurock_def_white.png",
+        "opacity" : 0.8,
+        "position" : "bottomRight",
+        "size" : 0.06,
+        "text" : "© Blaurock Sportpix",
+        "textSize" : 0.03,
+        "type" : "logo"
+      }
+    },
+    {
+      "format" : "JPEG",
+      "id" : "605F3126-747F-4E6C-A721-DCC164509560",
+      "maxDimension" : 1920,
+      "name" : "Webshop Pictrs",
+      "quality" : 1,
+      "uploadTargets" : [
+
+      ]
+    }
+  ],
+  "exportedAt" : "2026-01-01T11:46:49Z",
+  "iptcTemplates" : [
+    {
+      "caption" : "{EVENT} - {LOCATION}, {DATE}",
+      "category" : "Allgemein",
+      "customFields" : {
+
+      },
+      "event" : "{EVENT}",
+      "id" : "A3097F5D-05FA-473A-80FA-CF8F010E66B2",
+      "keywords" : [
+        "{EVENT}",
+        "{LOCATION}",
+        "{VENUE}"
+      ],
+      "location" : "{LOCATION}",
+      "name" : "Allgemein - Event",
+      "venue" : "{VENUE}"
+    },
+    {
+      "caption" : "{DESCRIPTION}",
+      "category" : "Allgemein",
+      "customFields" : {
+
+      },
+      "id" : "265FEF86-6696-416B-97B4-CDC9FEB534F0",
+      "keywords" : [
+        "{SUBJECT}",
+        "{ACTION}"
+      ],
+      "name" : "Allgemein - Beschreibung"
+    },
+    {
+      "caption" : "{TEAM_A} vs {TEAM_B} - {LEAGUE}, {ARENA}, {DATE}",
+      "category" : "Eishockey",
+      "customFields" : {
+
+      },
+      "event" : "{TEAM_A} vs {TEAM_B}",
+      "id" : "0DE67699-8584-4641-9695-95FA5681416C",
+      "keywords" : [
+        "{TEAM_A}",
+        "{TEAM_B}",
+        "{LEAGUE}",
+        "{ARENA}",
+        "Eishockey"
+      ],
+      "location" : "{ARENA}",
+      "name" : "Eishockey Standard",
+      "venue" : "{ARENA}"
+    },
+    {
+      "caption" : "{PLAYER_NAME} (#{PLAYER_NUMBER}) - {TEAM_A} vs {TEAM_B}, {DATE}",
+      "category" : "Eishockey",
+      "customFields" : {
+        "Number" : "{PLAYER_NUMBER}",
+        "Player" : "{PLAYER_NAME}"
+      },
+      "event" : "{TEAM_A} vs {TEAM_B}",
+      "id" : "5C082D36-423E-4E66-B6EC-5D209F5137F6",
+      "keywords" : [
+        "{PLAYER_NAME}",
+        "{TEAM_A}",
+        "{TEAM_B}",
+        "Eishockey",
+        "{SITUATION}"
+      ],
+      "name" : "Eishockey Spieler"
+    },
+    {
+      "caption" : "{TEAM_A} vs {TEAM_B} - {LEAGUE}, {VENUE}, {DATE}",
+      "category" : "Fussball",
+      "customFields" : {
+
+      },
+      "event" : "{TEAM_A} vs {TEAM_B}",
+      "id" : "1C44DD5D-EA82-417B-9F0B-E5D6E91BEC4E",
+      "keywords" : [
+        "{TEAM_A}",
+        "{TEAM_B}",
+        "{LEAGUE}",
+        "{VENUE}",
+        "Fussball"
+      ],
+      "name" : "Fussball Standard",
+      "venue" : "{VENUE}"
+    },
+    {
+      "caption" : "{SUBJECT} - {LOCATION}, {DATE}",
+      "category" : "Portrait",
+      "customFields" : {
+
+      },
+      "id" : "DA3FBE02-1D50-4E9C-AFD1-F403EE62ACD8",
+      "keywords" : [
+        "{SUBJECT}",
+        "Portrait"
+      ],
+      "location" : "{LOCATION}",
+      "name" : "Portrait"
+    }
+  ],
+  "keywordLibrary" : [
+    {
+      "children" : [
+        {
+          "id" : "6824B789-01DD-47BD-B6CD-BD27791857C9",
+          "name" : "Motocross"
+        },
+        {
+          "id" : "B1BD287D-843E-4142-9DDF-4D2E65253C3F",
+          "name" : "Eishockey"
+        },
+        {
+          "id" : "746671D6-CF51-4074-8765-01F354E2B5DD",
+          "name" : "Fussball"
+        },
+        {
+          "id" : "32DB74CD-6759-4CC4-849D-7DC627B143A7",
+          "name" : "Tennis"
+        }
+      ],
+      "id" : "E538C3A2-30F2-4C7D-85A8-36EB7C95BC59",
+      "name" : "Sport"
+    },
+    {
+      "children" : [
+        {
+          "id" : "892E987E-297D-4506-BC61-44055A087CB5",
+          "name" : "Indoor"
+        },
+        {
+          "id" : "6F3A870B-6CC6-4446-BC5D-24B592FDE3D4",
+          "name" : "Outdoor"
+        }
+      ],
+      "id" : "4A1A5BDA-D9CB-4597-B3C2-AB431C61C6D7",
+      "name" : "Ort"
+    },
+    {
+      "children" : [
+        {
+          "id" : "A6E1D4C8-AD42-46D5-A390-4148316C7D2D",
+          "name" : "Athlet"
+        },
+        {
+          "id" : "84A082F3-04E2-4438-80DF-C4D6310500A8",
+          "name" : "Trainer"
+        },
+        {
+          "id" : "ACA27436-409B-4642-8EAA-6210E9E79BF2",
+          "name" : "Fan"
+        }
+      ],
+      "id" : "806D2ED4-E3B3-4F96-8D25-0C9822651BF8",
+      "name" : "Personen"
+    }
+  ],
+  "maskPresets" : [
+
+  ],
+  "presetGroups" : [
+    "Farbe",
+    "Portrait",
+    "Stil",
+    "Eishockey Tissot",
+    "Allrounder",
+    "Frühling",
+    "Sommer",
+    "Herbst",
+    "Winter",
+    "Eishockey",
+    "Black & White",
+    "Landschaft",
+    "Adventure",
+    "Film",
+    "Stadt",
+    "KI Generiert",
+    "Berge",
+    "Sport",
+    "Tiere",
+    "Konzerte",
+    "INFLUENCER",
+    "ICELAND",
+    "90s",
+    "Diverse"
+  ],
+  "smartCollections" : [
+    {
+      "criteria" : {
+        "colorTags" : [
+
+        ],
+        "hasColorTag" : false,
+        "pickStatus" : "pick"
+      },
+      "id" : "FCFADEE6-83F4-4135-B726-31FE2FFA42BA",
+      "isVisible" : true,
+      "name" : "Picks"
+    },
+    {
+      "criteria" : {
+        "colorTags" : [
+
+        ],
+        "hasColorTag" : false,
+        "maxRating" : 5,
+        "minRating" : 5
+      },
+      "id" : "A89D44F8-7E79-4B48-ABF6-B2A2C50A8237",
+      "isVisible" : true,
+      "name" : "5 Sterne"
+    },
+    {
+      "criteria" : {
+        "colorTags" : [
+
+        ],
+        "hasAdjustments" : true,
+        "hasColorTag" : false
+      },
+      "id" : "8BA3BB4F-1C17-4343-9DDC-433050004BF8",
+      "isVisible" : true,
+      "name" : "Mit Adjustments"
+    },
+    {
+      "criteria" : {
+        "colorTags" : [
+
+        ],
+        "hasColorTag" : false,
+        "isInQuickCollection" : true
+      },
+      "id" : "E0129C3B-C394-4495-B02C-8C657EA8179A",
+      "isVisible" : true,
+      "name" : "Quick Collection"
+    },
+    {
+      "criteria" : {
+        "colorTags" : [
+
+        ],
+        "hasColorTag" : false,
+        "isExported" : false
+      },
+      "id" : "8A1D3BF2-B9C7-4CE6-8054-311DDD72ABB5",
+      "isVisible" : true,
+      "name" : "Unexportiert"
+    },
+    {
+      "criteria" : {
+        "colorTags" : [
+
+        ],
+        "hasColorTag" : false,
+        "maxRating" : 0,
+        "minRating" : 0
+      },
+      "id" : "2275BE56-2D10-49B9-9A11-E69CD9A9C9DC",
+      "isVisible" : true,
+      "name" : "Unbewertet"
+    }
+  ],
+  "syncedSettings" : {
+    "adjustmentsSidebarCompactMode" : false,
+    "autoLoadIPTC" : true,
+    "backupBeforeOverwrite" : true,
+    "bestShotScoringMode" : "portrait",
+    "defaultExportFormat" : "jpeg",
+    "defaultExportQuality" : 1,
+    "filenameTemplate" : "{originalname}_{preset}",
+    "finderSidebarCompactMode" : false,
+    "hardwareAcceleration" : true,
+    "macOSToolbarCompactMode" : true,
+    "macOSToolbarShowsText" : true,
+    "maxCacheSize" : 0,
+    "preferWorkflowTopbar" : false,
+    "previewQuality" : 1,
+    "progressiveRendering" : true,
+    "saveRatingInXMP" : true,
+    "shootingAdjustmentsSectionOrder" : [
+      "basic",
+      "advanced",
+      "details",
+      "toneCurve",
+      "hsl",
+      "splitToning",
+      "grain",
+      "softProof",
+      "optics",
+      "history"
+    ],
+    "shootingRatingOverlayX" : 0.532039080467626,
+    "shootingRatingOverlayY" : 0.9714516129032258,
+    "shootingSidebarTabOrder" : [
+      "adjustments",
+      "presets",
+      "masking",
+      "crop",
+      "histogram",
+      "iptc",
+      "watermark"
+    ],
+    "showEditInfoOverlay" : true,
+    "sportAdjustmentsSectionOrder" : [
+      "basic",
+      "advanced",
+      "details",
+      "toneCurve",
+      "hsl",
+      "splitToning",
+      "grain",
+      "softProof",
+      "optics",
+      "history"
+    ],
+    "sportRatingOverlayX" : 0.532039080467626,
+    "sportRatingOverlayY" : 0.9714516129032258,
+    "sportShowsAdvancedAdjustments" : true,
+    "sportSidebarTabOrder" : [
+      "adjustments",
+      "presets",
+      "masking",
+      "crop",
+      "histogram",
+      "iptc",
+      "watermark"
+    ],
+    "styleProfilePickerCompactMode" : true,
+    "theme" : "dark",
+    "workflowPresetControlsSidebarDensity" : true,
+    "workflowPresetRaw" : "shooting"
+  },
+  "uploadTargets" : [
+
+  ],
+  "version" : 2,
+  "watermarkTemplates" : [
+    {
+      "createdAt" : "2025-12-27T08:16:15Z",
+      "id" : "F2503394-8FD6-467F-9551-B3C8808B3CF5",
+      "modifiedAt" : "2025-12-28T08:29:09Z",
+      "name" : "Blaurock Pix white",
+      "settings" : {
+        "bothLayout" : "stacked",
+        "logoBookmarkData" : "Ym9vazwEAAAAAAUQQAAAAMqN3vCQX9rY+VrFk5+NCQBS2PuznB3i\/8v8yTBhrQqRAAAAAAAAAAAAAAAAAAAAABADAAAEAAAAAwMAAAAYACgFAAAAAQEAAFVzZXJzAAAACQAAAAEBAABub2VsZ3V5YXoAAAAHAAAAAQEAAExpYnJhcnkADAAAAAEBAABDbG91ZFN0b3JhZ2UVAAAAAQEAAE9uZURyaXZlLVBlcnNvzIhubGljaAAAAAQAAAABAQAAV2FsaREAAAABAQAAQmxhdXJvY2sgU2hvb3RpbmcAAAAEAAAAAQEAAExvZ28bAAAAAQEAAExvZ28gQmxhdXJvY2tfZGVmX3doaXRlLnBuZwAkAAAAAQYAABAAAAAgAAAANAAAAEQAAABYAAAAeAAAAIQAAACgAAAArAAAAAgAAAAEAwAAWUIAAAAAAAAIAAAABAMAALMQBAAAAAAACAAAAAQDAAC6EAQAAAAAAAgAAAAEAwAAkpkEAAAAAAAIAAAABAMAADTpEgAAAAAACAAAAAQDAAB6LxMAAAAAAAgAAAAEAwAALGkTAAAAAAAIAAAABAMAAP3aIgAAAAAACAAAAAQDAACSfWgBAAAAACQAAAABBgAA\/AAAAAwBAAAcAQAALAEAADwBAABMAQAAXAEAAGwBAAB8AQAACAAAAAAEAABBxy\/RCwAAABgAAAABAgAAAQAAAAAAAAAPAAAAAAAAAAAAAAAAAAAACAAAAAQDAAAHAAAAAAAAAAQAAAADAwAA9QEAAAgAAAABCQAAZmlsZTovLy8MAAAAAQEAAE1hY2ludG9zaCBIRAgAAAAEAwAAACBFjNABAAAIAAAAAAQAAEHHdmn2AAAAJAAAAAEBAABCRTQ4QjkwMi00QkNBLTQ1MEItOUNFNy0wRTlCNEU1NkQ2REYYAAAAAQIAAIEAAAABAAAA7xMAAAEAAAAAAAAAAAAAAAEAAAABAQAALwAAAAAAAAABBQAAGgAAAAEBAABOU1VSTERvY3VtZW50SWRlbnRpZmllcktleQAABAAAAAMDAABfiwEALwAAAAEBAABOU1VSTEJvb2ttYXJrUXVhcmFudGluZU1vdW50ZWROZXR3b3JrVm9sdW1lc0tleQDkAAAA\/v\/\/\/wEAAAAAAAAAEgAAAAQQAADQAAAAAAAAAAUQAACMAQAAAAAAABAQAADIAQAAAAAAAEAQAAC4AQAAAAAAAAIgAACUAgAAAAAAAAUgAAAEAgAAAAAAABAgAAAUAgAAAAAAABEgAABIAgAAAAAAABIgAAAoAgAAAAAAABMgAAA4AgAAAAAAACAgAAB0AgAAAAAAADAgAACgAgAAAAAAAAHAAADoAQAAAAAAABHAAAAgAAAAAAAAABLAAAD4AQAAAAAAABDQAAAEAAAAAAAAAKgCAIDMAgAAAAAAANgCAICgAgAAAAAAAA==",
+        "logoURL" : "file:\/\/\/Users\/noelguyaz\/Library\/CloudStorage\/OneDrive-Perso%CC%88nlich\/Wali\/Blaurock%20Shooting\/Logo\/Logo%20Blaurock_def_white.png",
+        "opacity" : 0.8,
+        "position" : "bottomRight",
+        "size" : 0.06,
+        "text" : "© Blaurock Sportpix",
+        "textSize" : 0.03,
+        "type" : "logo"
+      }
+    },
+    {
+      "createdAt" : "2025-12-27T08:16:59Z",
+      "id" : "B37587FE-5764-4CD1-A6CC-29DFDA45E05F",
+      "modifiedAt" : "2025-12-28T08:29:02Z",
+      "name" : "Blaurock Pix black",
+      "settings" : {
+        "bothLayout" : "stacked",
+        "customX" : 0.5235483870967741,
+        "customY" : 0.12010411332991988,
+        "logoBookmarkData" : "Ym9vazwEAAAAAAUQQAAAAPKKO2Q0gQnNSNHHrhhu8iCQt751Rh1CvtqpeC+bUHsuAAAAAAAAAAAAAAAAAAAAABADAAAEAAAAAwMAAAAYACgFAAAAAQEAAFVzZXJzAAAACQAAAAEBAABub2VsZ3V5YXoAAAAHAAAAAQEAAExpYnJhcnkADAAAAAEBAABDbG91ZFN0b3JhZ2UVAAAAAQEAAE9uZURyaXZlLVBlcnNvzIhubGljaAAAAAQAAAABAQAAV2FsaREAAAABAQAAQmxhdXJvY2sgU2hvb3RpbmcAAAAEAAAAAQEAAExvZ28bAAAAAQEAAExvZ28gQmxhdXJvY2tfZGVmX2JsYWNrLnBuZwAkAAAAAQYAABAAAAAgAAAANAAAAEQAAABYAAAAeAAAAIQAAACgAAAArAAAAAgAAAAEAwAAWUIAAAAAAAAIAAAABAMAALMQBAAAAAAACAAAAAQDAAC6EAQAAAAAAAgAAAAEAwAAkpkEAAAAAAAIAAAABAMAADTpEgAAAAAACAAAAAQDAAB6LxMAAAAAAAgAAAAEAwAALGkTAAAAAAAIAAAABAMAAP3aIgAAAAAACAAAAAQDAACUfWgBAAAAACQAAAABBgAA\/AAAAAwBAAAcAQAALAEAADwBAABMAQAAXAEAAGwBAAB8AQAACAAAAAAEAABBxy\/RCwAAABgAAAABAgAAAQAAAAAAAAAPAAAAAAAAAAAAAAAAAAAACAAAAAQDAAAHAAAAAAAAAAQAAAADAwAA9QEAAAgAAAABCQAAZmlsZTovLy8MAAAAAQEAAE1hY2ludG9zaCBIRAgAAAAEAwAAACBFjNABAAAIAAAAAAQAAEHHdmn2AAAAJAAAAAEBAABCRTQ4QjkwMi00QkNBLTQ1MEItOUNFNy0wRTlCNEU1NkQ2REYYAAAAAQIAAIEAAAABAAAA7xMAAAEAAAAAAAAAAAAAAAEAAAABAQAALwAAAAAAAAABBQAAGgAAAAEBAABOU1VSTERvY3VtZW50SWRlbnRpZmllcktleQAABAAAAAMDAABhiwEALwAAAAEBAABOU1VSTEJvb2ttYXJrUXVhcmFudGluZU1vdW50ZWROZXR3b3JrVm9sdW1lc0tleQDkAAAA\/v\/\/\/wEAAAAAAAAAEgAAAAQQAADQAAAAAAAAAAUQAACMAQAAAAAAABAQAADIAQAAAAAAAEAQAAC4AQAAAAAAAAIgAACUAgAAAAAAAAUgAAAEAgAAAAAAABAgAAAUAgAAAAAAABEgAABIAgAAAAAAABIgAAAoAgAAAAAAABMgAAA4AgAAAAAAACAgAAB0AgAAAAAAADAgAACgAgAAAAAAAAHAAADoAQAAAAAAABHAAAAgAAAAAAAAABLAAAD4AQAAAAAAABDQAAAEAAAAAAAAAKgCAIDMAgAAAAAAANgCAICgAgAAAAAAAA==",
+        "logoURL" : "file:\/\/\/Users\/noelguyaz\/Library\/CloudStorage\/OneDrive-Perso%CC%88nlich\/Wali\/Blaurock%20Shooting\/Logo\/Logo%20Blaurock_def_black.png",
+        "opacity" : 1,
+        "position" : "bottomRight",
+        "size" : 0.08,
+        "text" : "© Blaurock Sportpix",
+        "textSize" : 0.03,
+        "type" : "logo"
+      }
+    },
+    {
+      "createdAt" : "2025-12-27T08:54:26Z",
+      "id" : "FD89AF01-B646-49B8-AA24-10EB2DA6A294",
+      "modifiedAt" : "2025-12-27T08:54:34Z",
+      "name" : "Wolfskopf",
+      "settings" : {
+        "bothLayout" : "stacked",
+        "logoBookmarkData" : "Ym9va\/gDAAAAAAUQQAAAALdWsulk3YX8bF5E5WZ7PAI2QuZCKHNlmWOMQ+oSXOhkAAAAAAAAAAAAAAAAAAAAANgCAAAEAAAAAwMAAAAYACgFAAAAAQEAAFVzZXJzAAAACQAAAAEBAABub2VsZ3V5YXoAAAAHAAAAAQEAAExpYnJhcnkADAAAAAEBAABDbG91ZFN0b3JhZ2UVAAAAAQEAAE9uZURyaXZlLVBlcnNvzIhubGljaAAAAAQAAAABAQAAV2FsaREAAAABAQAAQmxhdXJvY2sgU2hvb3RpbmcAAAAEAAAAAQEAAExvZ28aAAAAAQEAAEJsYXVyb2NrIFBpeF9Xb2xmc2tvcGYucG5nAAAkAAAAAQYAABAAAAAgAAAANAAAAEQAAABYAAAAeAAAAIQAAACgAAAArAAAAAgAAAAEAwAAWUIAAAAAAAAIAAAABAMAALMQBAAAAAAACAAAAAQDAAC6EAQAAAAAAAgAAAAEAwAAkpkEAAAAAAAIAAAABAMAADTpEgAAAAAACAAAAAQDAAB6LxMAAAAAAAgAAAAEAwAALGkTAAAAAAAIAAAABAMAAP3aIgAAAAAACAAAAAQDAACAfWgBAAAAACQAAAABBgAA\/AAAAAwBAAAcAQAALAEAADwBAABMAQAAXAEAAGwBAAB8AQAACAAAAAAEAABBxy\/RCAAAABgAAAABAgAAAQAAAAAAAAAPAAAAAAAAAAAAAAAAAAAACAAAAAQDAAAHAAAAAAAAAAQAAAADAwAA9QEAAAgAAAABCQAAZmlsZTovLy8MAAAAAQEAAE1hY2ludG9zaCBIRAgAAAAEAwAAACBFjNABAAAIAAAAAAQAAEHHdmn2AAAAJAAAAAEBAABCRTQ4QjkwMi00QkNBLTQ1MEItOUNFNy0wRTlCNEU1NkQ2REYYAAAAAQIAAIEAAAABAAAA7xMAAAEAAAAAAAAAAAAAAAEAAAABAQAALwAAAAAAAAABBQAAGgAAAAEBAABOU1VSTERvY3VtZW50SWRlbnRpZmllcktleQAABAAAAAMDAABNiwEA2AAAAP7\/\/\/8BAAAAAAAAABEAAAAEEAAA0AAAAAAAAAAFEAAAjAEAAAAAAAAQEAAAyAEAAAAAAABAEAAAuAEAAAAAAAACIAAAlAIAAAAAAAAFIAAABAIAAAAAAAAQIAAAFAIAAAAAAAARIAAASAIAAAAAAAASIAAAKAIAAAAAAAATIAAAOAIAAAAAAAAgIAAAdAIAAAAAAAAwIAAAoAIAAAAAAAABwAAA6AEAAAAAAAARwAAAIAAAAAAAAAASwAAA+AEAAAAAAAAQ0AAABAAAAAAAAACoAgCAzAIAAAAAAAA=",
+        "logoURL" : "file:\/\/\/Users\/noelguyaz\/Library\/CloudStorage\/OneDrive-Perso%CC%88nlich\/Wali\/Blaurock%20Shooting\/Logo\/Blaurock%20Pix_Wolfskopf.png",
+        "opacity" : 1,
+        "position" : "bottomRight",
+        "size" : 0.08,
+        "text" : "© Blaurock Sportpix",
+        "textSize" : 0.03,
+        "type" : "logo"
+      }
+    }
+  ]
+}

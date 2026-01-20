@@ -1,0 +1,54 @@
+{
+  "id": "00000000-0000-0000-0000-000000000001",
+  "name": "Noir Portrait",
+  "group": "B&W",
+  "version": 1,
+  "author": null,
+  "description": "Dramatisches Schwarz-Weiß Portrait mit hohem Kontrast und tiefen Schatten",
+  "createdAt": "2025-12-22T18:00:00Z",
+  "modifiedAt": "2025-12-22T18:00:00Z",
+  "adjustments": {
+    "exposure": -0.2,
+    "contrast": 1.14,
+    "temperature": 491.0,
+    "tint": 0.0,
+    "clarity": 0.48,
+    "vibrance": 0.0,
+    "highlights": 22.0,
+    "shadows": -53.0,
+    "whites": 5.0,
+    "blacks": 25.0,
+    "saturation": -100.0,
+    "dehaze": -16.0,
+    "texture": 0.0,
+    "sharpening": 0.0,
+    "noiseReduction": 0.0,
+    "lensDistortion": 0.0,
+    "vignette": 0.0,
+    "chromaticAberration": 0.0,
+    "toneCurve": {
+      "controlPoints": [
+        [0.0, 0.0],
+        [1.0, 1.0]
+      ]
+    },
+    "hslAdjustments": {
+      "hue": {},
+      "saturation": {},
+      "luminance": {}
+    },
+    "splitToning": {
+      "highlightHue": 0.0,
+      "highlightSaturation": 0.0,
+      "shadowHue": 0.0,
+      "shadowSaturation": 0.0,
+      "balance": 0.0
+    },
+    "grain": {
+      "amount": 0.0,
+      "size": 25.0,
+      "roughness": 50.0
+    }
+  }
+}
+
