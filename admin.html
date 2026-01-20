@@ -913,7 +913,9 @@
                 });
                 
                 if (updateResponse.ok) {
-                    showAlert('✓ gallery.json erfolgreich zu GitHub gepusht!', 'success');
+                    const result = await updateResponse.json();
+                    console.log('GitHub Push erfolgreich:', result);
+                    showAlert('✓ gallery.json erfolgreich zu GitHub gepusht! Die Galerie sollte in 1-2 Minuten auf der Startseite sichtbar sein.', 'success');
                     return true;
                 } else {
                     const errorData = await updateResponse.json().catch(() => ({}));
@@ -928,8 +930,10 @@
                         }
                     } else if (updateResponse.status === 401) {
                         errorMessage = 'Token ungültig oder abgelaufen. Die Galerie wurde lokal erstellt, aber nicht zu GitHub gepusht.';
+                    } else if (updateResponse.status === 404) {
+                        errorMessage = 'Repository oder Datei nicht gefunden (404). Bitte prüfen Sie Repository-Name und Token-Berechtigungen.';
                     } else {
-                        errorMessage = errorData.message || updateResponse.statusText || 'Unbekannter Fehler';
+                        errorMessage = (errorData.message || updateResponse.statusText || 'Unbekannter Fehler') + ' (Status: ' + updateResponse.status + ')';
                     }
                     
                     showAlert('⚠️ ' + errorMessage, 'warning');

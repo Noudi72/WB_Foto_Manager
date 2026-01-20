@@ -371,10 +371,16 @@
         // Lade Konfiguration von gallery.json
         async function loadConfig() {
             try {
-                const response = await fetch('./gallery.json');
+                // Cache-Busting: Füge Timestamp hinzu um sicherzustellen, dass die neueste Version geladen wird
+                const cacheBuster = '?t=' + Date.now();
+                const response = await fetch('./gallery.json' + cacheBuster);
                 if (response.ok) {
                     galleryConfig = await response.json();
-                    console.log('gallery.json geladen');
+                    console.log('gallery.json geladen', {
+                        version: galleryConfig.version,
+                        galleries: galleryConfig.galleries?.length || 0,
+                        generated: galleryConfig.generated
+                    });
                     return true;
                 } else {
                     console.error('gallery.json konnte nicht geladen werden:', response.status, response.statusText);
