@@ -1327,7 +1327,20 @@
                             const imageInfo = result.info;
                             const imageName = imageInfo.original_filename || imageInfo.public_id;
                             const imageUrl = imageInfo.secure_url;
-                            const thumbnailUrl = imageInfo.thumbnail_url || imageInfo.secure_url;
+                            
+                            // Erstelle hochwertiges Thumbnail (400x400px, automatisches Cropping)
+                            // Verwende c_fill für besseres Cropping oder c_limit für Seitenverhältnis
+                            let thumbnailUrl = imageInfo.secure_url;
+                            if (imageInfo.public_id) {
+                                // Transformiere URL für besseres Thumbnail (400x400px, quality 80)
+                                thumbnailUrl = imageInfo.secure_url.replace(
+                                    /\/upload\//,
+                                    '/upload/c_fill,h_400,w_400,q_auto:good,f_auto/'
+                                );
+                            } else {
+                                // Fallback: Verwende vorhandenes thumbnail_url oder original
+                                thumbnailUrl = imageInfo.thumbnail_url || imageInfo.secure_url;
+                            }
                             
                             // Füge Bild zur Liste hinzu
                             uploadedImages.push({
@@ -1943,11 +1956,24 @@
                 const cloudinaryImage = uploadedImages.find(img => img.name === name);
                 if (cloudinaryImage) {
                     console.log('Verwende Cloudinary-Bild:', name);
+                    
+                    // Stelle sicher, dass Thumbnail hochwertig ist
+                    let thumbnailUrl = cloudinaryImage.thumbnailUrl;
+                    if (cloudinaryImage.url && cloudinaryImage.url.includes('res.cloudinary.com')) {
+                        // Wenn Thumbnail noch altes Format hat, erstelle neues
+                        if (!thumbnailUrl || thumbnailUrl.includes('/c_limit,h_60,w_90/') || thumbnailUrl.includes('/c_fill,h_60,w_90/')) {
+                            thumbnailUrl = cloudinaryImage.url.replace(
+                                /\/upload\//,
+                                '/upload/c_fill,h_400,w_400,q_auto:good,f_auto/'
+                            );
+                        }
+                    }
+                    
                     return {
                         id: `img_${Date.now()}_${index}`,
                         name: name,
                         url: cloudinaryImage.url,
-                        thumbnailUrl: cloudinaryImage.thumbnailUrl,
+                        thumbnailUrl: thumbnailUrl,
                         uploadDate: new Date().toISOString(),
                         width: cloudinaryImage.width,
                         height: cloudinaryImage.height,

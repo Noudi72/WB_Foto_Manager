@@ -425,7 +425,25 @@
                 let previewImage = '';
                 if (!gallery.password && gallery.images && gallery.images.length > 0) {
                     const firstImage = gallery.images[0];
-                    const thumbnailUrl = firstImage.thumbnailUrl || firstImage.url;
+                    let thumbnailUrl = firstImage.thumbnailUrl || firstImage.url;
+                    
+                    // Verbessere Thumbnail-Qualität für Vorschaubild (500x500px für Galerie-Karten)
+                    if (thumbnailUrl.includes('res.cloudinary.com') && thumbnailUrl.includes('/upload/')) {
+                        // Ersetze alte kleine Thumbnails durch größere
+                        if (thumbnailUrl.includes('/c_limit,h_60,w_90/') || thumbnailUrl.includes('/c_fill,h_60,w_90/')) {
+                            thumbnailUrl = thumbnailUrl.replace(
+                                /\/upload\/[^\/]+\//,
+                                '/upload/c_fill,h_500,w_500,q_auto:good,f_auto/'
+                            );
+                        } else if (!thumbnailUrl.includes('/c_') && !thumbnailUrl.includes('/w_') && !thumbnailUrl.includes('/h_')) {
+                            // Keine Transformation - füge hinzu
+                            thumbnailUrl = thumbnailUrl.replace(
+                                /\/upload\//,
+                                '/upload/c_fill,h_500,w_500,q_auto:good,f_auto/'
+                            );
+                        }
+                    }
+                    
                     previewImage = `<img src="${thumbnailUrl}" alt="${gallery.name}" class="gallery-card-preview" loading="lazy">`;
                 }
                 
@@ -516,10 +534,27 @@
                 const item = document.createElement('div');
                 item.className = 'gallery-item';
                 
-                // Verwende direkt die URL (Thumbnails können fehlen)
-                // Priorität: thumbnailUrl > url > lokaler Pfad
-                const imgSrc = image.thumbnailUrl || image.url || `./images/${image.name}`;
+                // Erstelle hochwertiges Thumbnail-URL
+                let imgSrc = image.thumbnailUrl || image.url || `./images/${image.name}`;
                 const fullSrc = image.url || `./images/${image.name}`;
+                
+                // Wenn Cloudinary-URL vorhanden, aber altes Format (h_60,w_90), ersetze durch größeres Thumbnail
+                if (imgSrc.includes('res.cloudinary.com') && imgSrc.includes('/upload/')) {
+                    // Prüfe ob bereits Transformation vorhanden
+                    if (imgSrc.includes('/c_limit,h_60,w_90/') || imgSrc.includes('/c_fill,h_60,w_90/')) {
+                        // Ersetze durch hochwertiges Thumbnail (400x400px)
+                        imgSrc = imgSrc.replace(
+                            /\/upload\/[^\/]+\//,
+                            '/upload/c_fill,h_400,w_400,q_auto:good,f_auto/'
+                        );
+                    } else if (!imgSrc.includes('/c_') && !imgSrc.includes('/w_') && !imgSrc.includes('/h_')) {
+                        // Keine Transformation vorhanden - füge hinzu
+                        imgSrc = imgSrc.replace(
+                            /\/upload\//,
+                            '/upload/c_fill,h_400,w_400,q_auto:good,f_auto/'
+                        );
+                    }
+                }
                 
                 const img = document.createElement('img');
                 img.src = imgSrc;
@@ -532,8 +567,16 @@
                         return;
                     }
                     // Fallback 2: Versuche direkte URL wenn thumbnailUrl fehlgeschlagen
-                    if (image.thumbnailUrl && this.src === image.thumbnailUrl && image.url) {
-                        this.src = image.url;
+                    if (image.url && this.src !== image.url) {
+                        // Versuche hochwertiges Thumbnail aus original URL zu erstellen
+                        if (image.url.includes('res.cloudinary.com')) {
+                            this.src = image.url.replace(
+                                /\/upload\//,
+                                '/upload/c_fill,h_400,w_400,q_auto:good,f_auto/'
+                            );
+                        } else {
+                            this.src = image.url;
+                        }
                         return;
                     }
                     // Fallback 3: Zeige Fehler-Placeholder
