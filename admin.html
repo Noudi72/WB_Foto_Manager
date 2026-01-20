@@ -296,7 +296,7 @@
                 Nach dem Erstellen/Bearbeiten von Galerien können Sie die aktualisierte gallery.json herunterladen 
                 und zu GitHub hochladen.
             </p>
-            <button class="btn-primary" onclick="downloadGalleryJson()">gallery.json herunterladen</button>
+            <button class="btn-primary" id="download-btn">gallery.json herunterladen</button>
         </div>
     </div>
     
@@ -405,7 +405,13 @@
             document.getElementById('new-gallery-form').reset();
             document.getElementById('password-group').style.display = 'none';
             editingGalleryId = null;
-            document.querySelector('#new-gallery-form h2')?.parentElement?.querySelector('h2')?.textContent = 'Neue Galerie erstellen';
+            const formSection = document.querySelector('.admin-section');
+            if (formSection) {
+                const h2 = formSection.querySelector('h2');
+                if (h2) {
+                    h2.textContent = 'Neue Galerie erstellen';
+                }
+            }
         }
         
         // Galerie bearbeiten
@@ -436,10 +442,22 @@
         function deleteGallery(galleryId) {
             if (!confirm('Möchten Sie diese Galerie wirklich löschen?')) return;
             
+            if (!galleryConfig || !galleryConfig.galleries) {
+                showAlert('Fehler: Keine Galerien geladen', 'error');
+                return;
+            }
+            
             galleryConfig.galleries = galleryConfig.galleries.filter(g => g.id !== galleryId);
             displayGalleries();
             showAlert('Galerie gelöscht', 'success');
         }
+        
+        // Globale Funktionen für onclick (müssen im globalen Scope sein)
+        window.editGallery = editGallery;
+        window.deleteGallery = deleteGallery;
+        window.downloadGalleryJson = downloadGalleryJson;
+        window.togglePasswordField = togglePasswordField;
+        window.showAvailableImages = showAvailableImages;
         
         // Neue Galerie erstellen / Bearbeiten
         document.getElementById('new-gallery-form').addEventListener('submit', (e) => {
@@ -596,21 +614,43 @@
             }
         }
         
+        // Alert anzeigen
+        function showAlert(message, type = 'info') {
+            const alertContainer = document.getElementById('alert-container');
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type}`;
+            alert.textContent = message;
+            alertContainer.appendChild(alert);
+            
+            setTimeout(() => {
+                alert.remove();
+            }, 5000);
+        }
+        
         // Verfügbare Bilder anzeigen
         function showAvailableImages() {
             const container = document.getElementById('available-images');
             const imagesList = document.getElementById('images-list');
             
-            if (container.style.display === 'none') {
+            if (!container || !imagesList) {
+                console.error('Container oder imagesList nicht gefunden');
+                return;
+            }
+            
+            if (container.style.display === 'none' || !container.style.display) {
                 // Sammle alle verfügbaren Bilder aus allen Galerien
                 const allImages = new Map();
-                galleryConfig.galleries?.forEach(gallery => {
-                    gallery.images?.forEach(img => {
-                        if (!allImages.has(img.name)) {
-                            allImages.set(img.name, img);
+                if (galleryConfig && galleryConfig.galleries) {
+                    galleryConfig.galleries.forEach(gallery => {
+                        if (gallery.images) {
+                            gallery.images.forEach(img => {
+                                if (!allImages.has(img.name)) {
+                                    allImages.set(img.name, img);
+                                }
+                            });
                         }
                     });
-                });
+                }
                 
                 imagesList.innerHTML = '';
                 
@@ -625,10 +665,12 @@
                         `;
                         imgDiv.onclick = () => {
                             const textarea = document.getElementById('gallery-images');
-                            const current = textarea.value.trim();
-                            const newValue = current ? current + '\n' + img.name : img.name;
-                            textarea.value = newValue;
-                            textarea.focus();
+                            if (textarea) {
+                                const current = textarea.value.trim();
+                                const newValue = current ? current + '\n' + img.name : img.name;
+                                textarea.value = newValue;
+                                textarea.focus();
+                            }
                         };
                         imagesList.appendChild(imgDiv);
                     });
@@ -640,21 +682,30 @@
             }
         }
         
-        // Alert anzeigen
-        function showAlert(message, type = 'info') {
-            const alertContainer = document.getElementById('alert-container');
-            const alert = document.createElement('div');
-            alert.className = `alert alert-${type}`;
-            alert.textContent = message;
-            alertContainer.appendChild(alert);
-            
-            setTimeout(() => {
-                alert.remove();
-            }, 5000);
+        // Initialisierung - warte bis DOM geladen ist
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initAdmin);
+        } else {
+            initAdmin();
         }
         
-        // Initialisierung
-        loadGalleryConfig();
+        function initAdmin() {
+            // Event Listener für Download-Button
+            const downloadBtn = document.getElementById('download-btn');
+            if (downloadBtn) {
+                downloadBtn.addEventListener('click', downloadGalleryJson);
+            }
+            
+            // Globale Funktionen für onclick (müssen im globalen Scope sein)
+            window.editGallery = editGallery;
+            window.deleteGallery = deleteGallery;
+            window.downloadGalleryJson = downloadGalleryJson;
+            window.togglePasswordField = togglePasswordField;
+            window.showAvailableImages = showAvailableImages;
+            
+            // Lade Konfiguration
+            loadGalleryConfig();
+        }
     </script>
 </body>
 </html>
