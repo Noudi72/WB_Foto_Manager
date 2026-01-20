@@ -1546,15 +1546,28 @@
             displayGalleries();
             clearForm();
             
+            // Speichere gallery.json lokal als Backup (für Debugging)
+            try {
+                const jsonStr = JSON.stringify(galleryConfig, null, 2);
+                localStorage.setItem('gallery_json_backup', jsonStr);
+                localStorage.setItem('gallery_json_backup_time', new Date().toISOString());
+            } catch (e) {
+                console.warn('Konnte gallery.json nicht lokal speichern:', e);
+            }
+            
             // Versuche automatisch zu GitHub zu pushen (nicht-blockierend)
             if (githubConfig) {
                 // Push im Hintergrund, blockiert nicht die Galerie-Erstellung
-                pushGalleryJsonToGitHub().catch(error => {
+                pushGalleryJsonToGitHub().then(success => {
+                    if (!success) {
+                        showAlert('⚠️ Galerie wurde erstellt, aber GitHub-Push fehlgeschlagen. Bitte laden Sie gallery.json manuell herunter und pushen Sie es zu GitHub.', 'warning');
+                    }
+                }).catch(error => {
                     console.error('GitHub Push Fehler (nicht kritisch):', error);
-                    // Fehler wurde bereits in pushGalleryJsonToGitHub angezeigt
+                    showAlert('⚠️ Galerie wurde erstellt, aber GitHub-Push fehlgeschlagen. Bitte laden Sie gallery.json manuell herunter und pushen Sie es zu GitHub.', 'warning');
                 });
             } else {
-                showAlert('💡 Tipp: Konfigurieren Sie GitHub Auto-Push, damit gallery.json automatisch gespeichert wird.', 'info');
+                showAlert('💡 Tipp: Konfigurieren Sie GitHub Auto-Push, damit gallery.json automatisch gespeichert wird. Aktuell müssen Sie gallery.json manuell herunterladen und zu GitHub pushen.', 'info');
             }
         });
         
