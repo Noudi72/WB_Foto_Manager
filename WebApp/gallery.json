@@ -1,14 +1,447 @@
 {
   "version": "2.0",
-  "generated": "2026-01-14T20:00:00Z",
-  "password": null,
+  "generated": "2026-01-20T11:03:35.950427Z",
   "images": [
     {
       "id": "img_1",
-      "name": "beispiel.jpg",
-      "url": "./images/beispiel.jpg",
-      "thumbnailUrl": "./images/thumbnails/thumb_beispiel.jpg",
-      "uploadDate": "2026-01-14T20:00:00Z"
+      "name": "2J4A0331.JPG",
+      "url": "./images/2J4A0331.JPG",
+      "uploadDate": "2026-01-19T15:53:44.456743Z",
+      "thumbnailUrl": "./images/thumbnails/thumb_2J4A0331.JPG",
+      "width": 6000,
+      "height": 4000
+    },
+    {
+      "id": "img_2",
+      "name": "2J4A0354.JPG",
+      "url": "./images/2J4A0354.JPG",
+      "uploadDate": "2026-01-19T15:53:44.457025Z",
+      "thumbnailUrl": "./images/thumbnails/thumb_2J4A0354.JPG",
+      "width": 6000,
+      "height": 4000
+    },
+    {
+      "id": "img_3",
+      "name": "2J4A0369.JPG",
+      "url": "./images/2J4A0369.JPG",
+      "uploadDate": "2026-01-19T15:53:44.457000Z",
+      "thumbnailUrl": "./images/thumbnails/thumb_2J4A0369.JPG",
+      "width": 6000,
+      "height": 4000
+    },
+    {
+      "id": "img_4",
+      "name": "2J4A0380.JPG",
+      "url": "./images/2J4A0380.JPG",
+      "uploadDate": "2026-01-10T16:18:49.727290Z",
+      "thumbnailUrl": "./images/thumbnails/thumb_2J4A0380.JPG",
+      "width": 6000,
+      "height": 4000
+    },
+    {
+      "id": "img_5",
+      "name": "2J4A0392.JPG",
+      "url": "./images/2J4A0392.JPG",
+      "uploadDate": "2026-01-10T16:18:49.705270Z",
+      "thumbnailUrl": "./images/thumbnails/thumb_2J4A0392.JPG",
+      "width": 6000,
+      "height": 4000
+    },
+    {
+      "id": "img_6",
+      "name": "2J4A0400.JPG",
+      "url": "./images/2J4A0400.JPG",
+      "uploadDate": "2026-01-19T15:53:44.437329Z",
+      "thumbnailUrl": "./images/thumbnails/thumb_2J4A0400.JPG",
+      "width": 6000,
+      "height": 4000
+    },
+    {
+      "id": "img_7",
+      "name": "2J4A0405.JPG",
+      "url": "./images/2J4A0405.JPG",
+      "uploadDate": "2026-01-10T16:18:49.699249Z",
+      "thumbnailUrl": "./images/thumbnails/thumb_2J4A0405.JPG",
+      "width": 6000,
+      "height": 4000
+    },
+    {
+      "id": "img_8",
+      "name": "2J4A0408.JPG",
+      "url": "./images/2J4A0408.JPG",
+      "uploadDate": "2026-01-10T16:18:49.703775Z",
+      "thumbnailUrl": "./images/thumbnails/thumb_2J4A0408.JPG",
+      "width": 6000,
+      "height": 4000
+    },
+    {
+      "id": "img_9",
+      "name": "2J4A0411.JPG",
+      "url": "./images/2J4A0411.JPG",
+      "uploadDate": "2026-01-19T15:53:44.448704Z",
+      "thumbnailUrl": "./images/thumbnails/thumb_2J4A0411.JPG",
+      "width": 6000,
+      "height": 4000
+    },
+    {
+      "id": "img_10",
+      "name": "2J4A0412.JPG",
+      "url": "./images/2J4A0412.JPG",
+      "uploadDate": "2026-01-19T15:53:44.437776Z",
+      "thumbnailUrl": "./images/thumbnails/thumb_2J4A0412.JPG",
+      "width": 6000,
+      "height": 4000
+    },
+    {
+      "id": "img_11",
+      "name": "2J4A0417.JPG",
+      "url": "./images/2J4A0417.JPG",
+      "uploadDate": "2026-01-10T16:18:49.725616Z",
+      "thumbnailUrl": "./images/thumbnails/thumb_2J4A0417.JPG",
+      "width": 6000,
+      "height": 4000
+    },
+    {
+      "id": "img_12",
+      "name": "2J4A0418.JPG",
+      "url": "./images/2J4A0418.JPG",
+      "uploadDate": "2026-01-10T16:18:49.717801Z",
+      "thumbnailUrl": "./images/thumbnails/thumb_2J4A0418.JPG",
+      "width": 6000,
+      "height": 4000
+    },
+    {
+      "id": "img_13",
+      "name": "2J4A0431.JPG",
+      "url": "./images/2J4A0431.JPG",
+      "uploadDate": "2026-01-19T15:53:44.441488Z",
+      "thumbnailUrl": "./images/thumbnails/thumb_2J4A0431.JPG",
+      "width": 6000,
+      "height": 4000
+    },
+    {
+      "id": "img_14",
+      "name": "2J4A0448.JPG",
+      "url": "./images/2J4A0448.JPG",
+      "uploadDate": "2026-01-10T16:18:49.701130Z",
+      "thumbnailUrl": "./images/thumbnails/thumb_2J4A0448.JPG",
+      "width": 6000,
+      "height": 4000
+    },
+    {
+      "id": "img_15",
+      "name": "2J4A0449.JPG",
+      "url": "./images/2J4A0449.JPG",
+      "uploadDate": "2026-01-19T15:53:44.433152Z",
+      "thumbnailUrl": "./images/thumbnails/thumb_2J4A0449.JPG",
+      "width": 6000,
+      "height": 4000
+    },
+    {
+      "id": "img_16",
+      "name": "2J4A0472.JPG",
+      "url": "./images/2J4A0472.JPG",
+      "uploadDate": "2026-01-10T16:18:49.687693Z",
+      "thumbnailUrl": "./images/thumbnails/thumb_2J4A0472.JPG",
+      "width": 6000,
+      "height": 4000
+    },
+    {
+      "id": "img_17",
+      "name": "2J4A0482.JPG",
+      "url": "./images/2J4A0482.JPG",
+      "uploadDate": "2026-01-10T16:18:49.727105Z",
+      "thumbnailUrl": "./images/thumbnails/thumb_2J4A0482.JPG",
+      "width": 6000,
+      "height": 4000
+    },
+    {
+      "id": "img_18",
+      "name": "2J4A0494.JPG",
+      "url": "./images/2J4A0494.JPG",
+      "uploadDate": "2026-01-10T16:18:49.510966Z",
+      "thumbnailUrl": "./images/thumbnails/thumb_2J4A0494.JPG",
+      "width": 6000,
+      "height": 4000
+    },
+    {
+      "id": "img_19",
+      "name": "2J4A0522.JPG",
+      "url": "./images/2J4A0522.JPG",
+      "uploadDate": "2026-01-19T15:53:44.450700Z",
+      "thumbnailUrl": "./images/thumbnails/thumb_2J4A0522.JPG",
+      "width": 6000,
+      "height": 4000
+    },
+    {
+      "id": "img_20",
+      "name": "2J4A0551.JPG",
+      "url": "./images/2J4A0551.JPG",
+      "uploadDate": "2026-01-10T16:18:49.494169Z",
+      "thumbnailUrl": "./images/thumbnails/thumb_2J4A0551.JPG",
+      "width": 6000,
+      "height": 4000
+    },
+    {
+      "id": "img_21",
+      "name": "2J4A0555.JPG",
+      "url": "./images/2J4A0555.JPG",
+      "uploadDate": "2026-01-10T16:18:49.485988Z",
+      "thumbnailUrl": "./images/thumbnails/thumb_2J4A0555.JPG",
+      "width": 6000,
+      "height": 4000
+    },
+    {
+      "id": "img_22",
+      "name": "2J4A0562.JPG",
+      "url": "./images/2J4A0562.JPG",
+      "uploadDate": "2026-01-10T16:18:49.479604Z",
+      "thumbnailUrl": "./images/thumbnails/thumb_2J4A0562.JPG",
+      "width": 6000,
+      "height": 4000
+    },
+    {
+      "id": "img_23",
+      "name": "2J4A0601.JPG",
+      "url": "./images/2J4A0601.JPG",
+      "uploadDate": "2026-01-19T15:53:44.452793Z",
+      "thumbnailUrl": "./images/thumbnails/thumb_2J4A0601.JPG",
+      "width": 6000,
+      "height": 4000
+    },
+    {
+      "id": "img_24",
+      "name": "2J4A0621.JPG",
+      "url": "./images/2J4A0621.JPG",
+      "uploadDate": "2026-01-10T16:18:49.441263Z",
+      "thumbnailUrl": "./images/thumbnails/thumb_2J4A0621.JPG",
+      "width": 6000,
+      "height": 4000
+    },
+    {
+      "id": "img_25",
+      "name": "2J4A0624.JPG",
+      "url": "./images/2J4A0624.JPG",
+      "uploadDate": "2026-01-10T16:18:49.456634Z",
+      "thumbnailUrl": "./images/thumbnails/thumb_2J4A0624.JPG",
+      "width": 6000,
+      "height": 4000
+    },
+    {
+      "id": "img_26",
+      "name": "2J4A0627.JPG",
+      "url": "./images/2J4A0627.JPG",
+      "uploadDate": "2026-01-19T15:53:44.443421Z",
+      "thumbnailUrl": "./images/thumbnails/thumb_2J4A0627.JPG",
+      "width": 6000,
+      "height": 4000
+    },
+    {
+      "id": "img_27",
+      "name": "2J4A0636.JPG",
+      "url": "./images/2J4A0636.JPG",
+      "uploadDate": "2026-01-10T16:18:49.442690Z",
+      "thumbnailUrl": "./images/thumbnails/thumb_2J4A0636.JPG",
+      "width": 6000,
+      "height": 4000
+    },
+    {
+      "id": "img_28",
+      "name": "2J4A0645.JPG",
+      "url": "./images/2J4A0645.JPG",
+      "uploadDate": "2026-01-10T16:18:49.419935Z",
+      "thumbnailUrl": "./images/thumbnails/thumb_2J4A0645.JPG",
+      "width": 6000,
+      "height": 4000
+    },
+    {
+      "id": "img_29",
+      "name": "2J4A0646.JPG",
+      "url": "./images/2J4A0646.JPG",
+      "uploadDate": "2026-01-10T16:18:49.469759Z",
+      "thumbnailUrl": "./images/thumbnails/thumb_2J4A0646.JPG",
+      "width": 6000,
+      "height": 4000
+    },
+    {
+      "id": "img_30",
+      "name": "2J4A0678.JPG",
+      "url": "./images/2J4A0678.JPG",
+      "uploadDate": "2026-01-19T15:53:44.445934Z",
+      "thumbnailUrl": "./images/thumbnails/thumb_2J4A0678.JPG",
+      "width": 6000,
+      "height": 4000
+    },
+    {
+      "id": "img_31",
+      "name": "2J4A0682.JPG",
+      "url": "./images/2J4A0682.JPG",
+      "uploadDate": "2026-01-10T16:18:49.457307Z",
+      "thumbnailUrl": "./images/thumbnails/thumb_2J4A0682.JPG",
+      "width": 6000,
+      "height": 4000
+    },
+    {
+      "id": "img_32",
+      "name": "2J4A0695.JPG",
+      "url": "./images/2J4A0695.JPG",
+      "uploadDate": "2026-01-10T16:18:49.421722Z",
+      "thumbnailUrl": "./images/thumbnails/thumb_2J4A0695.JPG",
+      "width": 6000,
+      "height": 4000
+    },
+    {
+      "id": "img_33",
+      "name": "2J4A0697.JPG",
+      "url": "./images/2J4A0697.JPG",
+      "uploadDate": "2026-01-19T15:53:44.453335Z",
+      "thumbnailUrl": "./images/thumbnails/thumb_2J4A0697.JPG",
+      "width": 6000,
+      "height": 4000
+    },
+    {
+      "id": "img_34",
+      "name": "2J4A0712.JPG",
+      "url": "./images/2J4A0712.JPG",
+      "uploadDate": "2026-01-10T16:18:49.269730Z",
+      "thumbnailUrl": "./images/thumbnails/thumb_2J4A0712.JPG",
+      "width": 6000,
+      "height": 4000
+    },
+    {
+      "id": "img_35",
+      "name": "2J4A0722.JPG",
+      "url": "./images/2J4A0722.JPG",
+      "uploadDate": "2026-01-10T16:18:49.230433Z",
+      "thumbnailUrl": "./images/thumbnails/thumb_2J4A0722.JPG",
+      "width": 6000,
+      "height": 4000
+    },
+    {
+      "id": "img_36",
+      "name": "2J4A0761.JPG",
+      "url": "./images/2J4A0761.JPG",
+      "uploadDate": "2026-01-10T16:18:49.187583Z",
+      "thumbnailUrl": "./images/thumbnails/thumb_2J4A0761.JPG",
+      "width": 6000,
+      "height": 4000
+    },
+    {
+      "id": "img_37",
+      "name": "2J4A0771.JPG",
+      "url": "./images/2J4A0771.JPG",
+      "uploadDate": "2026-01-19T15:53:44.456957Z",
+      "thumbnailUrl": "./images/thumbnails/thumb_2J4A0771.JPG",
+      "width": 6000,
+      "height": 4000
+    },
+    {
+      "id": "img_38",
+      "name": "2J4A0777.JPG",
+      "url": "./images/2J4A0777.JPG",
+      "uploadDate": "2026-01-10T16:18:49.233663Z",
+      "thumbnailUrl": "./images/thumbnails/thumb_2J4A0777.JPG",
+      "width": 6000,
+      "height": 4000
+    },
+    {
+      "id": "img_39",
+      "name": "2J4A0781.JPG",
+      "url": "./images/2J4A0781.JPG",
+      "uploadDate": "2026-01-10T16:18:49.189695Z",
+      "thumbnailUrl": "./images/thumbnails/thumb_2J4A0781.JPG",
+      "width": 6000,
+      "height": 4000
+    },
+    {
+      "id": "img_40",
+      "name": "2J4A0788.JPG",
+      "url": "./images/2J4A0788.JPG",
+      "uploadDate": "2026-01-10T16:18:49.219816Z",
+      "thumbnailUrl": "./images/thumbnails/thumb_2J4A0788.JPG",
+      "width": 6000,
+      "height": 4000
+    },
+    {
+      "id": "img_41",
+      "name": "2J4A0816.JPG",
+      "url": "./images/2J4A0816.JPG",
+      "uploadDate": "2026-01-10T16:18:49.208158Z",
+      "thumbnailUrl": "./images/thumbnails/thumb_2J4A0816.JPG",
+      "width": 6000,
+      "height": 4000
+    },
+    {
+      "id": "img_42",
+      "name": "2J4A0841.JPG",
+      "url": "./images/2J4A0841.JPG",
+      "uploadDate": "2026-01-19T15:53:44.459067Z",
+      "thumbnailUrl": "./images/thumbnails/thumb_2J4A0841.JPG",
+      "width": 6000,
+      "height": 4000
+    },
+    {
+      "id": "img_43",
+      "name": "2J4A0862.JPG",
+      "url": "./images/2J4A0862.JPG",
+      "uploadDate": "2026-01-19T15:53:44.468370Z",
+      "thumbnailUrl": "./images/thumbnails/thumb_2J4A0862.JPG",
+      "width": 6000,
+      "height": 4000
+    },
+    {
+      "id": "img_44",
+      "name": "2J4A0865.JPG",
+      "url": "./images/2J4A0865.JPG",
+      "uploadDate": "2026-01-19T15:53:44.578978Z",
+      "thumbnailUrl": "./images/thumbnails/thumb_2J4A0865.JPG",
+      "width": 6000,
+      "height": 4000
+    },
+    {
+      "id": "img_45",
+      "name": "2J4A0866.JPG",
+      "url": "./images/2J4A0866.JPG",
+      "uploadDate": "2026-01-19T15:53:44.582021Z",
+      "thumbnailUrl": "./images/thumbnails/thumb_2J4A0866.JPG",
+      "width": 6000,
+      "height": 4000
+    },
+    {
+      "id": "img_46",
+      "name": "2J4A0867.JPG",
+      "url": "./images/2J4A0867.JPG",
+      "uploadDate": "2026-01-19T15:53:44.585397Z",
+      "thumbnailUrl": "./images/thumbnails/thumb_2J4A0867.JPG",
+      "width": 6000,
+      "height": 4000
+    },
+    {
+      "id": "img_47",
+      "name": "2J4A0894.JPG",
+      "url": "./images/2J4A0894.JPG",
+      "uploadDate": "2026-01-10T16:18:49.210434Z",
+      "thumbnailUrl": "./images/thumbnails/thumb_2J4A0894.JPG",
+      "width": 6000,
+      "height": 4000
+    },
+    {
+      "id": "img_48",
+      "name": "2J4A0898.JPG",
+      "url": "./images/2J4A0898.JPG",
+      "uploadDate": "2026-01-10T16:18:49.222312Z",
+      "thumbnailUrl": "./images/thumbnails/thumb_2J4A0898.JPG",
+      "width": 6000,
+      "height": 4000
+    },
+    {
+      "id": "img_49",
+      "name": "2J4A0906 (bearbeitet).jpg",
+      "url": "./images/2J4A0906 (bearbeitet).jpg",
+      "uploadDate": "2026-01-19T15:53:44.580926Z",
+      "thumbnailUrl": "./images/thumbnails/thumb_2J4A0906 (bearbeitet).jpg",
+      "width": 5750,
+      "height": 3874
     }
   ]
 }
