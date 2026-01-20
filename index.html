@@ -845,6 +845,12 @@
             border-left: 3px solid #667eea;
             color: #e0e0e0;
             font-size: 0.95em;
+            margin-bottom: 8px;
+        }
+        
+        .selection-item.clickable.active {
+            background: rgba(102, 126, 234, 0.3) !important;
+            border-left-width: 4px !important;
         }
         
         @media (max-width: 1200px) {
@@ -1367,8 +1373,9 @@
         
         // Aktiver Filter
         let currentFilter = {
-            type: 'all',  // 'all', 'selected', 'favorites', 'commented'
-            flag: null    // 'reject', 'review', 'approve', 'final', null
+            type: 'all',  // 'all', 'selected', 'favorites', 'commented', 'selection'
+            flag: null,   // 'reject', 'review', 'approve', 'final', null
+            selectionName: null  // Name der Auswahl, wenn type === 'selection'
         };
         
         // Toggle Gallery Sidebar
@@ -1383,6 +1390,7 @@
         function filterByType(type) {
             currentFilter.type = type;
             currentFilter.flag = null;
+            currentFilter.selectionName = null;
             applyFilter();
             updateFilterUI();
         }
@@ -1397,6 +1405,7 @@
                 currentFilter.flag = flag;
                 currentFilter.type = 'all';
             }
+            currentFilter.selectionName = null;
             applyFilter();
             updateFilterUI();
         }
@@ -1423,6 +1432,9 @@
                 } else if (currentFilter.type === 'commented') {
                     const comments = feedbackData.comments[imageId] || [];
                     shouldShow = comments.length > 0;
+                } else if (currentFilter.type === 'selection' && currentFilter.selectionName) {
+                    const selections = feedbackData.selections[imageId] || [];
+                    shouldShow = selections.includes(currentFilter.selectionName);
                 }
                 
                 // Flag-Filter
@@ -1458,12 +1470,22 @@
         // Update Filter UI (aktive Zustände)
         function updateFilterUI() {
             // Entferne alle aktiven Zustände
-            document.querySelectorAll('.stat-item, .flag-summary-item').forEach(el => {
+            document.querySelectorAll('.stat-item, .flag-summary-item, .selection-item').forEach(el => {
                 el.classList.remove('active');
             });
             
             // Setze aktiven Zustand für Typ-Filter
-            if (currentFilter.type !== 'all') {
+            if (currentFilter.type === 'all') {
+                document.querySelectorAll('.stat-item')[0].classList.add('active');
+            } else if (currentFilter.type === 'selection') {
+                // Aktiviere entsprechende Auswahl
+                const selectionItems = document.querySelectorAll('.selection-item');
+                selectionItems.forEach(item => {
+                    if (item.textContent.includes(currentFilter.selectionName)) {
+                        item.classList.add('active');
+                    }
+                });
+            } else {
                 const statItems = document.querySelectorAll('.stat-item');
                 const typeMap = {
                     'selected': 1,
@@ -1473,8 +1495,6 @@
                 if (typeMap[currentFilter.type] !== undefined) {
                     statItems[typeMap[currentFilter.type]].classList.add('active');
                 }
-            } else {
-                document.querySelectorAll('.stat-item')[0].classList.add('active');
             }
             
             // Setze aktiven Zustand für Flag-Filter
@@ -1548,9 +1568,24 @@
                         const imageId = img.id || `img_${index}`;
                         return (feedbackData.selections[imageId] || []).includes(s);
                     }).length;
-                    return `<div class="selection-item">📁 ${s} <span style="float: right; color: #667eea; font-weight: 600;">${count}</span></div>`;
+                    return `<div class="selection-item clickable" onclick="filterBySelection('${s.replace(/'/g, "\\'")}')" title="Nur Bilder in dieser Auswahl">📁 ${s} <span style="float: right; color: #667eea; font-weight: 600;">${count}</span></div>`;
                 }).join('');
             }
+        }
+        
+        // Filter nach Auswahl
+        function filterBySelection(selectionName) {
+            if (currentFilter.type === 'selection' && currentFilter.selectionName === selectionName) {
+                // Toggle: Wenn bereits aktiv, zurücksetzen
+                currentFilter.type = 'all';
+                currentFilter.selectionName = null;
+            } else {
+                currentFilter.type = 'selection';
+                currentFilter.selectionName = selectionName;
+            }
+            currentFilter.flag = null;
+            applyFilter();
+            updateFilterUI();
         }
         
         // Update Badges für ein Bild
