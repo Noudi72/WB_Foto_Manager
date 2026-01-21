@@ -1,6 +1,6 @@
 {
   "version": "3.0",
-  "generated": "2026-01-21T10:12:20.072Z",
+  "generated": "2026-01-21T10:12:27.877Z",
   "categories": [
     {
       "id": "sport",
@@ -833,7 +833,7 @@
     {
       "image": "https://res.cloudinary.com/dnvqw9wif/image/upload/v1768988614/ct6sagdpiuqjiikgpplu.jpg",
       "url": "https://res.cloudinary.com/dnvqw9wif/image/upload/v1768988614/ct6sagdpiuqjiikgpplu.jpg",
-      "title": "Husky",
+      "title": null,
       "description": null
     }
   ]
