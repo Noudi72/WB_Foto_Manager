@@ -335,6 +335,18 @@
             box-shadow: 0 12px 40px rgba(0,0,0,0.4);
             border: 1px solid var(--border);
         }
+
+        /* Desktop: Slider-Höhe an Kategorien-Kachel angleichen (wird per JS gesetzt) */
+        @media (min-width: 969px) {
+            .selector-top .portfolio-slider-wrapper {
+                height: var(--portfolio-match-height, auto);
+                margin-bottom: 0;
+            }
+
+            .selector-top .portfolio-slider {
+                height: 100%;
+            }
+        }
         
         @media (max-width: 768px) {
             .portfolio-slider {
@@ -2364,6 +2376,35 @@
             // Initialisiere beide Slider
             initPortfolioSliderPart(1, portfolio1);
             initPortfolioSliderPart(2, portfolio2);
+
+            // Höhe an Kategorien-Kachel anpassen (Desktop)
+            requestAnimationFrame(syncPortfolioHeightToCategoryTile);
+        }
+
+        function syncPortfolioHeightToCategoryTile() {
+            try {
+                if (window.matchMedia && window.matchMedia('(max-width: 968px)').matches) {
+                    document.documentElement.style.removeProperty('--portfolio-match-height');
+                    return;
+                }
+
+                const sidebar = document.getElementById('category-sidebar');
+                const wrapper = document.getElementById('portfolio-slider-wrapper');
+                if (!sidebar || !wrapper) return;
+
+                const wrapperStyle = window.getComputedStyle(wrapper);
+                if (wrapperStyle.display === 'none') {
+                    document.documentElement.style.removeProperty('--portfolio-match-height');
+                    return;
+                }
+
+                const height = sidebar.getBoundingClientRect().height;
+                if (!height || height < 120) return;
+
+                document.documentElement.style.setProperty('--portfolio-match-height', `${Math.round(height)}px`);
+            } catch (e) {
+                // ignore
+            }
         }
         
         function initPortfolioSliderPart(sliderNum, portfolio) {
@@ -2624,6 +2665,8 @@
             initPortfolioSlider();
             initCategorySidebar();
             displayFilteredGalleries();
+
+            requestAnimationFrame(syncPortfolioHeightToCategoryTile);
             
             // Zeige CTA-Bereich wenn Galerien vorhanden
             const ctaSection = document.getElementById('cta-section');
@@ -3919,6 +3962,10 @@
                 if (e.key === 'ArrowRight') nextImage();
                 if (e.key === 'ArrowLeft') previousImage();
             }
+        });
+
+        window.addEventListener('resize', () => {
+            requestAnimationFrame(syncPortfolioHeightToCategoryTile);
         });
         
         // Initialisierung
