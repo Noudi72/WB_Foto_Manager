@@ -1567,6 +1567,7 @@
             color: #e0e0e0;
             border-bottom: 1px solid var(--accent);
             padding-bottom: 6px;
+            padding-left: 32px;
             font-weight: 600;
         }
         
@@ -2202,6 +2203,53 @@
             comments: {},    // { imageId: [{ author, text, date }] }
             selections: {}    // { imageId: ['selection1', 'selection2'] }
         };
+
+        function normalizeFeedbackData(data) {
+            const normalized = {
+                ratings: {},
+                flags: {},
+                favorites: {},
+                comments: {},
+                selections: {}
+            };
+
+            if (!data || typeof data !== 'object') return normalized;
+
+            if (data.ratings && typeof data.ratings === 'object') {
+                Object.entries(data.ratings).forEach(([key, value]) => {
+                    const num = Number(value);
+                    if (Number.isFinite(num)) {
+                        normalized.ratings[key] = Math.max(0, Math.min(5, Math.round(num)));
+                    }
+                });
+            }
+
+            if (data.flags && typeof data.flags === 'object') {
+                Object.entries(data.flags).forEach(([key, value]) => {
+                    if (typeof value === 'string' && value) normalized.flags[key] = value;
+                });
+            }
+
+            if (data.favorites && typeof data.favorites === 'object') {
+                Object.entries(data.favorites).forEach(([key, value]) => {
+                    if (value) normalized.favorites[key] = true;
+                });
+            }
+
+            if (data.comments && typeof data.comments === 'object') {
+                Object.entries(data.comments).forEach(([key, value]) => {
+                    if (Array.isArray(value)) normalized.comments[key] = value;
+                });
+            }
+
+            if (data.selections && typeof data.selections === 'object') {
+                Object.entries(data.selections).forEach(([key, value]) => {
+                    if (Array.isArray(value)) normalized.selections[key] = value;
+                });
+            }
+
+            return normalized;
+        }
         
         // Theme Management
         function initTheme() {
@@ -2367,7 +2415,7 @@
             const saved = localStorage.getItem('gallery_feedback');
             if (saved) {
                 try {
-                    feedbackData = JSON.parse(saved);
+                    feedbackData = normalizeFeedbackData(JSON.parse(saved));
                 } catch (e) {
                     console.error('Fehler beim Laden der Feedback-Daten:', e);
                 }
@@ -2376,7 +2424,7 @@
         
         // Speichere Feedback-Daten
         function saveFeedbackData() {
-            localStorage.setItem('gallery_feedback', JSON.stringify(feedbackData));
+            localStorage.setItem('gallery_feedback', JSON.stringify(normalizeFeedbackData(feedbackData)));
         }
         
         // Initialisiere Feedback-System
