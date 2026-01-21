@@ -1,6 +1,6 @@
 {
   "version": "3.0",
-  "generated": "2026-01-21T09:34:23.294Z",
+  "generated": "2026-01-21T09:38:25.974Z",
   "categories": [
     {
       "id": "sport",
@@ -811,5 +811,12 @@
       "folder": "06_Events"
     }
   ],
-  "portfolio": []
+  "portfolio": [
+    {
+      "image": "https://res.cloudinary.com/dnvqw9wif/image/upload/v1768988305/ksxotxkij4nkfijga2dt.jpg",
+      "url": "https://res.cloudinary.com/dnvqw9wif/image/upload/v1768988305/ksxotxkij4nkfijga2dt.jpg",
+      "title": "Car",
+      "description": null
+    }
+  ]
 }
