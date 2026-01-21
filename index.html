@@ -982,7 +982,7 @@
         /* Actions unten */
         .gallery-item-actions {
             display: flex;
-            gap: 8px;
+            gap: 6px;
             align-items: center;
             justify-content: flex-end;
         }
@@ -990,46 +990,48 @@
         .gallery-item-btn {
             display: flex;
             align-items: center;
-            gap: 6px;
-            padding: 6px 10px;
-            background: rgba(0,0,0,0.6);
-            -webkit-backdrop-filter: blur(10px);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.2);
+            gap: 5px;
+            padding: 3px 6px;
+            background: transparent;
+            -webkit-backdrop-filter: none;
+            backdrop-filter: none;
+            border: 0;
             border-radius: 7px;
-            color: white;
+            color: var(--text-secondary);
             cursor: pointer;
-            font-size: 13px;
-            font-weight: 500;
-            transition: all 0.2s;
+            font-size: 11px;
+            font-weight: 700;
+            transition: color 0.15s ease;
             white-space: nowrap;
+            text-shadow: none;
         }
         
         .gallery-item-btn:hover {
-            background: rgba(212, 165, 116, 0.8);
-            border-color: var(--accent);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(212, 165, 116, 0.4);
+            color: var(--accent);
+            transform: none;
+            box-shadow: none;
         }
 
         .gallery-item-btn .btn-label {
-            font-size: 11px;
+            font-size: 9px;
             letter-spacing: 0.04em;
             text-transform: uppercase;
         }
 
         .gallery-item-btn .btn-count {
-            font-size: 12px;
+            font-size: 10px;
             font-variant-numeric: tabular-nums;
         }
         
         .gallery-item-like.active {
-            background: rgba(255, 107, 107, 0.8);
-            border-color: #ff6b6b;
+            background: transparent;
+            border-color: transparent;
+            color: #ff6b6b;
         }
         
         .gallery-item-like.active:hover {
-            background: rgba(255, 107, 107, 1);
+            background: transparent;
+            color: #ff6b6b;
         }
         
         /* Badges für Markierungen */
@@ -1083,6 +1085,25 @@
         .selection-badge.badge-tone-4 { color: #6bcf7f; }
         .selection-badge.badge-tone-5 { color: #ffd93d; }
         .selection-badge.badge-tone-6 { color: #c6b6ff; }
+
+        .rating-badge {
+            position: absolute;
+            top: 40px;
+            left: 8px;
+            padding: 2px 6px;
+            border-radius: 6px;
+            font-size: 10px;
+            font-weight: 700;
+            color: #ffd93d;
+            background: transparent;
+            -webkit-backdrop-filter: none;
+            backdrop-filter: none;
+            box-shadow: none;
+            text-shadow: none;
+            z-index: 5;
+            white-space: nowrap;
+            pointer-events: none;
+        }
         
         .lightbox {
             display: none;
@@ -1594,7 +1615,7 @@
             color: #e0e0e0;
             border-bottom: 1px solid var(--accent);
             padding-bottom: 6px;
-            padding-left: 32px;
+            padding-left: 42px;
             font-weight: 600;
         }
         
@@ -1936,8 +1957,8 @@
             }
             
             .gallery-item-btn {
-                padding: 10px 12px;
-                font-size: 13px;
+                padding: 4px 6px;
+                font-size: 11px;
             }
         }
     </style>
@@ -2278,12 +2299,25 @@
             return normalized;
         }
 
+        function normalizeUrlForId(url) {
+            if (!url) return '';
+            try {
+                const u = new URL(url, window.location.href);
+                u.search = '';
+                u.hash = '';
+                return u.toString();
+            } catch {
+                return String(url).split('#')[0].split('?')[0];
+            }
+        }
+
         function getFeedbackImageId(image, index) {
+            const normalizedUrl = normalizeUrlForId(image?.url);
             const base =
                 image?.publicId ||
                 image?.id ||
-                image?.url ||
                 image?.name ||
+                normalizedUrl ||
                 `img_${index}`;
             const galleryPrefix = currentGallery?.id ? `${currentGallery.id}::` : '';
             return `${galleryPrefix}${base}`;
@@ -2297,18 +2331,65 @@
             const buckets = ['ratings', 'flags', 'favorites', 'comments', 'selections'];
 
             images.forEach((img, index) => {
-                const legacyId = img?.id || `img_${index}`;
                 const newId = getFeedbackImageId(img, index);
-                if (!legacyId || !newId || legacyId === newId) return;
+                if (!newId) return;
+
+                const normalizedUrl = normalizeUrlForId(img?.url);
+                const prefix = currentGallery?.id ? `${currentGallery.id}::` : '';
+
+                const legacyCandidates = [
+                    img?.publicId,
+                    img?.id,
+                    img?.url,
+                    normalizedUrl,
+                    img?.name,
+                    `img_${index}`
+                ].filter(Boolean);
+
+                const legacyIds = [
+                    ...legacyCandidates,
+                    ...legacyCandidates.map(v => `${prefix}${v}`).filter(Boolean)
+                ].filter((v, i, arr) => arr.indexOf(v) === i && v !== newId);
 
                 buckets.forEach((bucket) => {
                     const bag = feedbackData[bucket];
                     if (!bag || typeof bag !== 'object') return;
                     if (bag[newId] !== undefined) return;
-                    if (bag[legacyId] === undefined) return;
-                    bag[newId] = bag[legacyId];
+
+                    for (const legacyId of legacyIds) {
+                        if (bag[legacyId] !== undefined) {
+                            bag[newId] = bag[legacyId];
+                            break;
+                        }
+                    }
                 });
             });
+        }
+
+        function safeStorageGet(key) {
+            try {
+                return localStorage.getItem(key);
+            } catch {}
+
+            try {
+                return sessionStorage.getItem(key);
+            } catch {}
+
+            return null;
+        }
+
+        function safeStorageSet(key, value) {
+            try {
+                localStorage.setItem(key, value);
+                return true;
+            } catch {}
+
+            try {
+                sessionStorage.setItem(key, value);
+                return true;
+            } catch {}
+
+            return false;
         }
 
         function getSelectionToneClass(selectionName) {
@@ -2324,7 +2405,7 @@
         
         // Theme Management
         function initTheme() {
-            const savedTheme = localStorage.getItem('theme') || 'light';
+            const savedTheme = safeStorageGet('theme') || 'light';
             const isDark = savedTheme === 'dark';
             document.body.classList.toggle('dark-mode', isDark);
             const themeLabel = document.getElementById('theme-label');
@@ -2333,7 +2414,7 @@
         
         function toggleTheme() {
             const isDark = document.body.classList.toggle('dark-mode');
-            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            safeStorageSet('theme', isDark ? 'dark' : 'light');
             const themeLabel = document.getElementById('theme-label');
             if (themeLabel) themeLabel.textContent = isDark ? 'Hell' : 'Dunkel';
         }
@@ -2482,7 +2563,7 @@
         
         // Lade Feedback-Daten
         function loadFeedbackData() {
-            const saved = localStorage.getItem('gallery_feedback');
+            const saved = safeStorageGet('gallery_feedback');
             if (saved) {
                 try {
                     feedbackData = normalizeFeedbackData(JSON.parse(saved));
@@ -2494,7 +2575,10 @@
         
         // Speichere Feedback-Daten
         function saveFeedbackData() {
-            localStorage.setItem('gallery_feedback', JSON.stringify(normalizeFeedbackData(feedbackData)));
+            const ok = safeStorageSet('gallery_feedback', JSON.stringify(normalizeFeedbackData(feedbackData)));
+            if (!ok) {
+                console.warn('Feedback konnte nicht persistent gespeichert werden (Storage nicht verfügbar).');
+            }
         }
         
         // Initialisiere Feedback-System
@@ -3367,7 +3451,7 @@
             if (!item || !imageId) return;
             
             // Entferne alte Badges
-            const oldBadges = item.querySelectorAll('.gallery-item-badge, .selection-badge');
+            const oldBadges = item.querySelectorAll('.gallery-item-badge, .selection-badge, .rating-badge');
             oldBadges.forEach(b => b.remove());
             
             const flag = feedbackData.flags[imageId];
@@ -3391,6 +3475,14 @@
                 selectionBadge.className = `selection-badge ${getSelectionToneClass(primary)}`;
                 selectionBadge.textContent = `${primary}${selections.length > 1 ? ` +${selections.length - 1}` : ''}`;
                 item.appendChild(selectionBadge);
+            }
+
+            const rating = feedbackData.ratings[imageId] || 0;
+            if (rating > 0) {
+                const ratingBadge = document.createElement('div');
+                ratingBadge.className = 'rating-badge';
+                ratingBadge.textContent = `★ ${rating}`;
+                item.appendChild(ratingBadge);
             }
         }
         
