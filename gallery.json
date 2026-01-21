@@ -1,6 +1,6 @@
 {
   "version": "3.0",
-  "generated": "2026-01-21T09:40:59.625Z",
+  "generated": "2026-01-21T09:43:35.223Z",
   "categories": [
     {
       "id": "sport",
@@ -828,6 +828,12 @@
       "image": "https://res.cloudinary.com/dnvqw9wif/image/upload/v1768988459/ygc0cgxjzh5qmtx6ajsf.jpg",
       "url": "https://res.cloudinary.com/dnvqw9wif/image/upload/v1768988459/ygc0cgxjzh5qmtx6ajsf.jpg",
       "title": "Shooting",
+      "description": null
+    },
+    {
+      "image": "https://res.cloudinary.com/dnvqw9wif/image/upload/v1768988614/ct6sagdpiuqjiikgpplu.jpg",
+      "url": "https://res.cloudinary.com/dnvqw9wif/image/upload/v1768988614/ct6sagdpiuqjiikgpplu.jpg",
+      "title": "Husky",
       "description": null
     }
   ]
