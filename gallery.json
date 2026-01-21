@@ -1,6 +1,6 @@
 {
   "version": "3.0",
-  "generated": "2026-01-21T09:43:35.223Z",
+  "generated": "2026-01-21T10:12:01.814Z",
   "categories": [
     {
       "id": "sport",
@@ -815,7 +815,7 @@
     {
       "image": "https://res.cloudinary.com/dnvqw9wif/image/upload/v1768988305/ksxotxkij4nkfijga2dt.jpg",
       "url": "https://res.cloudinary.com/dnvqw9wif/image/upload/v1768988305/ksxotxkij4nkfijga2dt.jpg",
-      "title": "Car",
+      "title": null,
       "description": null
     },
     {
