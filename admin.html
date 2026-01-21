@@ -876,7 +876,7 @@
     <!-- Admin Passwortschutz -->
     <div id="admin-password-screen">
         <div class="password-screen-content">
-            <h2>🔒 Admin-Zugang</h2>
+            <h2>Admin-Zugang</h2>
             <p style="color: #888; margin-bottom: 20px;">Bitte geben Sie das Admin-Passwort ein:</p>
             <input type="password" id="admin-password-input" placeholder="Passwort" autofocus>
             <button type="button" class="btn-primary" id="admin-password-submit" style="width: 100%;">Zugang gewähren</button>
@@ -978,48 +978,48 @@
                 <div class="form-group" id="password-group">
                     <label for="gallery-password">Passwort</label>
                     <input type="password" id="gallery-password" placeholder="Passwort eingeben">
-                    <small>⚠️ Nur für einfachen Schutz - nicht sicher!</small>
+                    <small>Nur für einfachen Schutz - nicht sicher!</small>
                 </div>
                 
                 <div class="form-group image-upload-section" id="image-upload-section">
                     <label for="gallery-images">Bilder hinzufügen</label>
                     <p style="color: #888; font-size: 0.9em; margin-bottom: 15px;">
-                        💡 <strong>Hinweis:</strong> Bitte füllen Sie zuerst Name und ID aus, bevor Sie Bilder hochladen.
+                        <strong>Hinweis:</strong> Bitte füllen Sie zuerst Name und ID aus, bevor Sie Bilder hochladen.
                     </p>
                     
                     <!-- Upload Optionen -->
                     <div class="upload-options-grid">
                         <!-- Cloudinary Upload Option -->
                         <div class="upload-option-card cloudinary">
-                            <h3>☁️ Cloudinary (Empfohlen)</h3>
+                            <h3>Cloudinary (Empfohlen)</h3>
                             <p>
-                                ✓ Schnell (CDN)<br>
-                                ✓ Automatische Thumbnails<br>
-                                ✓ Keine Größenbeschränkung<br>
-                                ✓ Kostenlos (25 GB)
+                                • Schnell (CDN)<br>
+                                • Automatische Thumbnails<br>
+                                • Keine Größenbeschränkung<br>
+                                • Kostenlos (25 GB)
                             </p>
                             <button type="button" id="cloudinary-upload-btn" class="upload-option-btn cloudinary">
-                                📤 Hochladen (Cloudinary)
+                                Hochladen (Cloudinary)
                             </button>
                             <button type="button" id="cloudinary-upload-compact-btn" class="upload-option-btn compact">
-                                🗜️ Komprimiert hochladen (≤ 10 MB)
+                                Komprimiert hochladen (≤ 10 MB)
                             </button>
                             <p class="upload-option-status">
-                                ✓ Bereits konfiguriert
+                                Bereits konfiguriert
                             </p>
                         </div>
                         
                         <!-- GitHub Direct Upload Option -->
                         <div class="upload-option-card github">
-                            <h3>🔷 Direkt zu GitHub</h3>
+                            <h3>Direkt zu GitHub</h3>
                             <p>
-                                ✓ Alles an einem Ort<br>
-                                ✓ Kein externer Service<br>
-                                ⚠️ Max. 50 MB pro Bild<br>
-                                ⚠️ Langsamer (kein CDN)
+                                • Alles an einem Ort<br>
+                                • Kein externer Service<br>
+                                Hinweis: Max. 50 MB pro Bild<br>
+                                Hinweis: Langsamer (kein CDN)
                             </p>
                             <button type="button" id="github-upload-btn" class="upload-option-btn github">
-                                📤 Bilder hochladen
+                                Bilder hochladen
                             </button>
                         </div>
                     </div>
@@ -1037,12 +1037,12 @@
                     <!-- Alternative: Lokale Dateinamen (für GitHub) -->
                     <details style="margin-bottom: 15px;">
                         <summary class="alternative-upload-summary">
-                            📁 Alternative: Lokale Dateinamen (für GitHub-Upload)
+                            Alternative: Lokale Dateinamen (für GitHub-Upload)
                         </summary>
                         <div style="margin-top: 10px;">
                             <!-- Drag and Drop Bereich -->
                             <div class="drop-zone" id="drop-zone">
-                                <div class="drop-zone-icon">📁</div>
+                                <div class="drop-zone-icon">Dateien</div>
                                 <div class="drop-zone-text">Bilder hier hineinziehen oder klicken zum Auswählen</div>
                                 <div class="drop-zone-hint">Unterstützt: JPG, PNG, HEIC, RAW</div>
                                 <input type="file" id="file-input" multiple accept="image/*" style="display: none;">
@@ -1068,7 +1068,6 @@
                     <!-- Cloudinary Setup Anleitung -->
                     <div id="cloudinary-setup" class="cloudinary-setup-box">
                         <div class="cloudinary-setup-header">
-                            <span style="font-size: 24px;">⚙️</span>
                             <strong>Cloudinary Einrichtung (einmalig - Schritt 3)</strong>
                         </div>
                         <p style="color: #888; font-size: 0.9em; margin-bottom: 15px;">
@@ -1081,7 +1080,7 @@
                                 </label>
                                 <input type="text" id="cloudinary-cloud-name" placeholder="z.B. dnvqw9wif">
                                 <small>
-                                    💡 Steht oben links in Ihrem Cloudinary Dashboard (z.B. "dnvqw9wif")
+                                    Steht oben links in Ihrem Cloudinary Dashboard (z.B. "dnvqw9wif")
                                 </small>
                             </div>
                             <div class="cloudinary-setup-field">
@@ -1090,12 +1089,12 @@
                                 </label>
                                 <input type="text" id="cloudinary-upload-preset" placeholder="wb_foto_manager" value="wb_foto_manager">
                                 <small>
-                                    💡 Der Name Ihres Upload Presets (Sie haben "wb_foto_manager" erstellt)
+                                    Der Name Ihres Upload Presets (Sie haben "wb_foto_manager" erstellt)
                                 </small>
                             </div>
                         </div>
                         <button type="button" id="save-cloudinary-config" class="btn-primary" style="padding: 12px 24px; font-size: 1em; font-weight: bold; width: 100%; background: linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%);">
-                            ✓ Konfiguration speichern
+                            Konfiguration speichern
                         </button>
                         <p style="color: #888; font-size: 0.85em; margin-top: 10px; text-align: center;">
                             Nach dem Speichern können Sie sofort Bilder hochladen!
@@ -1104,7 +1103,7 @@
                     
                     <!-- GitHub Auto-Push Setup -->
                     <div id="github-setup" style="margin-top: 15px; padding: 15px; background: #1a1a1a; border-radius: 6px; border-left: 3px solid #28a745; display: none;">
-                        <strong style="color: #28a745;">🚀 GitHub Auto-Push (optional, aber empfohlen):</strong>
+                        <strong style="color: #28a745;">GitHub Auto-Push (optional, aber empfohlen):</strong>
                         <p style="margin-top: 8px; color: #888; font-size: 0.9em; margin-bottom: 15px;">
                             Wenn konfiguriert, wird <code>gallery.json</code> automatisch zu GitHub gepusht - kein manueller Download/Push mehr nötig!
                         </p>
@@ -1114,7 +1113,7 @@
                             <li style="margin-bottom: 8px;">Token kopieren und unten eingeben (wird lokal gespeichert)</li>
                         </ol>
                         <div style="padding: 10px; background: #2a2a2a; border-radius: 4px; margin-bottom: 15px; border-left: 3px solid #ff6b6b;">
-                            <strong style="color: #ff6b6b;">⚠️ Häufiger Fehler:</strong> Wenn Sie einen "Fine-grained Personal Access Token" erstellt haben, funktioniert dieser nicht! Sie müssen einen <strong>"Tokens (classic)"</strong> mit <code>repo</code> Scope verwenden.
+                            <strong style="color: #ff6b6b;">Häufiger Fehler:</strong> Wenn Sie einen "Fine-grained Personal Access Token" erstellt haben, funktioniert dieser nicht! Sie müssen einen <strong>"Tokens (classic)"</strong> mit <code>repo</code> Scope verwenden.
                         </div>
                         <div style="margin-top: 15px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;">
                             <div>
@@ -1178,7 +1177,7 @@
         
         <!-- Kategorien verwalten -->
         <div class="admin-section" id="section-categories">
-            <h2>📁 Kategorien verwalten</h2>
+            <h2>Kategorien verwalten</h2>
             <p style="color: #888; margin-bottom: 15px;">Erstellen Sie Kategorien für die Sidebar auf der Startseite (z.B. Sport, Portrait, Shootings, Tiere, Landschaft)</p>
             <div id="categories-list" style="margin-bottom: 20px;"></div>
             <div class="category-add-row">
@@ -1195,7 +1194,7 @@
             <div style="display: flex; gap: 10px; margin-top: 15px;">
                 <input type="text" id="new-portfolio-title" placeholder="Titel (optional)" style="flex: 1; padding: 10px; background: #1a1a1a; border: 1px solid #444; border-radius: 6px; color: #e0e0e0;">
                 <input type="text" id="new-portfolio-description" placeholder="Beschreibung (optional)" style="flex: 1; padding: 10px; background: #1a1a1a; border: 1px solid #444; border-radius: 6px; color: #e0e0e0;">
-                <button type="button" class="btn-primary" id="portfolio-upload-btn">🗜️ Portfolio-Bild komprimiert hochladen</button>
+                <button type="button" class="btn-primary" id="portfolio-upload-btn">Portfolio-Bild komprimiert hochladen</button>
             </div>
         </div>
         
@@ -1207,12 +1206,12 @@
             </p>
             <div style="display: flex; gap: 10px; margin-top: 15px;">
                 <button class="btn-primary" id="download-btn">gallery.json manuell herunterladen</button>
-                <button class="btn-secondary" id="edit-github-config-btn" style="display: none;">⚙️ GitHub-Konfiguration bearbeiten</button>
+                <button class="btn-secondary" id="edit-github-config-btn" style="display: none;">GitHub-Konfiguration bearbeiten</button>
             </div>
             
             <!-- GitHub Setup Box (auch hier für besseren Zugriff) -->
             <div id="github-setup-export" style="margin-top: 20px; padding: 15px; background: #1a1a1a; border-radius: 6px; border-left: 3px solid #28a745; display: none;">
-                <strong style="color: #28a745;">🚀 GitHub Auto-Push konfigurieren:</strong>
+                <strong style="color: #28a745;">GitHub Auto-Push konfigurieren:</strong>
                 <p style="margin-top: 8px; color: #888; font-size: 0.9em; margin-bottom: 15px;">
                     Wenn konfiguriert, wird <code>gallery.json</code> automatisch zu GitHub gepusht - kein manueller Download/Push mehr nötig!
                 </p>
@@ -1222,7 +1221,7 @@
                     <li style="margin-bottom: 8px;">Token kopieren und unten eingeben (wird lokal gespeichert)</li>
                 </ol>
                 <div style="padding: 10px; background: #2a2a2a; border-radius: 4px; margin-bottom: 15px; border-left: 3px solid #ff6b6b;">
-                    <strong style="color: #ff6b6b;">⚠️ Häufiger Fehler:</strong> Wenn Sie einen "Fine-grained Personal Access Token" erstellt haben, funktioniert dieser nicht! Sie müssen einen <strong>"Tokens (classic)"</strong> mit <code>repo</code> Scope verwenden.
+                    <strong style="color: #ff6b6b;">Häufiger Fehler:</strong> Wenn Sie einen "Fine-grained Personal Access Token" erstellt haben, funktioniert dieser nicht! Sie müssen einen <strong>"Tokens (classic)"</strong> mit <code>repo</code> Scope verwenden.
                 </div>
                 <div style="margin-top: 15px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;">
                     <div>
@@ -1321,7 +1320,7 @@
                 // Update Export-Beschreibung
                 const desc = document.getElementById('export-description');
                 if (desc) {
-                    desc.innerHTML = 'Nach dem Erstellen/Bearbeiten von Galerien können Sie die aktualisierte gallery.json herunterladen und zu GitHub hochladen.<br><small style="color: var(--accent);">💡 Tipp: Konfigurieren Sie GitHub Auto-Push oben für automatisches Pushen!</small>';
+                    desc.innerHTML = 'Nach dem Erstellen/Bearbeiten von Galerien können Sie die aktualisierte gallery.json herunterladen und zu GitHub hochladen.<br><small style="color: var(--accent);">Tipp: Konfigurieren Sie GitHub Auto-Push oben für automatisches Pushen!</small>';
                 }
             }
         }
@@ -1636,7 +1635,7 @@
                         errorMessage = (errorData.message || updateResponse.statusText || 'Unbekannter Fehler') + ' (Status: ' + updateResponse.status + ')';
                     }
                     
-                    showAlert('⚠️ ' + errorMessage, 'warning');
+                    showAlert('Warnung: ' + errorMessage, 'warning');
                     return false;
                 }
             } catch (error) {
@@ -2203,7 +2202,7 @@
                 folderHeader.className = 'gallery-folder-header';
                 folderHeader.style.cssText = 'display: flex; align-items: center; justify-content: space-between; margin: 14px 0 8px 0; padding: 8px 10px; background: var(--accent-soft); border-radius: 6px; border-left: 3px solid var(--accent);';
                 folderHeader.innerHTML = `
-                    <h3 style="color: var(--accent); margin: 0; font-size: 1em;">📁 ${folder}</h3>
+                    <h3 style="color: var(--accent); margin: 0; font-size: 1em;">${folder}</h3>
                     <button onclick="createGalleryInFolder('${folder}')" class="btn-secondary" style="padding: 4px 10px; font-size: 0.8em;">+ Galerie hinzufügen</button>
                 `;
                 galleryList.appendChild(folderHeader);
@@ -2360,7 +2359,7 @@
             const galleryId = gallery.id || 'unknown';
             const galleryName = gallery.name || 'Unbenannte Galerie';
             const imageCount = gallery.images?.length || 0;
-            const hasPassword = gallery.password ? '🔒' : '';
+            const hasPassword = gallery.password ? '<span style="font-size: 0.75em; margin-left: 8px; padding: 3px 8px; border: 1px solid #444; border-radius: 999px; color: #e0e0e0; background: #2a2a2a;">Passwort</span>' : '';
             const description = gallery.description ? `<p class="gallery-description">${gallery.description}</p>` : '';
             
             item.innerHTML = `
@@ -2858,14 +2857,14 @@
                         console.log('✓ GitHub-Push erfolgreich');
                     } else {
                         console.warn('✗ GitHub-Push fehlgeschlagen');
-                        showAlert('⚠️ Galerie wurde erstellt, aber GitHub-Push fehlgeschlagen. Bitte laden Sie gallery.json manuell herunter und pushen Sie es zu GitHub. Die Galerie ist lokal gespeichert.', 'warning');
+                        showAlert('Warnung: Galerie wurde erstellt, aber GitHub-Push fehlgeschlagen. Bitte laden Sie gallery.json manuell herunter und pushen Sie es zu GitHub. Die Galerie ist lokal gespeichert.', 'warning');
                     }
                 }).catch(error => {
                     console.error('GitHub Push Fehler (nicht kritisch):', error);
-                    showAlert('⚠️ Galerie wurde erstellt, aber GitHub-Push fehlgeschlagen. Bitte laden Sie gallery.json manuell herunter und pushen Sie es zu GitHub. Die Galerie ist lokal gespeichert.', 'warning');
+                    showAlert('Warnung: Galerie wurde erstellt, aber GitHub-Push fehlgeschlagen. Bitte laden Sie gallery.json manuell herunter und pushen Sie es zu GitHub. Die Galerie ist lokal gespeichert.', 'warning');
                 });
             } else {
-                showAlert('💡 Tipp: Konfigurieren Sie GitHub Auto-Push, damit gallery.json automatisch gespeichert wird. Aktuell müssen Sie gallery.json manuell herunterladen und zu GitHub pushen.', 'info');
+                showAlert('Tipp: Konfigurieren Sie GitHub Auto-Push, damit gallery.json automatisch gespeichert wird. Aktuell müssen Sie gallery.json manuell herunterladen und zu GitHub pushen.', 'info');
             }
         });
         
