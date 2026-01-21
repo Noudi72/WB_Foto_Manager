@@ -16,6 +16,7 @@
         :root {
             --accent: #d4a574;
             --accent-hover: #c9945e;
+            --accent-soft: rgba(212, 165, 116, 0.12);
         }
         
         body {
@@ -304,7 +305,7 @@
         
         /* Drag and Drop Bereich */
         .drop-zone {
-            border: 2px dashed #667eea;
+            border: 2px dashed var(--accent);
             border-radius: 8px;
             padding: 20px;
             text-align: center;
@@ -316,13 +317,13 @@
         
         .drop-zone:hover,
         .drop-zone.drag-over {
-            border-color: #764ba2;
+            border-color: var(--accent-hover);
             background: #222;
             transform: scale(1.02);
         }
         
         .drop-zone.drag-over {
-            border-color: #764ba2;
+            border-color: var(--accent-hover);
             background: #2a2a2a;
         }
         
@@ -376,7 +377,7 @@
         }
         
         .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%);
             color: white;
         }
         
@@ -512,7 +513,7 @@
             background: #2a2a2a;
             padding: 28px;
             border-radius: 12px;
-            border: 2px solid #667eea;
+            border: 2px solid var(--accent);
             max-width: 360px;
             width: 90%;
             text-align: center;
@@ -527,7 +528,7 @@
             width: 100%;
             padding: 10px;
             background: #1a1a1a;
-            border: 2px solid #667eea;
+            border: 2px solid var(--accent);
             border-radius: 6px;
             color: #e0e0e0;
             font-size: 14px;
@@ -536,7 +537,7 @@
         
         .password-screen-content input[type="password"]:focus {
             outline: none;
-            border-color: #764ba2;
+            border-color: var(--accent-hover);
         }
         
         .password-error {
@@ -555,13 +556,13 @@
             display: none;
             padding: 12px;
             background: #1a1a1a;
-            border-left: 3px solid #667eea;
+            border-left: 3px solid var(--accent);
             border-radius: 4px;
             margin-bottom: 15px;
         }
         
         .gallery-info-hint p {
-            color: #667eea;
+            color: var(--accent);
             font-size: 0.9em;
             margin: 0;
         }
@@ -584,7 +585,7 @@
         }
         
         .upload-option-card.cloudinary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%);
         }
         
         .upload-option-card.github {
@@ -616,7 +617,11 @@
         }
         
         .upload-option-btn.cloudinary {
-            color: #667eea;
+            color: var(--accent);
+        }
+
+        .upload-option-btn.cloudinary:hover {
+            color: var(--accent-hover);
         }
         
         .upload-option-btn.github {
@@ -657,7 +662,7 @@
         }
         
         .upload-progress-bar {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%);
             height: 100%;
             width: 0%;
             transition: width 0.3s;
@@ -680,8 +685,8 @@
         .cloudinary-setup-box {
             margin-top: 15px;
             padding: 20px;
-            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
-            border: 2px solid #667eea;
+            background: linear-gradient(135deg, var(--accent-soft) 0%, rgba(212, 165, 116, 0.06) 100%);
+            border: 2px solid var(--accent);
             border-radius: 8px;
             display: none;
         }
@@ -694,7 +699,7 @@
         }
         
         .cloudinary-setup-header strong {
-            color: #667eea;
+            color: var(--accent);
             font-size: 1.1em;
         }
         
@@ -718,14 +723,14 @@
         }
         
         .cloudinary-setup-field label span {
-            color: #667eea;
+            color: var(--accent);
         }
         
         .cloudinary-setup-field input {
             width: 100%;
             padding: 12px;
             background: #2a2a2a;
-            border: 2px solid #667eea;
+            border: 2px solid var(--accent);
             border-radius: 6px;
             color: #e0e0e0;
             font-size: 1em;
@@ -961,7 +966,7 @@
                                 </small>
                             </div>
                         </div>
-                        <button type="button" id="save-cloudinary-config" class="btn-primary" style="padding: 12px 24px; font-size: 1em; font-weight: bold; width: 100%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                        <button type="button" id="save-cloudinary-config" class="btn-primary" style="padding: 12px 24px; font-size: 1em; font-weight: bold; width: 100%; background: linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%);">
                             ✓ Konfiguration speichern
                         </button>
                         <p style="color: #888; font-size: 0.85em; margin-top: 10px; text-align: center;">
@@ -1189,7 +1194,7 @@
                 // Update Export-Beschreibung
                 const desc = document.getElementById('export-description');
                 if (desc) {
-                    desc.innerHTML = 'Nach dem Erstellen/Bearbeiten von Galerien können Sie die aktualisierte gallery.json herunterladen und zu GitHub hochladen.<br><small style="color: #667eea;">💡 Tipp: Konfigurieren Sie GitHub Auto-Push oben für automatisches Pushen!</small>';
+                    desc.innerHTML = 'Nach dem Erstellen/Bearbeiten von Galerien können Sie die aktualisierte gallery.json herunterladen und zu GitHub hochladen.<br><small style="color: var(--accent);">💡 Tipp: Konfigurieren Sie GitHub Auto-Push oben für automatisches Pushen!</small>';
                 }
             }
         }
@@ -2069,9 +2074,9 @@
             Object.keys(galleriesByFolder).sort().forEach((folder) => {
                 const folderHeader = document.createElement('div');
                 folderHeader.className = 'gallery-folder-header';
-                folderHeader.style.cssText = 'display: flex; align-items: center; justify-content: space-between; margin: 14px 0 8px 0; padding: 8px 10px; background: rgba(102, 126, 234, 0.1); border-radius: 6px; border-left: 3px solid #667eea;';
+                folderHeader.style.cssText = 'display: flex; align-items: center; justify-content: space-between; margin: 14px 0 8px 0; padding: 8px 10px; background: var(--accent-soft); border-radius: 6px; border-left: 3px solid var(--accent);';
                 folderHeader.innerHTML = `
-                    <h3 style="color: #667eea; margin: 0; font-size: 1em;">📁 ${folder}</h3>
+                    <h3 style="color: var(--accent); margin: 0; font-size: 1em;">📁 ${folder}</h3>
                     <button onclick="createGalleryInFolder('${folder}')" class="btn-secondary" style="padding: 4px 10px; font-size: 0.8em;">+ Galerie hinzufügen</button>
                 `;
                 galleryList.appendChild(folderHeader);
@@ -2867,7 +2872,7 @@
             if (filePreview && textarea) {
                 // Zeige Vorschau
                 filePreview.style.display = 'block';
-                filePreview.innerHTML = '<strong style="color: #667eea; margin-bottom: 10px; display: block;">Ausgewählte Dateien:</strong>' +
+                filePreview.innerHTML = '<strong style="color: var(--accent); margin-bottom: 10px; display: block;">Ausgewählte Dateien:</strong>' +
                     fileNames.map(name => `<div class="file-item">✓ ${name}</div>`).join('');
                 
                 // Füge Dateinamen zum Textfeld hinzu
