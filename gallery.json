@@ -4,33 +4,27 @@
   "categories": [
     {
       "id": "sport",
-      "name": "Sport",
-      "icon": "🏒"
+      "name": "Sport"
     },
     {
       "id": "landschaft",
-      "name": "Landschaft",
-      "icon": "🏔️"
+      "name": "Landschaft"
     },
     {
       "id": "portrait",
-      "name": "Portrait",
-      "icon": "🧑‍💼"
+      "name": "Portrait"
     },
     {
       "id": "tiere",
-      "name": "Tiere",
-      "icon": "🦊"
+      "name": "Tiere"
     },
     {
       "id": "architektur",
-      "name": "Architektur",
-      "icon": "🏛️"
+      "name": "Architektur"
     },
     {
       "id": "events",
-      "name": "Events",
-      "icon": "🎉"
+      "name": "Events"
     }
   ],
   "galleries": [

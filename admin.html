@@ -404,13 +404,26 @@
 
         .category-row {
             display: grid;
-            grid-template-columns: 56px minmax(0, 1fr) minmax(0, 1fr) auto auto;
+            grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto auto;
             gap: 8px;
             padding: 8px;
             background: #1a1a1a;
             border-radius: 6px;
             margin-bottom: 6px;
             align-items: center;
+        }
+
+        .category-add-row {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .category-add-row input {
+            flex: 1;
+            min-width: 220px;
         }
 
         .portfolio-row {
@@ -426,39 +439,48 @@
 
         @media (max-width: 640px) {
             .category-row {
-                grid-template-columns: 56px minmax(0, 1fr) auto;
+                grid-template-columns: minmax(0, 1fr) auto;
                 gap: 8px;
             }
 
             .category-row > :nth-child(1) {
                 grid-column: 1;
-                grid-row: 1 / span 2;
+                grid-row: 1;
+                min-width: 0;
             }
 
             .category-row > :nth-child(2) {
-                grid-column: 2;
-                grid-row: 1;
+                grid-column: 1;
+                grid-row: 2;
                 min-width: 0;
             }
 
             .category-row > :nth-child(3) {
                 grid-column: 2;
-                grid-row: 2;
-                min-width: 0;
-            }
-
-            .category-row > :nth-child(4) {
-                grid-column: 3;
                 grid-row: 1;
                 width: 100%;
                 white-space: nowrap;
             }
 
-            .category-row > :nth-child(5) {
-                grid-column: 3;
+            .category-row > :nth-child(4) {
+                grid-column: 2;
                 grid-row: 2;
                 width: 100%;
                 white-space: nowrap;
+            }
+
+            .category-add-row {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .category-add-row input {
+                min-width: 0;
+                width: 100%;
+            }
+
+            .category-add-row button {
+                width: 100%;
             }
 
             .portfolio-row {
@@ -1159,9 +1181,8 @@
             <h2>📁 Kategorien verwalten</h2>
             <p style="color: #888; margin-bottom: 15px;">Erstellen Sie Kategorien für die Sidebar auf der Startseite (z.B. Sport, Portrait, Shootings, Tiere, Landschaft)</p>
             <div id="categories-list" style="margin-bottom: 20px;"></div>
-            <div style="display: flex; gap: 10px; margin-top: 15px;">
-                <input type="text" id="new-category-name" placeholder="Kategorie-Name (z.B. Sport)" style="flex: 1; padding: 10px; background: #1a1a1a; border: 1px solid #444; border-radius: 6px; color: #e0e0e0;">
-                <input type="text" id="new-category-icon" placeholder="Icon (z.B. ⚽)" style="width: 80px; padding: 10px; background: #1a1a1a; border: 1px solid #444; border-radius: 6px; color: #e0e0e0;">
+            <div class="category-add-row">
+                <input type="text" id="new-category-name" placeholder="Kategorie-Name (z.B. Sport)" style="padding: 10px; background: #1a1a1a; border: 1px solid #444; border-radius: 6px; color: #e0e0e0;">
                 <button type="button" class="btn-primary" onclick="addCategory()">+ Kategorie hinzufügen</button>
             </div>
         </div>
@@ -3206,6 +3227,27 @@
         // Kategorien-Verwaltung
         function initCategories() {
             ensureGalleryConfig();
+
+            // Migration: entferne evtl. vorhandene Kategorie-Icons (wir nutzen keine Emojis mehr)
+            try {
+                const categories = galleryConfig.categories || [];
+                const hadIcons = categories.some(c => c && Object.prototype.hasOwnProperty.call(c, 'icon'));
+                if (hadIcons) {
+                    categories.forEach((c) => {
+                        if (c && Object.prototype.hasOwnProperty.call(c, 'icon')) {
+                            delete c.icon;
+                        }
+                    });
+                    galleryConfig.generated = new Date().toISOString();
+
+                    if (githubConfig) {
+                        pushGalleryJsonToGitHub();
+                    }
+                }
+            } catch (e) {
+                // ignore
+            }
+
             displayCategories();
         }
         
@@ -3224,7 +3266,6 @@
                 const item = document.createElement('div');
                 item.className = 'category-row';
                 item.innerHTML = `
-                    <input id="category-icon-${index}" type="text" value="${category.icon || '📁'}" style="width: 56px; padding: 6px; text-align: center; background: #2a2a2a; border: 1px solid #444; border-radius: 6px; color: #e0e0e0;">
                     <input id="category-name-${index}" type="text" value="${category.name}" style="padding: 8px; background: #2a2a2a; border: 1px solid #444; border-radius: 6px; color: #e0e0e0;">
                     <input id="category-id-${index}" type="text" value="${category.id}" style="padding: 8px; background: #2a2a2a; border: 1px solid #444; border-radius: 6px; color: #e0e0e0;">
                     <button class="btn-secondary" onclick="updateCategory(${index})" style="padding: 6px 12px; font-size: 0.85em;">Speichern</button>
@@ -3236,7 +3277,6 @@
         
         async function addCategory() {
             const name = document.getElementById('new-category-name').value.trim();
-            const icon = document.getElementById('new-category-icon').value.trim() || '📁';
             
             if (!name) {
                 showAlert('Bitte geben Sie einen Kategorie-Namen ein', 'error');
@@ -3253,7 +3293,7 @@
                 return;
             }
             
-            galleryConfig.categories.push({ id, name, icon });
+            galleryConfig.categories.push({ id, name });
             galleryConfig.generated = new Date().toISOString();
             
             displayCategories();
@@ -3265,20 +3305,17 @@
             }
             
             document.getElementById('new-category-name').value = '';
-            document.getElementById('new-category-icon').value = '';
             showAlert('Kategorie hinzugefügt', 'success');
         }
 
         async function updateCategory(index) {
             ensureGalleryConfig();
             const nameInput = document.getElementById(`category-name-${index}`);
-            const iconInput = document.getElementById(`category-icon-${index}`);
             const idInput = document.getElementById(`category-id-${index}`);
 
-            if (!nameInput || !iconInput || !idInput) return;
+            if (!nameInput || !idInput) return;
 
             const name = nameInput.value.trim();
-            const icon = iconInput.value.trim() || '📁';
             const rawId = idInput.value.trim();
             const newId = rawId || name.toLowerCase().replace(/[^a-z0-9-_]/g, '-');
 
@@ -3296,7 +3333,7 @@
             }
 
             const oldId = current.id;
-            galleryConfig.categories[index] = { id: newId, name, icon };
+            galleryConfig.categories[index] = { id: newId, name };
 
             if (oldId !== newId && galleryConfig.galleries) {
                 galleryConfig.galleries.forEach((gallery) => {
@@ -3344,7 +3381,7 @@
                 galleryConfig.categories.forEach(category => {
                     const option = document.createElement('option');
                     option.value = category.id;
-                    option.textContent = `${category.icon || '📁'} ${category.name}`;
+                    option.textContent = `${category.name}`;
                     select.appendChild(option);
                 });
             }
