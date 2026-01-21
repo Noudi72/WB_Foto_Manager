@@ -1,6 +1,6 @@
 {
   "version": "3.0",
-  "generated": "2026-01-20T22:27:49.900Z",
+  "generated": "2026-01-21T09:28:27.183Z",
   "categories": [
     {
       "id": "sport",
@@ -809,6 +809,14 @@
       "description": "Demnächst verfügbar",
       "category": "events",
       "folder": "06_Events"
+    }
+  ],
+  "portfolio": [
+    {
+      "image": "https://res.cloudinary.com/dnvqw9wif/image/upload/v1768987706/gmvmgo8nypdz1s2bfzhs.jpg",
+      "url": "https://res.cloudinary.com/dnvqw9wif/image/upload/v1768987706/gmvmgo8nypdz1s2bfzhs.jpg",
+      "title": "Portfolio",
+      "description": null
     }
   ]
 }
