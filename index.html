@@ -424,7 +424,7 @@
         /* Portfolio Slider */
         .portfolio-slider {
             width: 100%;
-            height: 360px;
+            height: 300px;
             position: relative;
             margin-bottom: 32px;
             border-radius: 20px;
@@ -537,8 +537,8 @@
         
         /* Kategorie-Sidebar für Startseite */
         .category-sidebar {
-            width: 200px;
-            min-width: 200px;
+            width: 180px;
+            min-width: 180px;
             background: var(--bg-secondary);
             border: 1px solid var(--border);
             padding: 16px;
@@ -621,7 +621,7 @@
             background: var(--bg-secondary);
             border: 1px solid var(--border);
             border-radius: 12px;
-            padding: 10px 14px;
+            padding: 8px 12px;
         }
 
         .gallery-search input {
@@ -629,15 +629,15 @@
             background: transparent;
             border: none;
             color: var(--text-primary);
-            font-size: 0.95em;
+            font-size: 0.9em;
             outline: none;
         }
 
         .gallery-selector {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 22px;
-            padding: 20px 0 10px;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 16px;
+            padding: 16px 0 8px;
         }
         
         .main-content-with-sidebar {
@@ -661,7 +661,7 @@
             transition: transform 0.25s ease, box-shadow 0.25s ease, border 0.25s ease;
             border: 1px solid var(--border);
             overflow: hidden;
-            box-shadow: 0 10px 24px rgba(0,0,0,0.18);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.16);
             display: flex;
             flex-direction: column;
         }
@@ -675,17 +675,31 @@
         .gallery-card.locked {
             opacity: 0.85;
         }
+
+        .gallery-card.empty {
+            opacity: 0.75;
+        }
+
+        .gallery-card-badge {
+            font-size: 0.7em;
+            padding: 4px 8px;
+            border-radius: 999px;
+            border: 1px solid rgba(124, 92, 255, 0.4);
+            color: var(--accent);
+            background: rgba(124, 92, 255, 0.12);
+            white-space: nowrap;
+        }
         
         .gallery-card-preview {
             width: 100%;
-            height: 220px;
+            height: 180px;
             object-fit: cover;
             background: var(--bg-primary);
             display: block;
         }
         
         .gallery-card-content {
-            padding: 20px;
+            padding: 16px;
         }
         
         .gallery-card-header {
@@ -696,7 +710,7 @@
         }
         
         .gallery-card h3 {
-            font-size: 1.2em;
+            font-size: 1.05em;
             margin: 0;
             color: var(--text-primary);
             font-weight: 700;
@@ -713,8 +727,8 @@
         
         .gallery-card p {
             color: var(--text-secondary);
-            margin-bottom: 14px;
-            font-size: 0.9em;
+            margin-bottom: 12px;
+            font-size: 0.85em;
             line-height: 1.5;
         }
         
@@ -870,9 +884,9 @@
         
         .gallery {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 20px;
-            padding: 20px 0;
+            grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+            gap: 14px;
+            padding: 16px 0;
         }
         
         .gallery-item {
@@ -883,12 +897,12 @@
             cursor: pointer;
             background: #2a2a2a;
             transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
         }
         
         .gallery-item:hover {
-            transform: scale(1.03);
-            box-shadow: 0 12px 32px rgba(102, 126, 234, 0.3);
+            transform: scale(1.02);
+            box-shadow: 0 10px 24px rgba(124, 92, 255, 0.28);
             z-index: 10;
         }
         
@@ -914,7 +928,7 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            padding: 12px;
+            padding: 10px;
             opacity: 0;
             transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             pointer-events: none;
@@ -927,8 +941,8 @@
         
         /* Checkbox oben links */
         .gallery-item-checkbox {
-            width: 28px;
-            height: 28px;
+            width: 24px;
+            height: 24px;
             border: 2px solid rgba(255,255,255,0.9);
             border-radius: 6px;
             background: rgba(0,0,0,0.3);
@@ -938,7 +952,7 @@
             justify-content: center;
             cursor: pointer;
             transition: all 0.2s;
-            font-size: 18px;
+            font-size: 16px;
             color: white;
             font-weight: bold;
             flex-shrink: 0;
@@ -2635,7 +2649,8 @@
         // Erstelle Galerie-Karte
         function createGalleryCard(gallery) {
             const card = document.createElement('div');
-            card.className = 'gallery-card' + (gallery.password ? ' locked' : '');
+            const isEmpty = !gallery.images || gallery.images.length === 0;
+            card.className = 'gallery-card' + (gallery.password ? ' locked' : '') + (isEmpty ? ' empty' : '');
             
             // Vorschaubild für nicht geschützte Galerien
             let previewImage = '';
@@ -2697,7 +2712,10 @@
                 <div class="gallery-card-content">
                     <div class="gallery-card-header">
                         <h3>${gallery.name || 'Unbenannte Galerie'}</h3>
-                        ${gallery.password ? '<span class="lock-icon">🔒</span>' : ''}
+                        <div style="display: flex; align-items: center; gap: 6px;">
+                            ${isEmpty ? '<span class="gallery-card-badge">Bald verfügbar</span>' : ''}
+                            ${gallery.password ? '<span class="lock-icon">🔒</span>' : ''}
+                        </div>
                     </div>
                     ${gallery.description ? `<p>${gallery.description}</p>` : ''}
                     <div class="gallery-card-footer">

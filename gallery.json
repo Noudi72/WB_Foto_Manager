@@ -1,6 +1,38 @@
 {
   "version": "3.0",
   "generated": "2026-01-20T22:27:49.900Z",
+  "categories": [
+    {
+      "id": "sport",
+      "name": "Sport",
+      "icon": "🏒"
+    },
+    {
+      "id": "landschaft",
+      "name": "Landschaft",
+      "icon": "🏔️"
+    },
+    {
+      "id": "portrait",
+      "name": "Portrait",
+      "icon": "🧑‍💼"
+    },
+    {
+      "id": "tiere",
+      "name": "Tiere",
+      "icon": "🦊"
+    },
+    {
+      "id": "architektur",
+      "name": "Architektur",
+      "icon": "🏛️"
+    },
+    {
+      "id": "events",
+      "name": "Events",
+      "icon": "🎉"
+    }
+  ],
   "galleries": [
     {
       "id": "noel",
@@ -58,6 +90,8 @@
         }
       ],
       "description": "Portraits",
+      "category": "portrait",
+      "folder": "03_Portrait",
       "password": "Rambo72"
     },
     {
@@ -605,7 +639,176 @@
         }
       ],
       "description": "EHCB vs HCD",
-      "folder": "eishockey/ehcb-hcd"
+      "category": "sport",
+      "folder": "01_Sport"
+    },
+    {
+      "id": "sport-street-inlinehockey",
+      "name": "Street-Inlinehockey",
+      "images": [],
+      "description": "Demnächst verfügbar",
+      "category": "sport",
+      "folder": "01_Sport"
+    },
+    {
+      "id": "sport-motorsport",
+      "name": "Motorsport",
+      "images": [],
+      "description": "Demnächst verfügbar",
+      "category": "sport",
+      "folder": "01_Sport"
+    },
+    {
+      "id": "sport-wintersport",
+      "name": "Wintersport",
+      "images": [],
+      "description": "Demnächst verfügbar",
+      "category": "sport",
+      "folder": "01_Sport"
+    },
+    {
+      "id": "landschaft-berge-alpen",
+      "name": "Berge & Alpen",
+      "images": [],
+      "description": "Demnächst verfügbar",
+      "category": "landschaft",
+      "folder": "02_Landschaft"
+    },
+    {
+      "id": "landschaft-kueste-meer",
+      "name": "Küste & Meer",
+      "images": [],
+      "description": "Demnächst verfügbar",
+      "category": "landschaft",
+      "folder": "02_Landschaft"
+    },
+    {
+      "id": "landschaft-wald-forst",
+      "name": "Wald & Forst",
+      "images": [],
+      "description": "Demnächst verfügbar",
+      "category": "landschaft",
+      "folder": "02_Landschaft"
+    },
+    {
+      "id": "landschaft-nacht",
+      "name": "Nachtfotografie",
+      "images": [],
+      "description": "Demnächst verfügbar",
+      "category": "landschaft",
+      "folder": "02_Landschaft"
+    },
+    {
+      "id": "portrait-business",
+      "name": "Business & Corporate",
+      "images": [],
+      "description": "Demnächst verfügbar",
+      "category": "portrait",
+      "folder": "03_Portrait"
+    },
+    {
+      "id": "portrait-lifestyle",
+      "name": "Lifestyle & Street",
+      "images": [],
+      "description": "Demnächst verfügbar",
+      "category": "portrait",
+      "folder": "03_Portrait"
+    },
+    {
+      "id": "portrait-familie",
+      "name": "Familie & Kinder",
+      "images": [],
+      "description": "Demnächst verfügbar",
+      "category": "portrait",
+      "folder": "03_Portrait"
+    },
+    {
+      "id": "portrait-studio",
+      "name": "Studio",
+      "images": [],
+      "description": "Demnächst verfügbar",
+      "category": "portrait",
+      "folder": "03_Portrait"
+    },
+    {
+      "id": "tiere-wildlife",
+      "name": "Wildlife & Wildtiere",
+      "images": [],
+      "description": "Demnächst verfügbar",
+      "category": "tiere",
+      "folder": "04_Tiere"
+    },
+    {
+      "id": "tiere-haustiere",
+      "name": "Haustiere",
+      "images": [],
+      "description": "Demnächst verfügbar",
+      "category": "tiere",
+      "folder": "04_Tiere"
+    },
+    {
+      "id": "tiere-zoo",
+      "name": "Zoo & Vogelpark",
+      "images": [],
+      "description": "Demnächst verfügbar",
+      "category": "tiere",
+      "folder": "04_Tiere"
+    },
+    {
+      "id": "tiere-makro",
+      "name": "Makro & Insekten",
+      "images": [],
+      "description": "Demnächst verfügbar",
+      "category": "tiere",
+      "folder": "04_Tiere"
+    },
+    {
+      "id": "architektur-urban",
+      "name": "Urban & Stadt",
+      "images": [],
+      "description": "Demnächst verfügbar",
+      "category": "architektur",
+      "folder": "05_Architektur"
+    },
+    {
+      "id": "architektur-lost",
+      "name": "Lost Places",
+      "images": [],
+      "description": "Demnächst verfügbar",
+      "category": "architektur",
+      "folder": "05_Architektur"
+    },
+    {
+      "id": "architektur-innen",
+      "name": "Innenarchitektur",
+      "images": [],
+      "description": "Demnächst verfügbar",
+      "category": "architektur",
+      "folder": "05_Architektur"
+    },
+    {
+      "id": "events-konzerte",
+      "name": "Konzerte",
+      "images": [],
+      "description": "Demnächst verfügbar",
+      "category": "events",
+      "folder": "06_Events"
+    },
+    {
+      "id": "events-hochzeiten",
+      "name": "Hochzeiten",
+      "images": [],
+      "description": "Demnächst verfügbar",
+      "category": "events",
+      "folder": "06_Events"
+    },
+    {
+      "id": "events-firmenfeiern",
+      "name": "Firmenfeiern",
+      "images": [],
+      "description": "Demnächst verfügbar",
+      "category": "events",
+      "folder": "06_Events"
     }
   ]
 }
