@@ -1,6 +1,6 @@
 {
   "version": "3.0",
-  "generated": "2026-01-21T09:40:22.447Z",
+  "generated": "2026-01-21T09:40:59.625Z",
   "categories": [
     {
       "id": "sport",
@@ -822,6 +822,12 @@
       "image": "https://res.cloudinary.com/dnvqw9wif/image/upload/v1768988422/t2ms1cndef4cgzrsdkul.jpg",
       "url": "https://res.cloudinary.com/dnvqw9wif/image/upload/v1768988422/t2ms1cndef4cgzrsdkul.jpg",
       "title": "Plain",
+      "description": null
+    },
+    {
+      "image": "https://res.cloudinary.com/dnvqw9wif/image/upload/v1768988459/ygc0cgxjzh5qmtx6ajsf.jpg",
+      "url": "https://res.cloudinary.com/dnvqw9wif/image/upload/v1768988459/ygc0cgxjzh5qmtx6ajsf.jpg",
+      "title": "Shooting",
       "description": null
     }
   ]
