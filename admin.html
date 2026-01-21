@@ -22,8 +22,139 @@
         }
         
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
+        }
+
+        /* Quick Navigation (Sidebar + Mobile Drawer) */
+        .admin-nav-toggle {
+            position: fixed;
+            top: 16px;
+            left: 16px;
+            z-index: 9000;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 12px;
+            border-radius: 10px;
+            border: 1px solid #333;
+            background: rgba(42, 42, 42, 0.92);
+            color: #e0e0e0;
+            cursor: pointer;
+            font-weight: 700;
+            backdrop-filter: blur(10px);
+        }
+
+        .admin-nav-toggle-lines {
+            width: 16px;
+            height: 12px;
+            position: relative;
+            display: inline-block;
+        }
+
+        .admin-nav-toggle-lines::before,
+        .admin-nav-toggle-lines::after,
+        .admin-nav-toggle-lines span {
+            content: '';
+            position: absolute;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: #e0e0e0;
+            border-radius: 2px;
+            opacity: 0.9;
+        }
+
+        .admin-nav-toggle-lines::before {
+            top: 0;
+        }
+
+        .admin-nav-toggle-lines span {
+            top: 5px;
+        }
+
+        .admin-nav-toggle-lines::after {
+            bottom: 0;
+        }
+
+        .admin-sidebar {
+            position: fixed;
+            top: 12px;
+            left: 12px;
+            bottom: 12px;
+            width: 250px;
+            background: #242424;
+            border: 1px solid #333;
+            border-radius: 12px;
+            padding: 12px;
+            overflow: auto;
+            z-index: 9000;
+            transform: translateX(-110%);
+            transition: transform 0.2s ease;
+        }
+
+        body.nav-open .admin-sidebar {
+            transform: translateX(0);
+        }
+
+        .admin-nav-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.55);
+            z-index: 8500;
+            display: none;
+        }
+
+        body.nav-open .admin-nav-overlay {
+            display: block;
+        }
+
+        .admin-sidebar h3 {
+            font-size: 0.85em;
+            color: #bdbdbd;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin: 4px 6px 10px;
+        }
+
+        .admin-sidebar a {
+            display: block;
+            padding: 10px 10px;
+            border-radius: 8px;
+            color: #e0e0e0;
+            text-decoration: none;
+            border: 1px solid transparent;
+            font-size: 0.92em;
+        }
+
+        .admin-sidebar a:hover {
+            background: #1f1f1f;
+            border-color: #444;
+        }
+
+        .admin-sidebar .nav-hint {
+            color: #888;
+            font-size: 0.85em;
+            margin: 10px 6px 0;
+            line-height: 1.4;
+        }
+
+        @media (min-width: 1024px) {
+            .admin-nav-toggle {
+                display: none;
+            }
+
+            .admin-nav-overlay {
+                display: none !important;
+            }
+
+            .admin-sidebar {
+                transform: translateX(0);
+            }
+
+            #admin-content {
+                padding-left: 270px;
+            }
         }
         
         header {
@@ -614,6 +745,23 @@
             <p class="password-error" id="admin-password-error">Falsches Passwort. Bitte versuchen Sie es erneut.</p>
         </div>
     </div>
+
+    <button class="admin-nav-toggle" id="admin-nav-toggle" type="button" aria-controls="admin-sidebar" aria-expanded="false">
+        <span class="admin-nav-toggle-lines"><span></span></span>
+        Menü
+    </button>
+    <div class="admin-nav-overlay" id="admin-nav-overlay" aria-hidden="true"></div>
+
+    <nav class="admin-sidebar" id="admin-sidebar" aria-label="Admin Navigation">
+        <h3>Schnellzugriff</h3>
+        <a href="#section-categories">Kategorien</a>
+        <a href="#section-new-gallery">Neue Galerie</a>
+        <a href="#section-galleries">Bestehende Galerien</a>
+        <a href="#section-portfolio">Portfolio</a>
+        <a href="#section-export">gallery.json Export</a>
+        <a href="#section-admin-password">Admin-Passwort</a>
+        <p class="nav-hint">Tipp: Auf Mobilgeräten öffnet sich dieses Menü über „Menü“ oben links.</p>
+    </nav>
     
     <div class="container" id="admin-content" style="display: none;">
         <a href="index.html" class="back-link">← Zurück zur Galerie</a>
@@ -631,7 +779,7 @@
         <div id="alert-container"></div>
         
         <!-- Neue Galerie erstellen -->
-        <div class="admin-section">
+        <div class="admin-section" id="section-new-gallery">
             <h2>Neue Galerie erstellen</h2>
             <form id="new-gallery-form">
                 <div class="form-group">
@@ -861,7 +1009,7 @@
         </div>
         
         <!-- Bestehende Galerien -->
-        <div class="admin-section">
+        <div class="admin-section" id="section-galleries">
             <h2>Bestehende Galerien</h2>
             <div id="gallery-list" class="gallery-list">
                 <p>Lade Galerien...</p>
@@ -869,7 +1017,7 @@
         </div>
         
         <!-- Admin-Passwort ändern -->
-        <div class="admin-section">
+        <div class="admin-section" id="section-admin-password">
             <h2>🔐 Admin-Passwort ändern</h2>
             <p style="color: #888; margin-bottom: 20px;">
                 Ändern Sie das Passwort für den Admin-Zugang. Das neue Passwort wird lokal gespeichert.
@@ -891,7 +1039,7 @@
         </div>
         
         <!-- Kategorien verwalten -->
-        <div class="admin-section">
+        <div class="admin-section" id="section-categories">
             <h2>📁 Kategorien verwalten</h2>
             <p style="color: #888; margin-bottom: 15px;">Erstellen Sie Kategorien für die Sidebar auf der Startseite (z.B. Sport, Portrait, Shootings, Tiere, Landschaft)</p>
             <div id="categories-list" style="margin-bottom: 20px;"></div>
@@ -903,7 +1051,7 @@
         </div>
         
         <!-- Portfolio verwalten -->
-        <div class="admin-section">
+        <div class="admin-section" id="section-portfolio">
             <h2>🎨 Portfolio-Slider verwalten</h2>
             <p style="color: #888; margin-bottom: 15px;">Fügen Sie Bilder zum Portfolio-Slider auf der Startseite hinzu, um Kunden zu zeigen, was Sie fotografieren</p>
             <div id="portfolio-list" style="margin-bottom: 20px;"></div>
@@ -915,7 +1063,7 @@
         </div>
         
         <!-- gallery.json exportieren -->
-        <div class="admin-section">
+        <div class="admin-section" id="section-export">
             <h2>gallery.json exportieren</h2>
             <p id="export-description">
                 Nach dem Erstellen/Bearbeiten von Galerien wird <code>gallery.json</code> automatisch zu GitHub gepusht.
@@ -3293,6 +3441,8 @@
         // Starte Initialisierung wenn DOM bereit ist
         // WICHTIG: Passwortschutz IMMER zuerst initialisieren
         function initializeAdminPage() {
+            setupAdminQuickNav();
+
             // Verstecke Admin-Content sofort beim Laden
             const adminContent = document.getElementById('admin-content');
             if (adminContent) {
@@ -3303,6 +3453,49 @@
             initPasswordProtection();
             
             // Admin-Funktionen werden nach erfolgreicher Passwortprüfung gestartet
+        }
+
+        function setupAdminQuickNav() {
+            const toggleButton = document.getElementById('admin-nav-toggle');
+            const overlay = document.getElementById('admin-nav-overlay');
+            const sidebar = document.getElementById('admin-sidebar');
+
+            if (!toggleButton || !overlay || !sidebar) return;
+
+            const closeNav = () => {
+                document.body.classList.remove('nav-open');
+                toggleButton.setAttribute('aria-expanded', 'false');
+                overlay.setAttribute('aria-hidden', 'true');
+            };
+
+            const openNav = () => {
+                document.body.classList.add('nav-open');
+                toggleButton.setAttribute('aria-expanded', 'true');
+                overlay.setAttribute('aria-hidden', 'false');
+            };
+
+            toggleButton.addEventListener('click', () => {
+                const isOpen = document.body.classList.contains('nav-open');
+                if (isOpen) {
+                    closeNav();
+                } else {
+                    openNav();
+                }
+            });
+
+            overlay.addEventListener('click', closeNav);
+
+            sidebar.addEventListener('click', (event) => {
+                const link = event.target.closest('a[href^="#"]');
+                if (!link) return;
+                closeNav();
+            });
+
+            document.addEventListener('keydown', (event) => {
+                if (event.key === 'Escape' && document.body.classList.contains('nav-open')) {
+                    closeNav();
+                }
+            });
         }
         
         if (document.readyState === 'loading') {
