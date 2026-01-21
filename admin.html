@@ -101,7 +101,8 @@
         
         .form-group small {
             display: block;
-            margin-top: 5px;
+            margin-top: 4px;
+            font-size: 0.8em;
         }
         
         /* CSS für inline styles - behebt Linter-Warnungen */
@@ -144,8 +145,13 @@
         }
         
         .admin-section p {
-            margin-bottom: 20px;
+            margin-bottom: 12px;
             color: #888;
+            font-size: 0.9em;
+        }
+
+        #admin-content {
+            display: none;
         }
         
         .gallery-description {
@@ -463,6 +469,13 @@
         .upload-option-btn:hover {
             opacity: 0.9;
         }
+
+        .upload-option-btn.compact {
+            background: rgba(255,255,255,0.15);
+            color: white;
+            border: 1px dashed rgba(255,255,255,0.6);
+            margin-top: 8px;
+        }
         
         .upload-option-status {
             color: rgba(255,255,255,0.7);
@@ -679,7 +692,10 @@
                                 ✓ Kostenlos (25 GB)
                             </p>
                             <button type="button" id="cloudinary-upload-btn" class="upload-option-btn cloudinary">
-                                📤 Bilder hochladen
+                                📤 Hochladen (Cloudinary)
+                            </button>
+                            <button type="button" id="cloudinary-upload-compact-btn" class="upload-option-btn compact">
+                                🗜️ Komprimiert hochladen (≤ 10 MB)
                             </button>
                             <p class="upload-option-status">
                                 ✓ Bereits konfiguriert
@@ -873,7 +889,7 @@
             <div style="display: flex; gap: 10px; margin-top: 15px;">
                 <input type="text" id="new-portfolio-title" placeholder="Titel (optional)" style="flex: 1; padding: 10px; background: #1a1a1a; border: 1px solid #444; border-radius: 6px; color: #e0e0e0;">
                 <input type="text" id="new-portfolio-description" placeholder="Beschreibung (optional)" style="flex: 1; padding: 10px; background: #1a1a1a; border: 1px solid #444; border-radius: 6px; color: #e0e0e0;">
-                <button type="button" class="btn-primary" id="portfolio-upload-btn">📤 Portfolio-Bild hochladen</button>
+                <button type="button" class="btn-primary" id="portfolio-upload-btn">🗜️ Portfolio-Bild komprimiert hochladen</button>
             </div>
         </div>
         
@@ -1377,44 +1393,7 @@
                         }
                         
                         if (result && result.event === "success") {
-                            const imageInfo = result.info;
-                            const imageName = imageInfo.original_filename || imageInfo.public_id;
-                            const imageUrl = imageInfo.secure_url;
-                            
-                            // Erstelle hochwertiges Thumbnail (400x400px, automatisches Cropping)
-                            // Verwende c_fill für besseres Cropping oder c_limit für Seitenverhältnis
-                            let thumbnailUrl = imageInfo.secure_url;
-                            if (imageInfo.public_id) {
-                                // Transformiere URL für besseres Thumbnail (400x400px, quality 80)
-                                thumbnailUrl = imageInfo.secure_url.replace(
-                                    /\/upload\//,
-                                    '/upload/c_fill,h_400,w_400,q_auto:good,f_auto/'
-                                );
-                            } else {
-                                // Fallback: Verwende vorhandenes thumbnail_url oder original
-                                thumbnailUrl = imageInfo.thumbnail_url || imageInfo.secure_url;
-                            }
-                            
-                            // Füge Bild zur Liste hinzu
-                            uploadedImages.push({
-                                name: imageName,
-                                url: imageUrl,
-                                thumbnailUrl: thumbnailUrl,
-                                publicId: imageInfo.public_id,
-                                width: imageInfo.width,
-                                height: imageInfo.height,
-                                source: 'cloudinary'
-                            });
-                            
-                            // Füge Dateinamen zum Textfeld hinzu
-                            const textarea = document.getElementById('gallery-images');
-                            if (textarea) {
-                                const current = textarea.value.trim();
-                                const newValue = current ? current + '\n' + imageName : imageName;
-                                textarea.value = newValue;
-                            }
-                            
-                            showAlert(`Bild "${imageName}" erfolgreich hochgeladen!`, 'success');
+                            handleUploadedImage(result.info);
                         }
                         
                         if (result && result.event === "close") {
@@ -1431,6 +1410,179 @@
                 console.error('Fehler beim Erstellen des Cloudinary Widgets:', error);
                 showAlert('Fehler beim Initialisieren: ' + error.message, 'error');
             }
+        }
+
+        function handleUploadedImage(imageInfo) {
+            const imageName = imageInfo.original_filename || imageInfo.public_id;
+            const imageUrl = imageInfo.secure_url;
+
+            let thumbnailUrl = imageInfo.secure_url;
+            if (imageInfo.public_id) {
+                thumbnailUrl = imageInfo.secure_url.replace(
+                    /\/upload\//,
+                    '/upload/c_fill,h_400,w_400,q_auto:good,f_auto/'
+                );
+            } else {
+                thumbnailUrl = imageInfo.thumbnail_url || imageInfo.secure_url;
+            }
+
+            uploadedImages.push({
+                name: imageName,
+                url: imageUrl,
+                thumbnailUrl: thumbnailUrl,
+                publicId: imageInfo.public_id,
+                width: imageInfo.width,
+                height: imageInfo.height,
+                source: 'cloudinary'
+            });
+
+            const textarea = document.getElementById('gallery-images');
+            if (textarea) {
+                const current = textarea.value.trim();
+                const newValue = current ? current + '\n' + imageName : imageName;
+                textarea.value = newValue;
+            }
+
+            showAlert(`Bild "${imageName}" erfolgreich hochgeladen!`, 'success');
+        }
+
+        async function compressImageToSize(file, maxBytes, maxWidth = 2400, maxHeight = 2400) {
+            const imageUrl = URL.createObjectURL(file);
+            const image = new Image();
+            image.src = imageUrl;
+
+            await new Promise((resolve, reject) => {
+                image.onload = resolve;
+                image.onerror = reject;
+            });
+
+            let { width, height } = image;
+            const widthRatio = maxWidth / width;
+            const heightRatio = maxHeight / height;
+            const ratio = Math.min(1, widthRatio, heightRatio);
+
+            width = Math.round(width * ratio);
+            height = Math.round(height * ratio);
+
+            const canvas = document.createElement('canvas');
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(image, 0, 0, width, height);
+
+            URL.revokeObjectURL(imageUrl);
+
+            let quality = 0.9;
+            let blob = await new Promise((resolve) => canvas.toBlob(resolve, 'image/jpeg', quality));
+
+            while (blob && blob.size > maxBytes && quality > 0.5) {
+                quality -= 0.1;
+                blob = await new Promise((resolve) => canvas.toBlob(resolve, 'image/jpeg', quality));
+            }
+
+            return blob;
+        }
+
+        async function uploadCompressedFiles(files, onUploaded) {
+            const cloudName = localStorage.getItem('cloudinary_cloud_name') || 'dnvqw9wif';
+            const uploadPreset = localStorage.getItem('cloudinary_upload_preset') || 'wb_foto_manager';
+
+            if (!cloudName || !uploadPreset) {
+                showAlert('Bitte Cloudinary konfigurieren', 'error');
+                return;
+            }
+
+            const progressDiv = document.getElementById('upload-progress');
+            const progressBar = document.getElementById('upload-progress-bar');
+            const statusText = document.getElementById('upload-status');
+            const detailsText = document.getElementById('upload-details');
+
+            if (progressDiv) progressDiv.style.display = 'block';
+
+            let index = 0;
+            for (const file of files) {
+                index += 1;
+                if (statusText) statusText.textContent = `Komprimiere ${index}/${files.length}...`;
+
+                const compressedBlob = await compressImageToSize(file, 9 * 1024 * 1024);
+                if (!compressedBlob) {
+                    showAlert('Komprimierung fehlgeschlagen', 'error');
+                    continue;
+                }
+
+                const formData = new FormData();
+                formData.append('file', compressedBlob, file.name.replace(/\.[^/.]+$/, '') + '.jpg');
+                formData.append('upload_preset', uploadPreset);
+
+                if (statusText) statusText.textContent = `Upload ${index}/${files.length}...`;
+                if (detailsText) detailsText.textContent = file.name;
+
+                const response = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json().catch(() => ({}));
+                    showAlert('Upload-Fehler: ' + (errorData.error?.message || response.statusText), 'error');
+                    continue;
+                }
+
+                const result = await response.json();
+                if (progressBar) progressBar.style.width = `${Math.round((index / files.length) * 100)}%`;
+                if (onUploaded) onUploaded(result);
+            }
+
+            if (statusText) statusText.textContent = 'Upload abgeschlossen';
+            if (detailsText) detailsText.textContent = '';
+        }
+
+        function openCompressedGalleryUpload() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.multiple = true;
+            input.accept = 'image/*';
+            input.onchange = async (event) => {
+                const files = Array.from(event.target.files || []);
+                if (!files.length) return;
+                await uploadCompressedFiles(files, handleUploadedImage);
+            };
+            input.click();
+        }
+
+        function openCompressedPortfolioUpload() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.multiple = false;
+            input.accept = 'image/*';
+            input.onchange = async (event) => {
+                const files = Array.from(event.target.files || []);
+                if (!files.length) return;
+                await uploadCompressedFiles(files, (result) => {
+                    const title = document.getElementById('new-portfolio-title').value.trim();
+                    const description = document.getElementById('new-portfolio-description').value.trim();
+
+                    ensureGalleryConfig();
+                    galleryConfig.portfolio.push({
+                        image: result.secure_url,
+                        url: result.secure_url,
+                        title: title || null,
+                        description: description || null
+                    });
+
+                    galleryConfig.generated = new Date().toISOString();
+                    displayPortfolio();
+
+                    if (githubConfig) {
+                        pushGalleryJsonToGitHub();
+                    }
+
+                    document.getElementById('new-portfolio-title').value = '';
+                    document.getElementById('new-portfolio-description').value = '';
+                    showAlert('Portfolio-Bild hinzugefügt', 'success');
+                });
+            };
+            input.click();
         }
         
         // Öffne Cloudinary Widget
@@ -2918,60 +3070,8 @@
             showAlert('Portfolio-Bild gelöscht', 'success');
         }
         
-        // Portfolio-Upload Button
-        document.getElementById('portfolio-upload-btn')?.addEventListener('click', () => {
-            const cloudinaryWidget = cloudinary.createUploadWidget(
-                {
-                    cloudName: localStorage.getItem('cloudinary_cloud_name') || 'dnvqw9wif',
-                    uploadPreset: localStorage.getItem('cloudinary_upload_preset') || 'wb_foto_manager',
-                    multiple: false,
-                    sources: ['local', 'camera'],
-                    resourceType: 'image',
-                    maxFileSize: 50 * 1024 * 1024
-                },
-                (error, result) => {
-                    if (error) {
-                        console.error('Upload-Fehler:', error);
-                        const message = (error.message || '').toLowerCase().includes('file size')
-                            ? 'Datei zu groß. Bitte prüfen Sie das Upload-Preset in Cloudinary oder verwenden Sie kleinere Dateien.'
-                            : ('Upload-Fehler: ' + (error.message || 'Unbekannter Fehler'));
-                        showAlert(message, 'error');
-                        return;
-                    }
-                    
-                    if (result && result.event === 'success') {
-                        const title = document.getElementById('new-portfolio-title').value.trim();
-                        const description = document.getElementById('new-portfolio-description').value.trim();
-                        
-                        if (!galleryConfig.portfolio) {
-                            galleryConfig.portfolio = [];
-                        }
-                        
-                        galleryConfig.portfolio.push({
-                            image: result.info.secure_url,
-                            url: result.info.secure_url,
-                            title: title || null,
-                            description: description || null
-                        });
-                        
-                        galleryConfig.generated = new Date().toISOString();
-                        
-                        displayPortfolio();
-                        
-                        // Push zu GitHub
-                        if (githubConfig) {
-                            pushGalleryJsonToGitHub();
-                        }
-                        
-                        document.getElementById('new-portfolio-title').value = '';
-                        document.getElementById('new-portfolio-description').value = '';
-                        showAlert('Portfolio-Bild hinzugefügt', 'success');
-                    }
-                }
-            );
-            
-            cloudinaryWidget.open();
-        });
+        // Portfolio-Upload Button (komprimiert)
+        document.getElementById('portfolio-upload-btn')?.addEventListener('click', openCompressedPortfolioUpload);
         
         // Initialisiere Passwortschutz
         function initPasswordProtection() {
@@ -3048,6 +3148,11 @@
             const cloudinaryBtn = document.getElementById('cloudinary-upload-btn');
             if (cloudinaryBtn) {
                 cloudinaryBtn.addEventListener('click', openCloudinaryUpload);
+            }
+
+            const cloudinaryCompactBtn = document.getElementById('cloudinary-upload-compact-btn');
+            if (cloudinaryCompactBtn) {
+                cloudinaryCompactBtn.addEventListener('click', openCompressedGalleryUpload);
             }
             
             // GitHub Direct Upload Button
