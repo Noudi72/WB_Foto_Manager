@@ -621,14 +621,10 @@
         }
         
         .category-button.active {
-            background: rgba(124, 92, 255, 0.24);
+            background: rgba(212, 165, 116, 0.15);
             border-color: var(--accent);
             font-weight: 600;
-        }
-        
-        .category-button-icon {
-            font-size: 1em;
-            flex-shrink: 0;
+            color: var(--accent);
         }
         
         .gallery-toolbar {
@@ -991,7 +987,7 @@
         }
         
         .gallery-item-checkbox.checked {
-            background: linear-gradient(135deg, var(--accent) 0%, #764ba2 100%);
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%);
             border-color: var(--accent);
         }
         
@@ -1404,7 +1400,7 @@
         
         /* Buttons */
         .btn-primary {
-            background: linear-gradient(135deg, var(--accent) 0%, #764ba2 100%);
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%);
             color: white;
             border: none;
             padding: 6px 12px;
@@ -2562,7 +2558,7 @@
             // "Alle" Button
             const allButton = document.createElement('button');
             allButton.className = 'category-button' + (selectedCategory === 'all' ? ' active' : '');
-            allButton.innerHTML = '<span class="category-button-icon">📷</span><span>Alle Galerien</span>';
+            allButton.innerHTML = '<span>Alle Galerien</span>';
             allButton.onclick = () => filterByCategory('all');
             buttonsContainer.appendChild(allButton);
             
@@ -2570,7 +2566,7 @@
             categories.forEach(category => {
                 const button = document.createElement('button');
                 button.className = 'category-button' + (selectedCategory === category.id ? ' active' : '');
-                button.innerHTML = `<span class="category-button-icon">${category.icon || '📁'}</span><span>${category.name}</span>`;
+                button.innerHTML = `<span>${category.name}</span>`;
                 button.onclick = () => filterByCategory(category.id);
                 buttonsContainer.appendChild(button);
             });
