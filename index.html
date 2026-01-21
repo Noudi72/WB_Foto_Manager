@@ -12,19 +12,20 @@
         }
         
         :root {
-            --bg-primary: #1a1a1a;
-            --bg-secondary: #2a2a2a;
-            --bg-tertiary: #333;
-            --text-primary: #e0e0e0;
-            --text-secondary: #888;
-            --accent: #667eea;
-            --accent-hover: #764ba2;
-            --border: #333;
+            --bg-primary: #0f1115;
+            --bg-secondary: #171a21;
+            --bg-tertiary: #1f2533;
+            --text-primary: #e7edf6;
+            --text-secondary: #9aa4b2;
+            --accent: #7c5cff;
+            --accent-hover: #59d6ff;
+            --border: #2a3142;
+            --shadow: 0 20px 50px rgba(0,0,0,0.35);
         }
         
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background: var(--bg-primary);
+            background: radial-gradient(circle at top, rgba(124, 92, 255, 0.12), transparent 55%), var(--bg-primary);
             color: var(--text-primary);
             min-height: 100vh;
             transition: background 0.3s, color 0.3s;
@@ -151,38 +152,125 @@
         .container {
             max-width: 1400px;
             margin: 0 auto;
-            padding: 20px;
+            padding: 28px 24px 60px;
         }
-        
-        header {
-            text-align: center;
-            padding: 40px 20px;
-            border-bottom: 1px solid var(--border);
-            margin-bottom: 40px;
+
+        header.site-header {
             position: relative;
+            padding: 24px;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            background: linear-gradient(135deg, rgba(124, 92, 255, 0.14) 0%, rgba(89, 214, 255, 0.08) 100%);
+            box-shadow: var(--shadow);
+            margin-bottom: 28px;
+        }
+
+        .header-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .brand-text p {
+            color: var(--text-secondary);
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .admin-link {
+            color: var(--text-primary);
+            text-decoration: none;
+            font-size: 0.9em;
+            padding: 8px 14px;
+            border-radius: 999px;
+            border: 1px solid var(--border);
+            background: rgba(255,255,255,0.06);
+            transition: all 0.2s;
+        }
+
+        .admin-link:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .hero-strip {
+            margin-top: 24px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255,255,255,0.06);
+            display: grid;
+            grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+            gap: 18px;
+        }
+
+        .hero-copy h2 {
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+        }
+
+        .hero-copy p {
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        .hero-stats {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 12px;
+        }
+
+        .hero-stat {
+            background: rgba(15, 17, 21, 0.6);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .hero-stat span {
+            text-transform: uppercase;
+            font-size: 0.7rem;
+            letter-spacing: 0.08em;
+            color: var(--text-secondary);
+        }
+
+        .hero-stat strong {
+            font-size: 1.4rem;
         }
         
-        body.light-mode header {
+        body.light-mode header.site-header {
             border-bottom-color: var(--border);
         }
         
         /* Theme Toggle */
         .theme-toggle {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: rgba(102, 126, 234, 0.2);
-            border: 1px solid #667eea;
-            color: #667eea;
-            padding: 8px 16px;
-            border-radius: 6px;
+            position: static;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            padding: 8px 12px;
+            border-radius: 999px;
             cursor: pointer;
             font-size: 14px;
             transition: all 0.2s;
         }
-        
+
         .theme-toggle:hover {
-            background: rgba(102, 126, 234, 0.4);
+            border-color: var(--accent);
+            color: var(--accent);
         }
         
         /* Breadcrumb Navigation */
@@ -222,18 +310,21 @@
             gap: 20px;
             margin-bottom: 20px;
         }
-        
+
         .logo {
-            width: 80px;
-            height: 80px;
+            width: 68px;
+            height: 68px;
             border-radius: 16px;
             object-fit: contain;
+            background: rgba(255,255,255,0.06);
+            padding: 8px;
+            border: 1px solid var(--border);
         }
         
         h1 {
-            font-size: 2.5em;
-            margin-bottom: 10px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-size: 2.2em;
+            margin-bottom: 6px;
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -354,14 +445,18 @@
         
         /* Kategorie-Sidebar für Startseite */
         .category-sidebar {
-            width: 220px;
-            min-width: 220px;
-            background: linear-gradient(180deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
-            border-right: 1px solid var(--border);
+            width: 240px;
+            min-width: 240px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
             padding: 20px;
             overflow-y: auto;
-            max-height: calc(100vh - 200px);
-            box-shadow: 4px 0 24px rgba(0,0,0,0.3);
+            max-height: calc(100vh - 260px);
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 24px;
+            align-self: flex-start;
         }
         
         .category-sidebar h3 {
@@ -375,12 +470,11 @@
         
         .category-button {
             width: 100%;
-            padding: 12px 16px;
+            padding: 10px 14px;
             margin-bottom: 8px;
-            background: rgba(102, 126, 234, 0.1);
-            border: 2px solid transparent;
-            border-left: 3px solid var(--accent);
-            border-radius: 8px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid transparent;
+            border-radius: 999px;
             color: var(--text-primary);
             font-size: 0.95em;
             font-weight: 500;
@@ -393,13 +487,13 @@
         }
         
         .category-button:hover {
-            background: rgba(102, 126, 234, 0.2);
+            background: rgba(124, 92, 255, 0.16);
+            border-color: rgba(124, 92, 255, 0.5);
             transform: translateX(4px);
-            border-left-width: 4px;
         }
         
         .category-button.active {
-            background: rgba(102, 126, 234, 0.3);
+            background: rgba(124, 92, 255, 0.28);
             border-color: var(--accent);
             font-weight: 600;
         }
@@ -408,11 +502,39 @@
             font-size: 1.2em;
         }
         
+        .gallery-toolbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 12px 0 4px;
+        }
+
+        .gallery-search {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 10px 14px;
+        }
+
+        .gallery-search input {
+            width: 100%;
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            font-size: 0.95em;
+            outline: none;
+        }
+
         .gallery-selector {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 24px;
-            padding: 30px 0;
+            gap: 22px;
+            padding: 20px 0 10px;
         }
         
         .main-content-with-sidebar {
@@ -423,21 +545,21 @@
         
         .gallery-card {
             background: var(--bg-secondary);
-            border-radius: 16px;
+            border-radius: 18px;
             padding: 0;
             cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            border: 2px solid transparent;
+            transition: transform 0.25s ease, box-shadow 0.25s ease, border 0.25s ease;
+            border: 1px solid var(--border);
             overflow: hidden;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            box-shadow: 0 10px 24px rgba(0,0,0,0.18);
             display: flex;
             flex-direction: column;
         }
         
         .gallery-card:hover {
-            transform: translateY(-8px) scale(1.02);
-            box-shadow: 0 12px 32px rgba(102, 126, 234, 0.3);
-            border-color: var(--accent);
+            transform: translateY(-6px);
+            box-shadow: 0 18px 36px rgba(0,0,0,0.3);
+            border-color: rgba(124, 92, 255, 0.6);
         }
         
         .gallery-card.locked {
@@ -446,14 +568,14 @@
         
         .gallery-card-preview {
             width: 100%;
-            height: 240px;
+            height: 220px;
             object-fit: cover;
             background: var(--bg-primary);
             display: block;
         }
         
         .gallery-card-content {
-            padding: 24px;
+            padding: 20px;
         }
         
         .gallery-card-header {
@@ -464,7 +586,7 @@
         }
         
         .gallery-card h3 {
-            font-size: 1.4em;
+            font-size: 1.2em;
             margin: 0;
             color: var(--text-primary);
             font-weight: 700;
@@ -481,8 +603,8 @@
         
         .gallery-card p {
             color: var(--text-secondary);
-            margin-bottom: 16px;
-            font-size: 0.95em;
+            margin-bottom: 14px;
+            font-size: 0.9em;
             line-height: 1.5;
         }
         
@@ -510,11 +632,11 @@
         
         .gallery-folder-header {
             grid-column: 1 / -1;
-            margin: 30px 0 16px 0;
-            padding: 16px 20px;
-            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
-            border-radius: 12px;
-            border-left: 4px solid var(--accent);
+            margin: 26px 0 14px 0;
+            padding: 14px 18px;
+            background: rgba(124, 92, 255, 0.12);
+            border-radius: 14px;
+            border: 1px solid rgba(124, 92, 255, 0.35);
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -572,24 +694,68 @@
             opacity: 0.9;
         }
         
-        .back-button {
-            position: absolute;
-            top: 20px;
-            left: 20px;
+        .gallery-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            padding: 16px 18px;
+            border-radius: 16px;
+            border: 1px solid var(--border);
             background: var(--bg-secondary);
+            box-shadow: var(--shadow);
+            margin-bottom: 18px;
+            flex-wrap: wrap;
+        }
+
+        .gallery-header-left {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .gallery-title h2 {
+            font-size: 1.4rem;
+            margin-bottom: 4px;
+        }
+
+        .gallery-title p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .gallery-header-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .gallery-chip {
+            padding: 8px 12px;
+            border-radius: 999px;
+            border: 1px solid var(--border);
+            background: rgba(255,255,255,0.04);
+            font-size: 0.85rem;
+            color: var(--text-primary);
+        }
+
+        .back-button {
+            background: rgba(255,255,255,0.06);
             border: 1px solid var(--border);
             color: var(--text-primary);
-            padding: 10px 20px;
-            border-radius: 6px;
+            padding: 10px 14px;
+            border-radius: 999px;
             cursor: pointer;
             text-decoration: none;
             display: inline-flex;
             align-items: center;
             gap: 8px;
         }
-        
+
         .back-button:hover {
-            background: var(--bg-tertiary);
+            border-color: var(--accent);
+            color: var(--accent);
         }
         
         .gallery {
@@ -1403,8 +1569,8 @@
                 padding: 10px;
             }
             
-            header {
-                padding: 20px 10px;
+            header.site-header {
+                padding: 20px;
             }
             
             h1 {
@@ -1417,10 +1583,28 @@
             }
             
             .theme-toggle {
-                top: 10px;
-                right: 10px;
-                padding: 6px 12px;
+                padding: 6px 10px;
                 font-size: 12px;
+            }
+
+            .header-inner {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .hero-strip {
+                grid-template-columns: 1fr;
+            }
+
+            .hero-stats {
+                grid-template-columns: 1fr;
+            }
+
+            .category-sidebar {
+                position: static;
+                max-height: none;
+                width: 100%;
+                min-width: 0;
             }
             
             .gallery-selector {
@@ -1428,8 +1612,8 @@
                 gap: 15px;
             }
             
-            .gallery-card {
-                padding: 20px;
+            .gallery-card-content {
+                padding: 16px;
             }
             
             .gallery {
@@ -1457,6 +1641,16 @@
             .logo-container {
                 flex-direction: column;
                 gap: 10px;
+            }
+
+            .gallery-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .gallery-header-left {
+                flex-direction: column;
+                align-items: flex-start;
             }
             
             .gallery-sidebar {
@@ -1523,19 +1717,41 @@
 </head>
 <body>
     <div class="container">
-        <header>
-            <button class="theme-toggle" onclick="toggleTheme()" id="theme-toggle" title="Dark/Light Mode wechseln">
-                <span id="theme-icon">🌙</span>
-            </button>
-            <div class="logo-container">
-                <img src="./logo.png" alt="WB Foto Manager Logo" class="logo">
-                <div>
-                    <h1>WB Foto Manager</h1>
-                    <p>Galerie</p>
+        <header class="site-header">
+            <div class="header-inner">
+                <div class="brand">
+                    <img src="./logo.png" alt="WB Foto Manager Logo" class="logo">
+                    <div class="brand-text">
+                        <h1>WB Foto Manager</h1>
+                        <p>Professionelle Kunden-Galerie</p>
+                    </div>
+                </div>
+                <div class="header-actions">
+                    <a class="admin-link" href="admin.html">⚙️ Admin</a>
+                    <button class="theme-toggle" onclick="toggleTheme()" id="theme-toggle" title="Dark/Light Mode wechseln">
+                        <span id="theme-icon">🌙</span>
+                    </button>
                 </div>
             </div>
-            <div style="margin-top: 20px;">
-                <a href="admin.html" style="color: var(--accent); text-decoration: none; font-size: 0.9em;">⚙️ Admin</a>
+            <div class="hero-strip">
+                <div class="hero-copy">
+                    <h2>Finde deine Galerie in Sekunden</h2>
+                    <p>Übersichtlich organisiert nach Kategorien. Wähle eine Galerie, um Bilder zu bewerten, zu kommentieren und herunterzuladen.</p>
+                </div>
+                <div class="hero-stats">
+                    <div class="hero-stat">
+                        <span>Galerien</span>
+                        <strong id="stat-galleries">–</strong>
+                    </div>
+                    <div class="hero-stat">
+                        <span>Bilder</span>
+                        <strong id="stat-images">–</strong>
+                    </div>
+                    <div class="hero-stat">
+                        <span>Kategorien</span>
+                        <strong id="stat-categories">–</strong>
+                    </div>
+                </div>
             </div>
         </header>
         
@@ -1559,6 +1775,12 @@
                 
                 <!-- Galerie-Liste -->
                 <div style="flex: 1;">
+                    <div class="gallery-toolbar">
+                        <div class="gallery-search">
+                            <span>🔍</span>
+                            <input type="search" id="gallery-search-input" placeholder="Galerien durchsuchen…" autocomplete="off">
+                        </div>
+                    </div>
                     <div class="gallery-selector" id="gallery-list"></div>
                 </div>
             </div>
@@ -1575,9 +1797,21 @@
         
         <!-- Galerie-Ansicht -->
         <div id="gallery-container" style="display: none;">
-            <button class="back-button" onclick="showGallerySelector()" id="back-button" style="display: none;">
-                ← Zurück zur Galerie-Auswahl
-            </button>
+            <div class="gallery-header">
+                <div class="gallery-header-left">
+                    <button class="back-button" onclick="showGallerySelector()" id="back-button" style="display: none;">
+                        ← Zurück
+                    </button>
+                    <div class="gallery-title">
+                        <h2 id="gallery-title">Galerie</h2>
+                        <p id="gallery-subtitle">–</p>
+                    </div>
+                </div>
+                <div class="gallery-header-actions">
+                    <span class="gallery-chip" id="gallery-count-chip">– Bilder</span>
+                    <span class="gallery-chip" id="gallery-selected-chip">0 ausgewählt</span>
+                </div>
+            </div>
             <div style="display: flex; gap: 20px;">
                 <!-- Sidebar für Galerie-Übersicht -->
                 <div class="gallery-sidebar" id="gallery-sidebar">
@@ -1758,6 +1992,7 @@
         let currentImageIndex = 0;
         let searchQuery = '';
         let selectedCategory = 'all';
+        let gallerySearchQuery = '';
         let portfolioCurrentSlide = 0;
         let portfolioInterval = null;
         
@@ -2109,6 +2344,20 @@
             initCategorySidebar();
             displayFilteredGalleries();
         }
+
+        function updateHeroStats() {
+            const galleries = galleryConfig?.galleries || [];
+            const totalImages = galleries.reduce((sum, gallery) => sum + (gallery.images?.length || 0), 0);
+            const categories = galleryConfig?.categories || [];
+
+            const galleryCountEl = document.getElementById('stat-galleries');
+            const imageCountEl = document.getElementById('stat-images');
+            const categoryCountEl = document.getElementById('stat-categories');
+
+            if (galleryCountEl) galleryCountEl.textContent = galleries.length || 0;
+            if (imageCountEl) imageCountEl.textContent = totalImages || 0;
+            if (categoryCountEl) categoryCountEl.textContent = categories.length || 0;
+        }
         
         // Zeige gefilterte Galerien
         function displayFilteredGalleries() {
@@ -2127,6 +2376,15 @@
             if (selectedCategory !== 'all') {
                 filteredGalleries = galleryConfig.galleries.filter(gallery => {
                     return gallery.category === selectedCategory;
+                });
+            }
+
+            if (gallerySearchQuery.trim()) {
+                const query = gallerySearchQuery.trim().toLowerCase();
+                filteredGalleries = filteredGalleries.filter((gallery) => {
+                    const name = (gallery.name || '').toLowerCase();
+                    const description = (gallery.description || '').toLowerCase();
+                    return name.includes(query) || description.includes(query);
                 });
             }
             
@@ -2188,6 +2446,16 @@
             if (searchInput) {
                 searchInput.value = '';
                 searchQuery = '';
+            }
+
+            const gallerySearchInput = document.getElementById('gallery-search-input');
+            if (gallerySearchInput) {
+                gallerySearchInput.value = '';
+                gallerySearchQuery = '';
+                gallerySearchInput.oninput = (event) => {
+                    gallerySearchQuery = event.target.value;
+                    displayFilteredGalleries();
+                };
             }
             
             // Initialisiere Portfolio und Kategorien
@@ -2310,6 +2578,12 @@
             
             currentImages = gallery.images || [];
             console.log('Lade', currentImages.length, 'Bilder - "' + (gallery.name || 'Unbekannt') + '"');
+            const galleryTitle = document.getElementById('gallery-title');
+            const gallerySubtitle = document.getElementById('gallery-subtitle');
+            if (galleryTitle) galleryTitle.textContent = gallery.name || 'Galerie';
+            if (gallerySubtitle) {
+                gallerySubtitle.textContent = gallery.description ? gallery.description : 'Bilder auswählen, bewerten und kommentieren.';
+            }
             updateBreadcrumb();
             displayGallery(currentImages);
             document.getElementById('loading').style.display = 'none';
@@ -2636,6 +2910,11 @@
             document.getElementById('stat-selected').textContent = selected;
             document.getElementById('stat-favorites').textContent = favorites;
             document.getElementById('stat-commented').textContent = commented;
+
+            const galleryCountChip = document.getElementById('gallery-count-chip');
+            const gallerySelectedChip = document.getElementById('gallery-selected-chip');
+            if (galleryCountChip) galleryCountChip.textContent = `${total} Bilder`;
+            if (gallerySelectedChip) gallerySelectedChip.textContent = `${selected} ausgewählt`;
             
             document.getElementById('flag-reject').textContent = flagCounts.reject;
             document.getElementById('flag-review').textContent = flagCounts.review;
@@ -3465,6 +3744,8 @@
                 document.getElementById('error').style.display = 'block';
                 return;
             }
+
+            updateHeroStats();
             
             // Prüfe ob mehrere Galerien vorhanden sind
             console.log('Galerien gefunden:', galleryConfig.galleries?.length || 0);
