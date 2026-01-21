@@ -1,6 +1,6 @@
 {
   "version": "3.0",
-  "generated": "2026-01-21T10:12:10.986Z",
+  "generated": "2026-01-21T10:12:20.072Z",
   "categories": [
     {
       "id": "sport",
@@ -827,7 +827,7 @@
     {
       "image": "https://res.cloudinary.com/dnvqw9wif/image/upload/v1768988459/ygc0cgxjzh5qmtx6ajsf.jpg",
       "url": "https://res.cloudinary.com/dnvqw9wif/image/upload/v1768988459/ygc0cgxjzh5qmtx6ajsf.jpg",
-      "title": "Shooting",
+      "title": null,
       "description": null
     },
     {
