@@ -1035,40 +1035,54 @@
         /* Badges für Markierungen */
         .gallery-item-badge {
             position: absolute;
-            top: 12px;
-            right: 12px;
-            padding: 5px 10px;
-            border-radius: 7px;
-            font-size: 11px;
-            font-weight: 600;
-            color: white;
-            -webkit-backdrop-filter: blur(10px);
-            backdrop-filter: blur(10px);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+            top: 8px;
+            right: 8px;
+            padding: 2px 6px;
+            border-radius: 6px;
+            font-size: 10px;
+            font-weight: 700;
+            color: var(--text-secondary);
+            background: transparent;
+            -webkit-backdrop-filter: none;
+            backdrop-filter: none;
+            box-shadow: none;
+            text-shadow: none;
             z-index: 5;
         }
+
+        .gallery-item-badge.badge--reject { color: #ff6b6b; }
+        .gallery-item-badge.badge--review { color: #ffd93d; }
+        .gallery-item-badge.badge--approve { color: #6bcf7f; }
+        .gallery-item-badge.badge--final { color: #c6b6ff; }
         
         .selection-badge {
             position: absolute;
-            bottom: 12px;
-            left: 12px;
-            padding: 6px 10px;
-            background: rgba(212, 165, 116, 0.95);
-            -webkit-backdrop-filter: blur(10px);
-            backdrop-filter: blur(10px);
-            border-radius: 9px;
-            font-size: 12px;
+            bottom: 8px;
+            left: 8px;
+            padding: 2px 6px;
+            background: transparent;
+            -webkit-backdrop-filter: none;
+            backdrop-filter: none;
+            border-radius: 6px;
+            font-size: 10px;
             font-weight: 700;
-            color: white;
-            text-shadow: 0 1px 3px rgba(0,0,0,0.5);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.1);
+            color: var(--accent);
+            text-shadow: none;
+            box-shadow: none;
             z-index: 5;
             white-space: nowrap;
-            max-width: calc(100% - 24px);
+            max-width: calc(100% - 130px);
             overflow: hidden;
             text-overflow: ellipsis;
             letter-spacing: 0.3px;
         }
+
+        .selection-badge.badge-tone-1 { color: #d4a574; }
+        .selection-badge.badge-tone-2 { color: #ff8f6b; }
+        .selection-badge.badge-tone-3 { color: #5bd2ff; }
+        .selection-badge.badge-tone-4 { color: #6bcf7f; }
+        .selection-badge.badge-tone-5 { color: #ffd93d; }
+        .selection-badge.badge-tone-6 { color: #c6b6ff; }
         
         .lightbox {
             display: none;
@@ -2296,6 +2310,17 @@
                 });
             });
         }
+
+        function getSelectionToneClass(selectionName) {
+            const text = String(selectionName || '');
+            let hash = 0;
+            for (let i = 0; i < text.length; i++) {
+                hash = ((hash << 5) - hash) + text.charCodeAt(i);
+                hash |= 0;
+            }
+            const tone = (Math.abs(hash) % 6) + 1;
+            return `badge-tone-${tone}`;
+        }
         
         // Theme Management
         function initTheme() {
@@ -3348,7 +3373,7 @@
             const flag = feedbackData.flags[imageId];
             if (flag) {
                 const badge = document.createElement('div');
-                badge.className = 'gallery-item-badge';
+                badge.className = `gallery-item-badge badge--${flag}`;
                 const flagLabels = {
                     'reject': 'Abgelehnt',
                     'review': 'Prüfen',
@@ -3356,18 +3381,15 @@
                     'final': 'Final'
                 };
                 badge.textContent = flagLabels[flag] || flag;
-                badge.style.background = flag === 'reject' ? 'rgba(255,107,107,0.9)' :
-                                         flag === 'review' ? 'rgba(255,217,61,0.9)' :
-                                         flag === 'approve' ? 'rgba(107,207,127,0.9)' :
-                                         'rgba(51,51,51,0.9)';
                 item.appendChild(badge);
             }
             
             const selections = feedbackData.selections[imageId] || [];
             if (selections.length > 0) {
                 const selectionBadge = document.createElement('div');
-                selectionBadge.className = 'selection-badge';
-                selectionBadge.textContent = `${selections[0]}${selections.length > 1 ? ` +${selections.length - 1}` : ''}`;
+                const primary = selections[0];
+                selectionBadge.className = `selection-badge ${getSelectionToneClass(primary)}`;
+                selectionBadge.textContent = `${primary}${selections.length > 1 ? ` +${selections.length - 1}` : ''}`;
                 item.appendChild(selectionBadge);
             }
         }
@@ -3873,6 +3895,8 @@
             feedbackData.ratings[imageId] = rating;
             saveFeedbackData();
             updateRatingStars(rating);
+            updateAllImageBadges();
+            updateSidebarStats();
         }
         
         // Set Flag
