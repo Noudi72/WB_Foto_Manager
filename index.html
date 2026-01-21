@@ -435,54 +435,48 @@
         }
         
         /* Portfolio Slider */
+        .portfolio-slider-wrapper {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 32px;
+        }
+        
+        @media (max-width: 968px) {
+            .portfolio-slider-wrapper {
+                grid-template-columns: 1fr;
+                gap: 16px;
+                margin-bottom: 24px;
+            }
+        }
+        
         .portfolio-slider {
             width: 100%;
-            height: 380px;
+            height: 300px;
             position: relative;
-            margin-bottom: 32px;
             border-radius: 20px;
             overflow: hidden;
             box-shadow: 0 12px 40px rgba(0,0,0,0.4);
             border: 1px solid var(--border);
         }
         
-        @media (max-width: 968px) {
+        @media (max-width: 768px) {
             .portfolio-slider {
-                height: 300px;
-                margin-bottom: 24px;
+                height: 280px;
             }
         }
         
         .portfolio-slider-container {
             width: 100%;
             height: 100%;
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-            padding: 12px;
+            display: flex;
             transition: transform 0.5s ease-in-out;
-        }
-        
-        @media (max-width: 968px) {
-            .portfolio-slider-container {
-                display: flex;
-                gap: 0;
-                padding: 0;
-            }
         }
         
         .portfolio-slide {
             min-width: 100%;
             height: 100%;
             position: relative;
-            border-radius: 12px;
-            overflow: hidden;
-        }
-        
-        @media (min-width: 969px) {
-            .portfolio-slide {
-                min-width: 0;
-            }
         }
         
         .portfolio-slide img {
@@ -1951,12 +1945,22 @@
         
         <!-- Galerie-Auswahl (wird angezeigt wenn mehrere Galerien vorhanden) -->
         <div id="gallery-selector" style="display: none;">
-            <!-- Portfolio Slider -->
-            <div class="portfolio-slider" id="portfolio-slider" style="display: none;">
-                <div class="portfolio-slider-container" id="portfolio-slider-container"></div>
-                <button class="portfolio-nav prev" onclick="portfolioPrev()">‹</button>
-                <button class="portfolio-nav next" onclick="portfolioNext()">›</button>
-                <div class="portfolio-dots" id="portfolio-dots"></div>
+            <!-- Portfolio Slider Wrapper -->
+            <div class="portfolio-slider-wrapper" id="portfolio-slider-wrapper" style="display: none;">
+                <!-- Slider 1 -->
+                <div class="portfolio-slider" id="portfolio-slider-1">
+                    <div class="portfolio-slider-container" id="portfolio-slider-container-1"></div>
+                    <button class="portfolio-nav prev" onclick="portfolioPrev(1)">‹</button>
+                    <button class="portfolio-nav next" onclick="portfolioNext(1)">›</button>
+                    <div class="portfolio-dots" id="portfolio-dots-1"></div>
+                </div>
+                <!-- Slider 2 -->
+                <div class="portfolio-slider" id="portfolio-slider-2">
+                    <div class="portfolio-slider-container" id="portfolio-slider-container-2"></div>
+                    <button class="portfolio-nav prev" onclick="portfolioPrev(2)">‹</button>
+                    <button class="portfolio-nav next" onclick="portfolioNext(2)">›</button>
+                    <div class="portfolio-dots" id="portfolio-dots-2"></div>
+                </div>
             </div>
             
             <!-- Hauptinhalt mit Sidebar -->
@@ -2201,8 +2205,8 @@
         let searchQuery = '';
         let selectedCategory = 'all';
         let gallerySearchQuery = '';
-        let portfolioCurrentSlide = 0;
-        let portfolioInterval = null;
+        let portfolioCurrentSlide = { 1: 0, 2: 0 };
+        let portfolioInterval = { 1: null, 2: null };
         
         // Feedback-Daten (wird in localStorage gespeichert)
         let feedbackData = {
@@ -2421,18 +2425,33 @@
         // Portfolio Slider Funktionen
         function initPortfolioSlider() {
             const portfolio = galleryConfig?.portfolio || [];
-            const slider = document.getElementById('portfolio-slider');
-            const container = document.getElementById('portfolio-slider-container');
-            const dots = document.getElementById('portfolio-dots');
+            const wrapper = document.getElementById('portfolio-slider-wrapper');
             
             if (!portfolio || portfolio.length === 0) {
-                if (slider) slider.style.display = 'none';
+                if (wrapper) wrapper.style.display = 'none';
                 return;
             }
             
-            if (slider) slider.style.display = 'block';
-            if (container) container.innerHTML = '';
-            if (dots) dots.innerHTML = '';
+            if (wrapper) wrapper.style.display = 'grid';
+            
+            // Split portfolio in zwei Teile
+            const mid = Math.ceil(portfolio.length / 2);
+            const portfolio1 = portfolio.slice(0, mid);
+            const portfolio2 = portfolio.slice(mid);
+            
+            // Initialisiere beide Slider
+            initPortfolioSliderPart(1, portfolio1);
+            initPortfolioSliderPart(2, portfolio2);
+        }
+        
+        function initPortfolioSliderPart(sliderNum, portfolio) {
+            const container = document.getElementById(`portfolio-slider-container-${sliderNum}`);
+            const dots = document.getElementById(`portfolio-dots-${sliderNum}`);
+            
+            if (!container || !dots) return;
+            
+            container.innerHTML = '';
+            dots.innerHTML = '';
             
             portfolio.forEach((item, index) => {
                 // Slide
@@ -2464,53 +2483,64 @@
                 // Dot
                 const dot = document.createElement('div');
                 dot.className = 'portfolio-dot' + (index === 0 ? ' active' : '');
-                dot.onclick = () => goToPortfolioSlide(index);
+                dot.onclick = () => goToPortfolioSlide(sliderNum, index);
                 dots.appendChild(dot);
             });
             
             // Auto-play
-            startPortfolioAutoPlay();
+            startPortfolioAutoPlay(sliderNum);
         }
         
-        function startPortfolioAutoPlay() {
-            if (portfolioInterval) clearInterval(portfolioInterval);
-            const portfolio = galleryConfig?.portfolio || [];
-            if (portfolio.length <= 1) return;
+        function startPortfolioAutoPlay(sliderNum) {
+            if (portfolioInterval[sliderNum]) clearInterval(portfolioInterval[sliderNum]);
             
-            portfolioInterval = setInterval(() => {
-                portfolioNext();
-            }, 5000); // Wechsle alle 5 Sekunden
-        }
-        
-        function portfolioNext() {
+            // Berechne Länge basierend auf Slider-Nummer
             const portfolio = galleryConfig?.portfolio || [];
-            if (portfolio.length === 0) return;
-            portfolioCurrentSlide = (portfolioCurrentSlide + 1) % portfolio.length;
-            updatePortfolioSlider();
+            const mid = Math.ceil(portfolio.length / 2);
+            const sliderPortfolio = sliderNum === 1 ? portfolio.slice(0, mid) : portfolio.slice(mid);
+            
+            if (sliderPortfolio.length <= 1) return;
+            
+            portfolioInterval[sliderNum] = setInterval(() => {
+                portfolioNext(sliderNum);
+            }, 5000);
         }
         
-        function portfolioPrev() {
+        function portfolioNext(sliderNum) {
             const portfolio = galleryConfig?.portfolio || [];
-            if (portfolio.length === 0) return;
-            portfolioCurrentSlide = (portfolioCurrentSlide - 1 + portfolio.length) % portfolio.length;
-            updatePortfolioSlider();
+            const mid = Math.ceil(portfolio.length / 2);
+            const sliderPortfolio = sliderNum === 1 ? portfolio.slice(0, mid) : portfolio.slice(mid);
+            
+            if (sliderPortfolio.length === 0) return;
+            portfolioCurrentSlide[sliderNum] = (portfolioCurrentSlide[sliderNum] + 1) % sliderPortfolio.length;
+            updatePortfolioSlider(sliderNum);
         }
         
-        function goToPortfolioSlide(index) {
-            portfolioCurrentSlide = index;
-            updatePortfolioSlider();
+        function portfolioPrev(sliderNum) {
+            const portfolio = galleryConfig?.portfolio || [];
+            const mid = Math.ceil(portfolio.length / 2);
+            const sliderPortfolio = sliderNum === 1 ? portfolio.slice(0, mid) : portfolio.slice(mid);
+            
+            if (sliderPortfolio.length === 0) return;
+            portfolioCurrentSlide[sliderNum] = (portfolioCurrentSlide[sliderNum] - 1 + sliderPortfolio.length) % sliderPortfolio.length;
+            updatePortfolioSlider(sliderNum);
         }
         
-        function updatePortfolioSlider() {
-            const container = document.getElementById('portfolio-slider-container');
-            const dots = document.querySelectorAll('.portfolio-dot');
+        function goToPortfolioSlide(sliderNum, index) {
+            portfolioCurrentSlide[sliderNum] = index;
+            updatePortfolioSlider(sliderNum);
+        }
+        
+        function updatePortfolioSlider(sliderNum) {
+            const container = document.getElementById(`portfolio-slider-container-${sliderNum}`);
+            const dots = document.querySelectorAll(`#portfolio-dots-${sliderNum} .portfolio-dot`);
             
             if (container) {
-                container.style.transform = `translateX(-${portfolioCurrentSlide * 100}%)`;
+                container.style.transform = `translateX(-${portfolioCurrentSlide[sliderNum] * 100}%)`;
             }
             
             dots.forEach((dot, index) => {
-                if (index === portfolioCurrentSlide) {
+                if (index === portfolioCurrentSlide[sliderNum]) {
                     dot.classList.add('active');
                 } else {
                     dot.classList.remove('active');
@@ -2518,7 +2548,7 @@
             });
             
             // Reset Auto-play
-            startPortfolioAutoPlay();
+            startPortfolioAutoPlay(sliderNum);
         }
         
         // Kategorie-Sidebar initialisieren
