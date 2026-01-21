@@ -1613,6 +1613,21 @@
             });
         }
         
+        function ensureGalleryConfig() {
+            if (!galleryConfig) {
+                galleryConfig = {
+                    version: '3.0',
+                    generated: new Date().toISOString(),
+                    galleries: [],
+                    categories: [],
+                    portfolio: []
+                };
+            }
+            if (!galleryConfig.galleries) galleryConfig.galleries = [];
+            if (!galleryConfig.categories) galleryConfig.categories = [];
+            if (!galleryConfig.portfolio) galleryConfig.portfolio = [];
+        }
+
         // Lade bestehende gallery.json
         async function loadGalleryConfig() {
             try {
@@ -1642,8 +1657,12 @@
                             galleryConfig.galleries = [];
                         }
                     }
+                    ensureGalleryConfig();
                     displayGalleries();
                     updateFolderDropdown();
+                    initCategories();
+                    initPortfolio();
+                    updateCategoryDropdown();
                 } else {
                     // Erstelle neue Struktur falls nicht vorhanden
                     galleryConfig = {
@@ -1651,8 +1670,12 @@
                         generated: new Date().toISOString(),
                         galleries: []
                     };
+                    ensureGalleryConfig();
                     displayGalleries();
                     updateFolderDropdown();
+                    initCategories();
+                    initPortfolio();
+                    updateCategoryDropdown();
                     showAlert('Keine gallery.json gefunden. Erstellen Sie eine neue Galerie.', 'info');
                 }
             } catch (error) {
@@ -1663,8 +1686,12 @@
                     generated: new Date().toISOString(),
                     galleries: []
                 };
+                ensureGalleryConfig();
                 displayGalleries();
                 updateFolderDropdown();
+                initCategories();
+                initPortfolio();
+                updateCategoryDropdown();
             }
         }
         
@@ -2689,9 +2716,7 @@
         
         // Kategorien-Verwaltung
         function initCategories() {
-            if (!galleryConfig.categories) {
-                galleryConfig.categories = [];
-            }
+            ensureGalleryConfig();
             displayCategories();
         }
         
@@ -2708,13 +2733,12 @@
             
             galleryConfig.categories.forEach((category, index) => {
                 const item = document.createElement('div');
-                item.style.cssText = 'display: flex; align-items: center; gap: 10px; padding: 10px; background: #1a1a1a; border-radius: 6px; margin-bottom: 8px;';
+                item.style.cssText = 'display: grid; grid-template-columns: 56px 1fr 1fr auto auto; gap: 10px; padding: 10px; background: #1a1a1a; border-radius: 6px; margin-bottom: 8px; align-items: center;';
                 item.innerHTML = `
-                    <span style="font-size: 1.5em;">${category.icon || '📁'}</span>
-                    <div style="flex: 1;">
-                        <strong style="color: #e0e0e0;">${category.name}</strong>
-                        <p style="color: #888; font-size: 0.85em; margin: 0;">ID: ${category.id}</p>
-                    </div>
+                    <input id="category-icon-${index}" type="text" value="${category.icon || '📁'}" style="width: 56px; padding: 6px; text-align: center; background: #2a2a2a; border: 1px solid #444; border-radius: 6px; color: #e0e0e0;">
+                    <input id="category-name-${index}" type="text" value="${category.name}" style="padding: 8px; background: #2a2a2a; border: 1px solid #444; border-radius: 6px; color: #e0e0e0;">
+                    <input id="category-id-${index}" type="text" value="${category.id}" style="padding: 8px; background: #2a2a2a; border: 1px solid #444; border-radius: 6px; color: #e0e0e0;">
+                    <button class="btn-secondary" onclick="updateCategory(${index})" style="padding: 6px 12px; font-size: 0.85em;">Speichern</button>
                     <button class="btn-danger" onclick="deleteCategory(${index})" style="padding: 6px 12px; font-size: 0.85em;">Löschen</button>
                 `;
                 list.appendChild(item);
@@ -2732,9 +2756,7 @@
             
             const id = name.toLowerCase().replace(/[^a-z0-9-_]/g, '-');
             
-            if (!galleryConfig.categories) {
-                galleryConfig.categories = [];
-            }
+            ensureGalleryConfig();
             
             // Prüfe auf Duplikate
             if (galleryConfig.categories.find(c => c.id === id)) {
@@ -2756,6 +2778,54 @@
             document.getElementById('new-category-name').value = '';
             document.getElementById('new-category-icon').value = '';
             showAlert('Kategorie hinzugefügt', 'success');
+        }
+
+        async function updateCategory(index) {
+            ensureGalleryConfig();
+            const nameInput = document.getElementById(`category-name-${index}`);
+            const iconInput = document.getElementById(`category-icon-${index}`);
+            const idInput = document.getElementById(`category-id-${index}`);
+
+            if (!nameInput || !iconInput || !idInput) return;
+
+            const name = nameInput.value.trim();
+            const icon = iconInput.value.trim() || '📁';
+            const rawId = idInput.value.trim();
+            const newId = rawId || name.toLowerCase().replace(/[^a-z0-9-_]/g, '-');
+
+            if (!name) {
+                showAlert('Bitte geben Sie einen Kategorie-Namen ein', 'error');
+                return;
+            }
+
+            const current = galleryConfig.categories[index];
+            if (!current) return;
+
+            if (galleryConfig.categories.some((c, i) => i !== index && c.id === newId)) {
+                showAlert('Eine Kategorie mit dieser ID existiert bereits', 'error');
+                return;
+            }
+
+            const oldId = current.id;
+            galleryConfig.categories[index] = { id: newId, name, icon };
+
+            if (oldId !== newId && galleryConfig.galleries) {
+                galleryConfig.galleries.forEach((gallery) => {
+                    if (gallery.category === oldId) {
+                        gallery.category = newId;
+                    }
+                });
+            }
+
+            galleryConfig.generated = new Date().toISOString();
+            displayCategories();
+            updateCategoryDropdown();
+
+            if (githubConfig) {
+                await pushGalleryJsonToGitHub();
+            }
+
+            showAlert('Kategorie gespeichert', 'success');
         }
         
         async function deleteCategory(index) {
@@ -2793,9 +2863,7 @@
         
         // Portfolio-Verwaltung
         function initPortfolio() {
-            if (!galleryConfig.portfolio) {
-                galleryConfig.portfolio = [];
-            }
+            ensureGalleryConfig();
             displayPortfolio();
         }
         
@@ -2849,12 +2917,16 @@
                     uploadPreset: localStorage.getItem('cloudinary_upload_preset') || 'wb_foto_manager',
                     multiple: false,
                     sources: ['local', 'camera'],
-                    maxFileSize: 10000000
+                    resourceType: 'image',
+                    maxFileSize: 50 * 1024 * 1024
                 },
                 (error, result) => {
                     if (error) {
                         console.error('Upload-Fehler:', error);
-                        showAlert('Upload-Fehler: ' + error.message, 'error');
+                        const message = (error.message || '').toLowerCase().includes('file size')
+                            ? 'Datei zu groß. Bitte prüfen Sie das Upload-Preset in Cloudinary oder verwenden Sie kleinere Dateien.'
+                            : ('Upload-Fehler: ' + (error.message || 'Unbekannter Fehler'));
+                        showAlert(message, 'error');
                         return;
                     }
                     
@@ -3052,10 +3124,7 @@
             // Drag and Drop einrichten
             setupDragAndDrop();
             
-            // Initialisiere Kategorien und Portfolio
-            initCategories();
-            initPortfolio();
-            updateCategoryDropdown();
+            // Kategorien/Portfolio initialisieren nach Config-Load (am Ende von initAdmin)
             
             // Admin-Passwort ändern Button
             const changePasswordBtn = document.getElementById('change-admin-password-btn');
