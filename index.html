@@ -1143,6 +1143,19 @@
             padding: 40px;
             color: #ff6b6b;
         }
+
+        .no-results-message {
+            text-align: center;
+            color: var(--text-secondary);
+            grid-column: 1 / -1;
+            padding: 40px;
+            font-size: 1.1em;
+        }
+
+        .gallery-card--highlighted {
+            border: 2px solid var(--accent);
+            box-shadow: 0 4px 12px rgba(212, 165, 116, 0.3);
+        }
         
         .download-btn {
             position: absolute;
@@ -2250,6 +2263,39 @@
 
             return normalized;
         }
+
+        function getFeedbackImageId(image, index) {
+            const base =
+                image?.publicId ||
+                image?.id ||
+                image?.url ||
+                image?.name ||
+                `img_${index}`;
+            const galleryPrefix = currentGallery?.id ? `${currentGallery.id}::` : '';
+            return `${galleryPrefix}${base}`;
+        }
+
+        function findImageIndexByFeedbackId(imageId) {
+            return currentImages.findIndex((img, idx) => getFeedbackImageId(img, idx) === imageId);
+        }
+
+        function migrateLegacyFeedbackIds(images) {
+            const buckets = ['ratings', 'flags', 'favorites', 'comments', 'selections'];
+
+            images.forEach((img, index) => {
+                const legacyId = img?.id || `img_${index}`;
+                const newId = getFeedbackImageId(img, index);
+                if (!legacyId || !newId || legacyId === newId) return;
+
+                buckets.forEach((bucket) => {
+                    const bag = feedbackData[bucket];
+                    if (!bag || typeof bag !== 'object') return;
+                    if (bag[newId] !== undefined) return;
+                    if (bag[legacyId] === undefined) return;
+                    bag[newId] = bag[legacyId];
+                });
+            });
+        }
         
         // Theme Management
         function initTheme() {
@@ -2313,11 +2359,11 @@
                 // Highlight entsprechende Galerien
                 setTimeout(() => {
                     document.querySelectorAll('.gallery-card').forEach(card => {
+                        card.classList.remove('gallery-card--highlighted');
                         const galleryName = card.querySelector('h3')?.textContent;
                         const gallery = filtered.find(g => g.name === galleryName);
                         if (gallery) {
-                            card.style.border = '2px solid var(--accent)';
-                            card.style.boxShadow = '0 4px 12px rgba(212, 165, 116, 0.3)';
+                            card.classList.add('gallery-card--highlighted');
                         }
                     });
                 }, 100);
@@ -2347,7 +2393,7 @@
                 }
                 
                 // Finde Bild
-                const imageIndex = parseInt(imageId.replace('img_', '')) || currentImages.findIndex(img => (img.id || `img_${currentImages.indexOf(img)}`) === imageId);
+                const imageIndex = findImageIndexByFeedbackId(imageId);
                 const image = currentImages[imageIndex];
                 
                 let shouldShow = true;
@@ -2399,7 +2445,6 @@
                 if (!noResultsMsg) {
                     noResultsMsg = document.createElement('p');
                     noResultsMsg.className = 'no-results-message';
-                    noResultsMsg.style.cssText = 'text-align: center; color: var(--text-secondary); grid-column: 1 / -1; padding: 40px; font-size: 1.1em;';
                     noResultsMsg.textContent = searchQuery ? `Keine Ergebnisse für "${searchQuery}"` : 'Keine Bilder entsprechen dem Filter';
                     gallery.appendChild(noResultsMsg);
                 } else {
@@ -2911,6 +2956,7 @@
             }
             
             currentImages = gallery.images || [];
+            migrateLegacyFeedbackIds(currentImages);
             console.log('Lade', currentImages.length, 'Bilder - "' + (gallery.name || 'Unbekannt') + '"');
             const galleryTitle = document.getElementById('gallery-title');
             const gallerySubtitle = document.getElementById('gallery-subtitle');
@@ -2954,7 +3000,8 @@
             images.forEach((image, index) => {
                 const item = document.createElement('div');
                 item.className = 'gallery-item';
-                item.dataset.imageId = image.id || `img_${index}`;
+                const imageId = getFeedbackImageId(image, index);
+                item.dataset.imageId = imageId;
                 
                 // Erstelle hochwertiges Thumbnail-URL mit Progressive Loading
                 let imgSrc = image.thumbnailUrl || image.url || `./images/${image.name}`;
@@ -3053,7 +3100,7 @@
                 checkbox.className = 'gallery-item-checkbox';
                 checkbox.onclick = (e) => {
                     e.stopPropagation();
-                    toggleImageSelection(image.id || `img_${index}`);
+                    toggleImageSelection(imageId);
                 };
                 overlay.appendChild(checkbox);
                 
@@ -3061,7 +3108,6 @@
                 const actions = document.createElement('div');
                 actions.className = 'gallery-item-actions';
                 
-                const imageId = image.id || `img_${index}`;
                 const isFavorite = feedbackData.favorites[imageId] || false;
                 const commentCount = (feedbackData.comments[imageId] || []).length;
                 
@@ -3087,7 +3133,7 @@
                 overlay.appendChild(actions);
                 
                 // Badges für Markierungen
-                updateImageBadges(item, image.id || `img_${index}`);
+                updateImageBadges(item, imageId);
                 
                 item.appendChild(img);
                 item.appendChild(overlay);
@@ -3215,12 +3261,11 @@
         function updateSidebarStats() {
             const total = currentImages.length;
             const selected = document.querySelectorAll('.gallery-item.selected').length;
-            const favorites = Object.keys(feedbackData.favorites).filter(id => {
-                return currentImages.some(img => (img.id || `img_${currentImages.indexOf(img)}`) === id);
-            }).length;
+            const currentIds = new Set(currentImages.map((img, idx) => getFeedbackImageId(img, idx)));
+            const favorites = Object.keys(feedbackData.favorites).filter(id => currentIds.has(id)).length;
             const commented = Object.keys(feedbackData.comments).filter(id => {
                 const comments = feedbackData.comments[id] || [];
-                return comments.length > 0 && currentImages.some(img => (img.id || `img_${currentImages.indexOf(img)}`) === id);
+                return comments.length > 0 && currentIds.has(id);
             }).length;
             
             // Flag-Zähler
@@ -3232,7 +3277,7 @@
             };
             
             currentImages.forEach((img, index) => {
-                const imageId = img.id || `img_${index}`;
+                const imageId = getFeedbackImageId(img, index);
                 const flag = feedbackData.flags[imageId];
                 if (flag && flagCounts.hasOwnProperty(flag)) {
                     flagCounts[flag]++;
@@ -3258,7 +3303,7 @@
             // Update Auswahlen-Liste
             const selectionsSet = new Set();
             currentImages.forEach((img, index) => {
-                const imageId = img.id || `img_${index}`;
+                const imageId = getFeedbackImageId(img, index);
                 const selections = feedbackData.selections[imageId] || [];
                 selections.forEach(s => selectionsSet.add(s));
             });
@@ -3269,7 +3314,7 @@
             } else {
                 selectionsList.innerHTML = Array.from(selectionsSet).map(s => {
                     const count = currentImages.filter((img, index) => {
-                        const imageId = img.id || `img_${index}`;
+                        const imageId = getFeedbackImageId(img, index);
                         return (feedbackData.selections[imageId] || []).includes(s);
                     }).length;
                     return `<div class="selection-item clickable" onclick="filterBySelection('${s.replace(/'/g, "\\'")}')" title="Nur Bilder in dieser Auswahl">${s} <span class="selection-count">${count}</span></div>`;
@@ -3353,52 +3398,6 @@
             
             // Update Feedback-Sidebar für aktuelles Bild
             updateFeedbackSidebar();
-        }
-        
-        // Update Badges für ein Bild
-        function updateImageBadges(item, imageId) {
-            if (!item || !imageId) return;
-            
-            // Entferne alte Badges
-            const oldBadges = item.querySelectorAll('.gallery-item-badge, .selection-badge');
-            oldBadges.forEach(b => b.remove());
-            
-            const flag = feedbackData.flags[imageId];
-            if (flag) {
-                const badge = document.createElement('div');
-                badge.className = 'gallery-item-badge';
-                const flagLabels = {
-                    'reject': 'Abgelehnt',
-                    'review': 'Prüfen',
-                    'approve': 'Genehmigt',
-                    'final': 'Final'
-                };
-                badge.textContent = flagLabels[flag] || flag;
-                badge.style.background = flag === 'reject' ? 'rgba(255,107,107,0.9)' :
-                                         flag === 'review' ? 'rgba(255,217,61,0.9)' :
-                                         flag === 'approve' ? 'rgba(107,207,127,0.9)' :
-                                         'rgba(51,51,51,0.9)';
-                item.appendChild(badge);
-            }
-            
-            const selections = feedbackData.selections[imageId] || [];
-            if (selections.length > 0) {
-                const selectionBadge = document.createElement('div');
-                selectionBadge.className = 'selection-badge';
-                selectionBadge.textContent = `${selections[0]}${selections.length > 1 ? ` +${selections.length - 1}` : ''}`;
-                item.appendChild(selectionBadge);
-            }
-        }
-        
-        // Update alle Badges
-        function updateAllImageBadges() {
-            const items = document.querySelectorAll('.gallery-item');
-            items.forEach(item => {
-                const imageId = item.dataset.imageId;
-                if (imageId) {
-                    updateImageBadges(item, imageId);
-                }
-            });
         }
         
         // Toggle Bild-Auswahl
@@ -3494,79 +3493,6 @@
             updateSidebarStats();
         }
         
-        async function bulkDownload() {
-            const selected = document.querySelectorAll('.gallery-item.selected');
-            if (selected.length === 0) {
-                alert('Keine Bilder ausgewählt');
-                return;
-            }
-            
-            if (!confirm(`${selected.length} Bild(er) herunterladen?`)) return;
-            
-            // Zeige Progress
-            const progressDiv = document.createElement('div');
-            progressDiv.className = 'download-progress-modal';
-            progressDiv.innerHTML = `<p>Lade ${selected.length} Bild(er) herunter...</p><div class="progress-bar"><div id="download-progress" class="progress-bar-fill"></div></div>`;
-            document.body.appendChild(progressDiv);
-            
-            let downloaded = 0;
-            for (const item of selected) {
-                const imageId = item.dataset.imageId;
-                if (!imageId) continue;
-                
-                const imageIndex = parseInt(imageId.replace('img_', '')) || currentImages.findIndex(img => (img.id || `img_${currentImages.indexOf(img)}`) === imageId);
-                const image = currentImages[imageIndex];
-                if (!image) continue;
-                
-                try {
-                    await downloadImageById(imageId);
-                    downloaded++;
-                    const progress = (downloaded / selected.length) * 100;
-                    document.getElementById('download-progress').style.width = progress + '%';
-                } catch (error) {
-                    console.error('Download-Fehler:', error);
-                }
-                
-                // Kleine Pause zwischen Downloads
-                await new Promise(resolve => setTimeout(resolve, 200));
-            }
-            
-            progressDiv.remove();
-            alert(`${downloaded} von ${selected.length} Bild(er) erfolgreich heruntergeladen`);
-        }
-        
-        function downloadImageById(imageId) {
-            const imageIndex = parseInt(imageId.replace('img_', '')) || currentImages.findIndex(img => (img.id || `img_${currentImages.indexOf(img)}`) === imageId);
-            const image = currentImages[imageIndex];
-            if (!image) return Promise.reject('Bild nicht gefunden');
-            
-            return new Promise((resolve, reject) => {
-                const imageUrl = image.url || `./images/${image.name}`;
-                const fileName = image.name || 'image.jpg';
-                
-                // Für Cloudinary: Entferne Transformationen
-                let downloadUrl = imageUrl;
-                if (imageUrl.includes('res.cloudinary.com') && imageUrl.includes('/upload/')) {
-                    downloadUrl = imageUrl.replace(/\/upload\/[^\/]+\//, '/upload/');
-                }
-                
-                fetch(downloadUrl)
-                    .then(response => response.blob())
-                    .then(blob => {
-                        const url = window.URL.createObjectURL(blob);
-                        const a = document.createElement('a');
-                        a.href = url;
-                        a.download = fileName;
-                        document.body.appendChild(a);
-                        a.click();
-                        window.URL.revokeObjectURL(url);
-                        document.body.removeChild(a);
-                        resolve();
-                    })
-                    .catch(reject);
-            });
-        }
-        
         function clearSelection() {
             document.querySelectorAll('.gallery-item.selected').forEach(item => {
                 item.classList.remove('selected');
@@ -3614,8 +3540,8 @@
                 for (const item of selected) {
                     const imageId = item.dataset.imageId;
                     if (!imageId) continue;
-                    
-                    const imageIndex = parseInt(imageId.replace('img_', '')) || currentImages.findIndex(img => (img.id || `img_${currentImages.indexOf(img)}`) === imageId);
+
+                    const imageIndex = findImageIndexByFeedbackId(imageId);
                     const image = currentImages[imageIndex];
                     if (!image) continue;
                     
@@ -3679,7 +3605,7 @@
             const image = currentImages[currentImageIndex];
             if (!image) return;
             
-            const imageId = image.id || `img_${currentImageIndex}`;
+            const imageId = getFeedbackImageId(image, currentImageIndex);
             if (feedbackData.favorites[imageId]) {
                 delete feedbackData.favorites[imageId];
             } else {
@@ -3736,7 +3662,7 @@
             const image = currentImages[currentImageIndex];
             if (!image) return;
             
-            const imageId = image.id || `img_${currentImageIndex}`;
+            const imageId = getFeedbackImageId(image, currentImageIndex);
             
             // Bild-Name
             document.getElementById('feedback-image-name').textContent = image.name || 'Bild Feedback';
@@ -3876,7 +3802,7 @@
             const image = currentImages[currentImageIndex];
             if (!image) return;
             
-            const imageId = image.id || `img_${currentImageIndex}`;
+            const imageId = getFeedbackImageId(image, currentImageIndex);
             const commentInput = document.getElementById('comment-input');
             const text = commentInput.value.trim();
             
@@ -3916,7 +3842,7 @@
             const image = currentImages[currentImageIndex];
             if (!image) return;
             
-            const imageId = image.id || `img_${currentImageIndex}`;
+            const imageId = getFeedbackImageId(image, currentImageIndex);
             const selectionName = document.getElementById('selection-name').value.trim();
             
             if (!selectionName) {
@@ -3943,7 +3869,7 @@
             const image = currentImages[currentImageIndex];
             if (!image) return;
             
-            const imageId = image.id || `img_${currentImageIndex}`;
+            const imageId = getFeedbackImageId(image, currentImageIndex);
             feedbackData.ratings[imageId] = rating;
             saveFeedbackData();
             updateRatingStars(rating);
@@ -3954,7 +3880,7 @@
             const image = currentImages[currentImageIndex];
             if (!image) return;
             
-            const imageId = image.id || `img_${currentImageIndex}`;
+            const imageId = getFeedbackImageId(image, currentImageIndex);
             
             // Toggle: Wenn bereits gesetzt, entfernen
             if (feedbackData.flags[imageId] === flag) {
