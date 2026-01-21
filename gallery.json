@@ -1,6 +1,6 @@
 {
   "version": "3.0",
-  "generated": "2026-01-21T10:12:01.814Z",
+  "generated": "2026-01-21T10:12:10.986Z",
   "categories": [
     {
       "id": "sport",
@@ -821,7 +821,7 @@
     {
       "image": "https://res.cloudinary.com/dnvqw9wif/image/upload/v1768988422/t2ms1cndef4cgzrsdkul.jpg",
       "url": "https://res.cloudinary.com/dnvqw9wif/image/upload/v1768988422/t2ms1cndef4cgzrsdkul.jpg",
-      "title": "Plain",
+      "title": null,
       "description": null
     },
     {
