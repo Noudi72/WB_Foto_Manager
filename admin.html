@@ -162,6 +162,32 @@
                 padding-left: 270px;
             }
         }
+
+        @media (max-width: 1023px) {
+            .admin-nav-toggle {
+                top: calc(env(safe-area-inset-top, 0px) + 12px);
+                left: 12px;
+                padding: 9px 11px;
+            }
+
+            #admin-content {
+                padding-top: 64px;
+            }
+
+            .logo-container {
+                flex-direction: column;
+                gap: 12px;
+                margin-bottom: 12px;
+            }
+
+            header {
+                padding-top: 14px;
+            }
+
+            h1 {
+                font-size: 1.6em;
+            }
+        }
         
         header {
             text-align: center;
@@ -364,6 +390,86 @@
             display: flex;
             gap: 10px;
             margin-top: 12px;
+        }
+
+        @media (max-width: 640px) {
+            .button-group {
+                flex-wrap: wrap;
+            }
+
+            .button-group button {
+                width: 100%;
+            }
+        }
+
+        .category-row {
+            display: grid;
+            grid-template-columns: 56px minmax(0, 1fr) minmax(0, 1fr) auto auto;
+            gap: 8px;
+            padding: 8px;
+            background: #1a1a1a;
+            border-radius: 6px;
+            margin-bottom: 6px;
+            align-items: center;
+        }
+
+        .portfolio-row {
+            display: grid;
+            grid-template-columns: 100px minmax(0, 1fr) auto auto;
+            gap: 10px;
+            padding: 10px;
+            background: #1a1a1a;
+            border-radius: 6px;
+            margin-bottom: 8px;
+            align-items: center;
+        }
+
+        @media (max-width: 640px) {
+            .category-row {
+                grid-template-columns: 56px minmax(0, 1fr) auto;
+                gap: 8px;
+            }
+
+            .category-row > :nth-child(1) {
+                grid-column: 1;
+                grid-row: 1 / span 2;
+            }
+
+            .category-row > :nth-child(2) {
+                grid-column: 2;
+                grid-row: 1;
+                min-width: 0;
+            }
+
+            .category-row > :nth-child(3) {
+                grid-column: 2;
+                grid-row: 2;
+                min-width: 0;
+            }
+
+            .category-row > :nth-child(4) {
+                grid-column: 3;
+                grid-row: 1;
+                width: 100%;
+                white-space: nowrap;
+            }
+
+            .category-row > :nth-child(5) {
+                grid-column: 3;
+                grid-row: 2;
+                width: 100%;
+                white-space: nowrap;
+            }
+
+            .portfolio-row {
+                grid-template-columns: 96px minmax(0, 1fr);
+            }
+
+            .portfolio-row > :nth-child(3),
+            .portfolio-row > :nth-child(4) {
+                grid-column: 1 / -1;
+                width: 100%;
+            }
         }
         
         button {
@@ -1030,7 +1136,7 @@
         <div class="admin-section" id="section-admin-password">
             <h2>🔐 Admin-Passwort ändern</h2>
             <p style="color: #888; margin-bottom: 20px;">
-                Ändern Sie das Passwort für den Admin-Zugang. Das neue Passwort wird lokal gespeichert.
+                Ändern Sie das Passwort für den Admin-Zugang. Das neue Passwort wird lokal gespeichert und zusätzlich in <code>gallery.json</code> übernommen (damit es auf anderen Geräten gilt, nachdem die Datei zu GitHub gepusht wurde).
             </p>
             <div class="form-group">
                 <label for="current-admin-password">Aktuelles Passwort</label>
@@ -2954,6 +3060,36 @@
             const hashArray = Array.from(new Uint8Array(hashBuffer));
             return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
         }
+
+        // Password hash source-of-truth:
+        // 1) gallery.json (adminPasswordHash) -> shared across devices after upload
+        // 2) localStorage admin_password_hash -> per-device fallback
+        // 3) default "admin"
+        let remoteAdminPasswordHash; // undefined = not loaded yet
+
+        async function loadRemoteAdminPasswordHash() {
+            if (remoteAdminPasswordHash !== undefined) return remoteAdminPasswordHash;
+
+            try {
+                const res = await fetch(`gallery.json?ts=${Date.now()}`, { cache: 'no-store' });
+                if (!res.ok) {
+                    remoteAdminPasswordHash = null;
+                    return remoteAdminPasswordHash;
+                }
+                const data = await res.json();
+                remoteAdminPasswordHash = data.adminPasswordHash || data.admin_password_hash || null;
+                return remoteAdminPasswordHash;
+            } catch (e) {
+                remoteAdminPasswordHash = null;
+                return remoteAdminPasswordHash;
+            }
+        }
+
+        async function getEffectiveAdminPasswordHash() {
+            const remote = await loadRemoteAdminPasswordHash();
+            const local = localStorage.getItem('admin_password_hash');
+            return remote || local || ADMIN_PASSWORD_HASH;
+        }
         
         // Admin-Passwort ändern
         async function changeAdminPassword() {
@@ -2990,9 +3126,7 @@
             
             // Prüfe aktuelles Passwort
             const currentHash = await sha256(currentPassword);
-            const savedHash = localStorage.getItem('admin_password_hash');
-            const defaultHash = ADMIN_PASSWORD_HASH;
-            const correctHash = savedHash || defaultHash;
+            const correctHash = await getEffectiveAdminPasswordHash();
             
             if (currentHash !== correctHash) {
                 messageEl.textContent = 'Aktuelles Passwort ist falsch.';
@@ -3006,6 +3140,22 @@
             // Speichere neues Passwort
             const newHash = await sha256(newPassword);
             localStorage.setItem('admin_password_hash', newHash);
+
+            // Update remote cache for this session
+            remoteAdminPasswordHash = newHash;
+
+            // Speichere auch im gallery.json (für andere Geräte) und pushe optional automatisch
+            try {
+                ensureGalleryConfig();
+                galleryConfig.adminPasswordHash = newHash;
+                galleryConfig.generated = new Date().toISOString();
+
+                if (githubConfig) {
+                    await pushGalleryJsonToGitHub();
+                }
+            } catch (e) {
+                // ignore
+            }
             
             // Erfolg
             messageEl.textContent = '✓ Passwort erfolgreich geändert!';
@@ -3035,8 +3185,7 @@
             const hash = await sha256(password);
             
             // Prüfe gegen gespeichertes Passwort oder Standard-Passwort
-            const savedHash = localStorage.getItem('admin_password_hash');
-            const correctHash = savedHash || ADMIN_PASSWORD_HASH;
+            const correctHash = await getEffectiveAdminPasswordHash();
             
             if (hash === correctHash) {
                 // Passwort korrekt
@@ -3073,7 +3222,7 @@
             
             galleryConfig.categories.forEach((category, index) => {
                 const item = document.createElement('div');
-                item.style.cssText = 'display: grid; grid-template-columns: 48px 1fr 1fr auto auto; gap: 8px; padding: 8px; background: #1a1a1a; border-radius: 6px; margin-bottom: 6px; align-items: center;';
+                item.className = 'category-row';
                 item.innerHTML = `
                     <input id="category-icon-${index}" type="text" value="${category.icon || '📁'}" style="width: 56px; padding: 6px; text-align: center; background: #2a2a2a; border: 1px solid #444; border-radius: 6px; color: #e0e0e0;">
                     <input id="category-name-${index}" type="text" value="${category.name}" style="padding: 8px; background: #2a2a2a; border: 1px solid #444; border-radius: 6px; color: #e0e0e0;">
@@ -3220,7 +3369,7 @@
             
             galleryConfig.portfolio.forEach((item, index) => {
                 const portfolioItem = document.createElement('div');
-                portfolioItem.style.cssText = 'display: grid; grid-template-columns: 100px 1fr auto auto; gap: 10px; padding: 10px; background: #1a1a1a; border-radius: 6px; margin-bottom: 8px; align-items: center;';
+                portfolioItem.className = 'portfolio-row';
                 portfolioItem.innerHTML = `
                     <img src="${item.image || item.url}" alt="${item.title || ''}" style="width: 100px; height: 64px; object-fit: cover; border-radius: 6px;">
                     <div style="display: grid; gap: 6px;">
@@ -3288,6 +3437,9 @@
             // Immer Passwort-Screen anzeigen
             passwordScreen.style.display = 'flex';
             adminContent.style.display = 'none';
+
+            // Lade optionalen Passwort-Hash aus gallery.json (damit mobile/andere Geräte nach Upload das neue Passwort nutzen)
+            loadRemoteAdminPasswordHash();
 
             // Event Listener für Passwort-Eingabe (nur einmal hinzufügen)
             const passwordInput = document.getElementById('admin-password-input');
