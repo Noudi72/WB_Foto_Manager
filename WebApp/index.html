@@ -83,6 +83,10 @@
             max-width: 100%;
         }
 
+        .is-hidden {
+            display: none;
+        }
+
         .page {
             min-height: 100vh;
             display: flex;
@@ -93,6 +97,7 @@
             position: sticky;
             top: 0;
             z-index: 100;
+            -webkit-backdrop-filter: blur(16px);
             backdrop-filter: blur(16px);
             background: var(--header-bg);
             border-bottom: 1px solid var(--border);
@@ -719,7 +724,7 @@
                 <span>Tipps: Pfeiltasten navigieren im Vollbild • Esc schließt</span>
             </div>
 
-            <section id="password-form" class="password-form" style="display: none;">
+            <section id="password-form" class="password-form is-hidden">
                 <h2>Passwort erforderlich</h2>
                 <p>Bitte melde dich an, um die geschützte Galerie zu öffnen.</p>
                 <input type="password" id="password-input" placeholder="Passwort eingeben" autofocus>
@@ -731,16 +736,16 @@
                 <div class="gallery" id="gallery"></div>
             </section>
 
-            <div id="empty-state" class="empty-state" style="display: none;">
+            <div id="empty-state" class="empty-state is-hidden">
                 <h3>Keine Treffer</h3>
                 <p>Versuche einen anderen Suchbegriff oder setze die Filter zurück.</p>
             </div>
 
-            <div id="loading" class="loading" style="display: none;">
+            <div id="loading" class="loading is-hidden">
                 <p>Lade Bilder…</p>
             </div>
 
-            <div id="error" class="error" style="display: none;">
+            <div id="error" class="error is-hidden">
                 <p>Fehler beim Laden der Bilder</p>
             </div>
         </main>

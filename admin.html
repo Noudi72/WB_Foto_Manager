@@ -48,6 +48,7 @@
             color: #e0e0e0;
             cursor: pointer;
             font-weight: 700;
+            -webkit-backdrop-filter: blur(10px);
             backdrop-filter: blur(10px);
         }
 
@@ -246,6 +247,7 @@
         }
         
         .form-group input,
+        .form-group select,
         .form-group textarea {
             width: 100%;
             padding: 10px;
@@ -254,6 +256,17 @@
             border-radius: 6px;
             color: #e0e0e0;
             font-size: 14px;
+            font-family: inherit;
+        }
+
+        input[type="text"],
+        input[type="password"],
+        select,
+        textarea {
+            background: #1a1a1a;
+            border: 1px solid #444;
+            border-radius: 6px;
+            color: #e0e0e0;
             font-family: inherit;
         }
         
@@ -312,6 +325,58 @@
             color: #888;
             font-size: 0.9em;
         }
+
+        /* Utilities (ersetzt Inline-Styles, reduziert Linter-Warnungen) */
+        .is-hidden { display: none; }
+        .text-muted { color: #888; }
+        .text-center { text-align: center; }
+        .mb-15 { margin-bottom: 15px; }
+        .mb-10 { margin-bottom: 10px; }
+        .mb-8 { margin-bottom: 8px; }
+        .mb-20 { margin-bottom: 20px; }
+        .mt-8 { margin-top: 8px; }
+        .mt-10 { margin-top: 10px; }
+        .mt-15 { margin-top: 15px; }
+        .mt-20 { margin-top: 20px; }
+        .ml-10 { margin-left: 10px; }
+        .btn-pad-8-16 { padding: 8px 16px; }
+        .btn-lg { padding: 12px 24px; font-size: 1em; font-weight: bold; width: 100%; }
+        .text-09 { font-size: 0.9em; }
+        .text-085 { font-size: 0.85em; }
+
+        .flex-row { display: flex; }
+        .gap-8 { gap: 8px; }
+        .gap-10 { gap: 10px; }
+        .flex-1 { flex: 1; }
+        .items-end { align-items: flex-end; }
+        .nowrap { white-space: nowrap; }
+        .block { display: block; }
+
+        .btn-full { width: 100%; }
+        .field-sm { width: 100%; padding: 8px; font-size: 14px; }
+        .field-lg { width: 100%; padding: 12px; font-size: 16px; }
+
+        .pill { font-size: 0.75em; margin-left: 8px; padding: 3px 8px; border: 1px solid #444; border-radius: 999px; color: #e0e0e0; background: #2a2a2a; }
+        .meta-muted { color: #888; font-size: 0.7em; margin-left: 8px; }
+
+        .empty-italic { color: #888; font-style: italic; }
+        .input-compact { padding: 8px; background: #2a2a2a; border: 1px solid #444; border-radius: 6px; color: #e0e0e0; }
+        .input-compact-sm { padding: 6px 8px; background: #2a2a2a; border: 1px solid #444; border-radius: 6px; color: #e0e0e0; }
+        .btn-sm { padding: 6px 12px; font-size: 0.85em; }
+        .btn-sm-narrow { padding: 6px 10px; font-size: 0.85em; }
+
+        .setup-box { padding: 15px; background: #1a1a1a; border-radius: 6px; border-left: 3px solid #28a745; }
+        .setup-box-title { color: #28a745; }
+        .setup-steps { margin-top: 10px; color: #888; font-size: 0.9em; padding-left: 20px; margin-bottom: 15px; }
+        .setup-steps li { margin-bottom: 8px; }
+        .setup-warn { padding: 10px; background: #2a2a2a; border-radius: 4px; margin-bottom: 15px; border-left: 3px solid #ff6b6b; }
+        .setup-warn-title { color: #ff6b6b; }
+        .setup-grid-3 { margin-top: 15px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+        .label-sm { display: block; margin-bottom: 5px; color: #e0e0e0; font-size: 0.9em; }
+        .input-sm { width: 100%; padding: 8px; background: #2a2a2a; border: 1px solid #444; border-radius: 4px; color: #e0e0e0; }
+        .code-badge { background: #2a2a2a; padding: 2px 6px; border-radius: 3px; color: #28a745; }
+
+        .text-accent { color: var(--accent); }
 
         #admin-content {
             display: none;
@@ -435,6 +500,18 @@
             border-radius: 6px;
             margin-bottom: 8px;
             align-items: center;
+        }
+
+        .portfolio-thumb {
+            width: 100px;
+            height: 64px;
+            object-fit: cover;
+            border-radius: 6px;
+        }
+
+        .portfolio-fields {
+            display: grid;
+            gap: 6px;
         }
 
         @media (max-width: 640px) {
@@ -877,9 +954,9 @@
     <div id="admin-password-screen">
         <div class="password-screen-content">
             <h2>Admin-Zugang</h2>
-            <p style="color: #888; margin-bottom: 20px;">Bitte geben Sie das Admin-Passwort ein:</p>
+            <p class="text-muted mb-20">Bitte geben Sie das Admin-Passwort ein:</p>
             <input type="password" id="admin-password-input" placeholder="Passwort" autofocus>
-            <button type="button" class="btn-primary" id="admin-password-submit" style="width: 100%;">Zugang gewähren</button>
+            <button type="button" class="btn-primary btn-full" id="admin-password-submit">Zugang gewähren</button>
             <p class="password-error" id="admin-password-error">Falsches Passwort. Bitte versuchen Sie es erneut.</p>
         </div>
     </div>
@@ -901,7 +978,7 @@
         <p class="nav-hint">Tipp: Auf Mobilgeräten öffnet sich dieses Menü über „Menü“ oben links.</p>
     </nav>
     
-    <div class="container" id="admin-content" style="display: none;">
+    <div class="container" id="admin-content">
         <a href="index.html" class="back-link">← Zurück zur Galerie</a>
         
         <header>
@@ -934,7 +1011,7 @@
                 
                 <div class="form-group">
                     <label for="gallery-category">Kategorie</label>
-                    <select id="gallery-category" style="width: 100%; padding: 12px; background: #1a1a1a; border: 1px solid #444; border-radius: 6px; color: #e0e0e0; font-size: 16px;">
+                    <select id="gallery-category" class="field-lg">
                         <option value="">-- Keine Kategorie --</option>
                     </select>
                     <small>Wählen Sie eine Kategorie für diese Galerie (wird in der Sidebar angezeigt)</small>
@@ -942,14 +1019,14 @@
                 
                 <div class="form-group">
                     <label for="gallery-folder">Unterordner (optional)</label>
-                    <div style="display: flex; gap: 8px; align-items: flex-end;">
-                        <div style="flex: 1;">
-                            <select id="gallery-folder-select" onchange="updateFolderInput()" style="width: 100%; padding: 8px; background: #1a1a1a; border: 1px solid #444; border-radius: 6px; color: #e0e0e0; font-size: 14px; margin-bottom: 8px;">
+                    <div class="flex-row gap-8 items-end">
+                        <div class="flex-1">
+                            <select id="gallery-folder-select" onchange="updateFolderInput()" class="field-sm mb-8">
                                 <option value="">-- Kein Ordner --</option>
                             </select>
-                            <input type="text" id="gallery-folder-subfolder" placeholder="Unterkategorie (z.B. hockey)" style="width: 100%; padding: 8px; background: #1a1a1a; border: 1px solid #444; border-radius: 6px; color: #e0e0e0; font-size: 14px; display: none;">
+                            <input type="text" id="gallery-folder-subfolder" placeholder="Unterkategorie (z.B. hockey)" class="field-sm is-hidden">
                         </div>
-                        <button type="button" onclick="createNewFolder()" class="btn-secondary" style="padding: 8px 16px; white-space: nowrap;">+ Neuer Ordner</button>
+                        <button type="button" onclick="createNewFolder()" class="btn-secondary btn-pad-8-16 nowrap">+ Neuer Ordner</button>
                     </div>
                     <input type="hidden" id="gallery-folder" placeholder="z.B. sport/hockey">
                     <small>Wählen Sie einen bestehenden Ordner oder erstellen Sie einen neuen. Optional können Sie eine Unterkategorie hinzufügen.</small>
@@ -983,7 +1060,7 @@
                 
                 <div class="form-group image-upload-section" id="image-upload-section">
                     <label for="gallery-images">Bilder hinzufügen</label>
-                    <p style="color: #888; font-size: 0.9em; margin-bottom: 15px;">
+                    <p class="text-muted mb-15 text-09">
                         <strong>Hinweis:</strong> Bitte füllen Sie zuerst Name und ID aus, bevor Sie Bilder hochladen.
                     </p>
                     
@@ -1025,7 +1102,7 @@
                     </div>
                     
                     <div id="upload-progress" class="upload-progress-container">
-                        <div style="color: #e0e0e0; margin-bottom: 10px;">
+                        <div class="mb-10">
                             <strong id="upload-status">Upload läuft...</strong>
                         </div>
                         <div class="upload-progress-bar-container">
@@ -1035,26 +1112,26 @@
                     </div>
                     
                     <!-- Alternative: Lokale Dateinamen (für GitHub) -->
-                    <details style="margin-bottom: 15px;">
+                    <details class="mb-15">
                         <summary class="alternative-upload-summary">
                             Alternative: Lokale Dateinamen (für GitHub-Upload)
                         </summary>
-                        <div style="margin-top: 10px;">
+                        <div class="mt-10">
                             <!-- Drag and Drop Bereich -->
                             <div class="drop-zone" id="drop-zone">
                                 <div class="drop-zone-icon">Dateien</div>
                                 <div class="drop-zone-text">Bilder hier hineinziehen oder klicken zum Auswählen</div>
                                 <div class="drop-zone-hint">Unterstützt: JPG, PNG, HEIC, RAW</div>
-                                <input type="file" id="file-input" multiple accept="image/*" style="display: none;">
+                                <input type="file" id="file-input" multiple accept="image/*" class="is-hidden">
                             </div>
                             
                             <!-- Vorschau der ausgewählten Dateien -->
-                            <div id="file-preview" class="file-list" style="display: none;"></div>
+                            <div id="file-preview" class="file-list is-hidden"></div>
                         </div>
                     </details>
                     
                     <!-- Textfeld für manuelle Eingabe -->
-                    <label for="gallery-images" style="margin-top: 15px; display: block;">Oder Dateinamen manuell eingeben (eine pro Zeile oder kommagetrennt):</label>
+                    <label for="gallery-images" class="mt-15 block">Oder Dateinamen manuell eingeben (eine pro Zeile oder kommagetrennt):</label>
                     <textarea id="gallery-images" placeholder="2J4A0331.JPG&#10;2J4A0354.JPG&#10;2J4A0369.JPG"></textarea>
                     <small>Dateinamen der Bilder, die in dieser Galerie angezeigt werden sollen</small>
                     <button type="button" class="btn-secondary inline" onclick="showAvailableImages()">
@@ -1070,7 +1147,7 @@
                         <div class="cloudinary-setup-header">
                             <strong>Cloudinary Einrichtung (einmalig - Schritt 3)</strong>
                         </div>
-                        <p style="color: #888; font-size: 0.9em; margin-bottom: 15px;">
+                        <p class="text-muted mb-15 text-09">
                             Sie haben bereits ein Upload Preset erstellt. Jetzt müssen Sie nur noch die Daten hier eingeben:
                         </p>
                         <div class="cloudinary-setup-form">
@@ -1093,46 +1170,46 @@
                                 </small>
                             </div>
                         </div>
-                        <button type="button" id="save-cloudinary-config" class="btn-primary" style="padding: 12px 24px; font-size: 1em; font-weight: bold; width: 100%; background: linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%);">
+                        <button type="button" id="save-cloudinary-config" class="btn-primary btn-lg">
                             Konfiguration speichern
                         </button>
-                        <p style="color: #888; font-size: 0.85em; margin-top: 10px; text-align: center;">
+                        <p class="text-muted mt-10 text-center text-085">
                             Nach dem Speichern können Sie sofort Bilder hochladen!
                         </p>
                     </div>
                     
                     <!-- GitHub Auto-Push Setup -->
-                    <div id="github-setup" style="margin-top: 15px; padding: 15px; background: #1a1a1a; border-radius: 6px; border-left: 3px solid #28a745; display: none;">
-                        <strong style="color: #28a745;">GitHub Auto-Push (optional, aber empfohlen):</strong>
-                        <p style="margin-top: 8px; color: #888; font-size: 0.9em; margin-bottom: 15px;">
+                    <div id="github-setup" class="setup-box mt-15 is-hidden">
+                        <strong class="setup-box-title">GitHub Auto-Push (optional, aber empfohlen):</strong>
+                        <p class="mt-8 text-muted mb-15 text-09">
                             Wenn konfiguriert, wird <code>gallery.json</code> automatisch zu GitHub gepusht - kein manueller Download/Push mehr nötig!
                         </p>
-                        <ol style="margin-top: 10px; color: #888; font-size: 0.9em; padding-left: 20px; margin-bottom: 15px;">
-                            <li style="margin-bottom: 8px;">GitHub → Settings → Developer settings → Personal access tokens → Tokens (classic)</li>
-                            <li style="margin-bottom: 8px;"><strong style="color: #e0e0e0;">WICHTIG:</strong> "Generate new token" → Name: "WB Foto Manager", Scope: <code style="background: #2a2a2a; padding: 2px 6px; border-radius: 3px; color: #28a745;">repo</code> (vollständiger Zugriff) - <strong style="color: #ff6b6b;">NICHT</strong> "Fine-grained token" verwenden!</li>
-                            <li style="margin-bottom: 8px;">Token kopieren und unten eingeben (wird lokal gespeichert)</li>
+                        <ol class="setup-steps">
+                            <li>GitHub → Settings → Developer settings → Personal access tokens → Tokens (classic)</li>
+                            <li><strong>WICHTIG:</strong> "Generate new token" → Name: "WB Foto Manager", Scope: <code class="code-badge">repo</code> (vollständiger Zugriff) - <strong class="setup-warn-title">NICHT</strong> "Fine-grained token" verwenden!</li>
+                            <li>Token kopieren und unten eingeben (wird lokal gespeichert)</li>
                         </ol>
-                        <div style="padding: 10px; background: #2a2a2a; border-radius: 4px; margin-bottom: 15px; border-left: 3px solid #ff6b6b;">
-                            <strong style="color: #ff6b6b;">Häufiger Fehler:</strong> Wenn Sie einen "Fine-grained Personal Access Token" erstellt haben, funktioniert dieser nicht! Sie müssen einen <strong>"Tokens (classic)"</strong> mit <code>repo</code> Scope verwenden.
+                        <div class="setup-warn">
+                            <strong class="setup-warn-title">Häufiger Fehler:</strong> Wenn Sie einen "Fine-grained Personal Access Token" erstellt haben, funktioniert dieser nicht! Sie müssen einen <strong>"Tokens (classic)"</strong> mit <code>repo</code> Scope verwenden.
                         </div>
-                        <div style="margin-top: 15px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;">
+                        <div class="setup-grid-3">
                             <div>
-                                <label style="display: block; margin-bottom: 5px; color: #e0e0e0; font-size: 0.9em;">GitHub Username:</label>
-                                <input type="text" id="github-username" placeholder="noudi72" style="width: 100%; padding: 8px; background: #2a2a2a; border: 1px solid #444; border-radius: 4px; color: #e0e0e0;">
+                                <label class="label-sm">GitHub Username:</label>
+                                <input type="text" id="github-username" placeholder="noudi72" class="input-sm">
                             </div>
                             <div>
-                                <label style="display: block; margin-bottom: 5px; color: #e0e0e0; font-size: 0.9em;">Repository Name:</label>
-                                <input type="text" id="github-repo" placeholder="WB_Foto_Manager" style="width: 100%; padding: 8px; background: #2a2a2a; border: 1px solid #444; border-radius: 4px; color: #e0e0e0;">
+                                <label class="label-sm">Repository Name:</label>
+                                <input type="text" id="github-repo" placeholder="WB_Foto_Manager" class="input-sm">
                             </div>
                             <div>
-                                <label style="display: block; margin-bottom: 5px; color: #e0e0e0; font-size: 0.9em;">Personal Access Token:</label>
-                                <input type="password" id="github-token" placeholder="ghp_..." style="width: 100%; padding: 8px; background: #2a2a2a; border: 1px solid #444; border-radius: 4px; color: #e0e0e0;">
+                                <label class="label-sm">Personal Access Token:</label>
+                                <input type="password" id="github-token" placeholder="ghp_..." class="input-sm">
                             </div>
                         </div>
-                        <button type="button" id="save-github-config" class="btn-primary" style="margin-top: 10px; padding: 8px 16px; font-size: 0.9em; background: #28a745;">
+                        <button type="button" id="save-github-config" class="btn-primary btn-success mt-10 btn-pad-8-16 text-09">
                             GitHub-Konfiguration speichern
                         </button>
-                        <button type="button" id="test-github-connection" class="btn-secondary" style="margin-top: 10px; margin-left: 10px; padding: 8px 16px; font-size: 0.9em;">
+                        <button type="button" id="test-github-connection" class="btn-secondary mt-10 ml-10 btn-pad-8-16 text-09">
                             Verbindung testen
                         </button>
                     </div>
@@ -1155,8 +1232,8 @@
         
         <!-- Admin-Passwort ändern -->
         <div class="admin-section" id="section-admin-password">
-            <h2>🔐 Admin-Passwort ändern</h2>
-            <p style="color: #888; margin-bottom: 20px;">
+            <h2>Admin-Passwort ändern</h2>
+            <p class="text-muted mb-20">
                 Ändern Sie das Passwort für den Admin-Zugang. Das neue Passwort wird lokal gespeichert und zusätzlich in <code>gallery.json</code> übernommen (damit es auf anderen Geräten gilt, nachdem die Datei zu GitHub gepusht wurde).
             </p>
             <div class="form-group">
@@ -1172,28 +1249,28 @@
                 <input type="password" id="confirm-admin-password" placeholder="Neues Passwort wiederholen">
             </div>
             <button type="button" class="btn-primary" id="change-admin-password-btn">Passwort ändern</button>
-            <p id="admin-password-change-message" style="margin-top: 15px; display: none;"></p>
+            <p id="admin-password-change-message" class="mt-15 is-hidden"></p>
         </div>
         
         <!-- Kategorien verwalten -->
         <div class="admin-section" id="section-categories">
             <h2>Kategorien verwalten</h2>
-            <p style="color: #888; margin-bottom: 15px;">Erstellen Sie Kategorien für die Sidebar auf der Startseite (z.B. Sport, Portrait, Shootings, Tiere, Landschaft)</p>
-            <div id="categories-list" style="margin-bottom: 20px;"></div>
+            <p class="text-muted mb-15">Erstellen Sie Kategorien für die Sidebar auf der Startseite (z.B. Sport, Portrait, Shootings, Tiere, Landschaft)</p>
+            <div id="categories-list" class="mb-20"></div>
             <div class="category-add-row">
-                <input type="text" id="new-category-name" placeholder="Kategorie-Name (z.B. Sport)" style="padding: 10px; background: #1a1a1a; border: 1px solid #444; border-radius: 6px; color: #e0e0e0;">
+                <input type="text" id="new-category-name" placeholder="Kategorie-Name (z.B. Sport)">
                 <button type="button" class="btn-primary" onclick="addCategory()">+ Kategorie hinzufügen</button>
             </div>
         </div>
         
         <!-- Portfolio verwalten -->
         <div class="admin-section" id="section-portfolio">
-            <h2>🎨 Portfolio-Slider verwalten</h2>
-            <p style="color: #888; margin-bottom: 15px;">Fügen Sie Bilder zum Portfolio-Slider auf der Startseite hinzu, um Kunden zu zeigen, was Sie fotografieren</p>
-            <div id="portfolio-list" style="margin-bottom: 20px;"></div>
-            <div style="display: flex; gap: 10px; margin-top: 15px;">
-                <input type="text" id="new-portfolio-title" placeholder="Titel (optional)" style="flex: 1; padding: 10px; background: #1a1a1a; border: 1px solid #444; border-radius: 6px; color: #e0e0e0;">
-                <input type="text" id="new-portfolio-description" placeholder="Beschreibung (optional)" style="flex: 1; padding: 10px; background: #1a1a1a; border: 1px solid #444; border-radius: 6px; color: #e0e0e0;">
+            <h2>Portfolio-Slider verwalten</h2>
+            <p class="text-muted mb-15">Fügen Sie Bilder zum Portfolio-Slider auf der Startseite hinzu, um Kunden zu zeigen, was Sie fotografieren</p>
+            <div id="portfolio-list" class="mb-20"></div>
+            <div class="flex-row gap-10 mt-15">
+                <input type="text" id="new-portfolio-title" placeholder="Titel (optional)" class="flex-1">
+                <input type="text" id="new-portfolio-description" placeholder="Beschreibung (optional)" class="flex-1">
                 <button type="button" class="btn-primary" id="portfolio-upload-btn">Portfolio-Bild komprimiert hochladen</button>
             </div>
         </div>
@@ -1204,44 +1281,44 @@
             <p id="export-description">
                 Nach dem Erstellen/Bearbeiten von Galerien wird <code>gallery.json</code> automatisch zu GitHub gepusht.
             </p>
-            <div style="display: flex; gap: 10px; margin-top: 15px;">
+            <div class="flex-row gap-10 mt-15">
                 <button class="btn-primary" id="download-btn">gallery.json manuell herunterladen</button>
-                <button class="btn-secondary" id="edit-github-config-btn" style="display: none;">GitHub-Konfiguration bearbeiten</button>
+                <button class="btn-secondary is-hidden" id="edit-github-config-btn">GitHub-Konfiguration bearbeiten</button>
             </div>
             
             <!-- GitHub Setup Box (auch hier für besseren Zugriff) -->
-            <div id="github-setup-export" style="margin-top: 20px; padding: 15px; background: #1a1a1a; border-radius: 6px; border-left: 3px solid #28a745; display: none;">
-                <strong style="color: #28a745;">GitHub Auto-Push konfigurieren:</strong>
-                <p style="margin-top: 8px; color: #888; font-size: 0.9em; margin-bottom: 15px;">
+            <div id="github-setup-export" class="setup-box mt-20 is-hidden">
+                <strong class="setup-box-title">GitHub Auto-Push konfigurieren:</strong>
+                <p class="mt-8 text-muted mb-15 text-09">
                     Wenn konfiguriert, wird <code>gallery.json</code> automatisch zu GitHub gepusht - kein manueller Download/Push mehr nötig!
                 </p>
-                <ol style="margin-top: 10px; color: #888; font-size: 0.9em; padding-left: 20px; margin-bottom: 15px;">
-                    <li style="margin-bottom: 8px;">GitHub → Settings → Developer settings → Personal access tokens → Tokens (classic)</li>
-                    <li style="margin-bottom: 8px;"><strong style="color: #e0e0e0;">WICHTIG:</strong> "Generate new token" → Name: "WB Foto Manager", Scope: <code style="background: #2a2a2a; padding: 2px 6px; border-radius: 3px; color: #28a745;">repo</code> (vollständiger Zugriff) - <strong style="color: #ff6b6b;">NICHT</strong> "Fine-grained token" verwenden!</li>
-                    <li style="margin-bottom: 8px;">Token kopieren und unten eingeben (wird lokal gespeichert)</li>
+                <ol class="setup-steps">
+                    <li>GitHub → Settings → Developer settings → Personal access tokens → Tokens (classic)</li>
+                    <li><strong>WICHTIG:</strong> "Generate new token" → Name: "WB Foto Manager", Scope: <code class="code-badge">repo</code> (vollständiger Zugriff) - <strong class="setup-warn-title">NICHT</strong> "Fine-grained token" verwenden!</li>
+                    <li>Token kopieren und unten eingeben (wird lokal gespeichert)</li>
                 </ol>
-                <div style="padding: 10px; background: #2a2a2a; border-radius: 4px; margin-bottom: 15px; border-left: 3px solid #ff6b6b;">
-                    <strong style="color: #ff6b6b;">Häufiger Fehler:</strong> Wenn Sie einen "Fine-grained Personal Access Token" erstellt haben, funktioniert dieser nicht! Sie müssen einen <strong>"Tokens (classic)"</strong> mit <code>repo</code> Scope verwenden.
+                <div class="setup-warn">
+                    <strong class="setup-warn-title">Häufiger Fehler:</strong> Wenn Sie einen "Fine-grained Personal Access Token" erstellt haben, funktioniert dieser nicht! Sie müssen einen <strong>"Tokens (classic)"</strong> mit <code>repo</code> Scope verwenden.
                 </div>
-                <div style="margin-top: 15px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;">
+                <div class="setup-grid-3">
                     <div>
-                        <label style="display: block; margin-bottom: 5px; color: #e0e0e0; font-size: 0.9em;">GitHub Username:</label>
-                        <input type="text" id="github-username-export" placeholder="noudi72" style="width: 100%; padding: 8px; background: #2a2a2a; border: 1px solid #444; border-radius: 4px; color: #e0e0e0;">
+                        <label class="label-sm">GitHub Username:</label>
+                        <input type="text" id="github-username-export" placeholder="noudi72" class="input-sm">
                     </div>
                     <div>
-                        <label style="display: block; margin-bottom: 5px; color: #e0e0e0; font-size: 0.9em;">Repository Name:</label>
-                        <input type="text" id="github-repo-export" placeholder="WB_Foto_Manager" style="width: 100%; padding: 8px; background: #2a2a2a; border: 1px solid #444; border-radius: 4px; color: #e0e0e0;">
+                        <label class="label-sm">Repository Name:</label>
+                        <input type="text" id="github-repo-export" placeholder="WB_Foto_Manager" class="input-sm">
                     </div>
                     <div>
-                        <label style="display: block; margin-bottom: 5px; color: #e0e0e0; font-size: 0.9em;">Personal Access Token:</label>
-                        <input type="password" id="github-token-export" placeholder="ghp_..." style="width: 100%; padding: 8px; background: #2a2a2a; border: 1px solid #444; border-radius: 4px; color: #e0e0e0;">
+                        <label class="label-sm">Personal Access Token:</label>
+                        <input type="password" id="github-token-export" placeholder="ghp_..." class="input-sm">
                     </div>
                 </div>
-                <div style="margin-top: 10px;">
-                    <button type="button" id="save-github-config-export" class="btn-primary" style="padding: 8px 16px; font-size: 0.9em; background: #28a745;">
+                <div class="mt-10">
+                    <button type="button" id="save-github-config-export" class="btn-primary btn-success btn-pad-8-16 text-09">
                         GitHub-Konfiguration speichern
                     </button>
-                    <button type="button" id="test-github-connection-export" class="btn-secondary" style="margin-left: 10px; padding: 8px 16px; font-size: 0.9em;">
+                    <button type="button" id="test-github-connection-export" class="btn-secondary ml-10 btn-pad-8-16 text-09">
                         Verbindung testen
                     </button>
                 </div>
@@ -1306,7 +1383,7 @@
                 // Update Export-Beschreibung
                 const desc = document.getElementById('export-description');
                 if (desc) {
-                    desc.innerHTML = `✓ <strong>Auto-Push aktiviert!</strong> Nach dem Erstellen/Bearbeiten wird <code>gallery.json</code> automatisch zu GitHub gepusht.<br><small style="color: #888;">Repository: <code>${username}/${repo}</code></small>`;
+                    desc.innerHTML = `✓ <strong>Auto-Push aktiviert!</strong> Nach dem Erstellen/Bearbeiten wird <code>gallery.json</code> automatisch zu GitHub gepusht.<br><small class="text-muted">Repository: <code>${username}/${repo}</code></small>`;
                 }
             } else {
                 document.getElementById('github-setup').style.display = 'block';
@@ -1320,7 +1397,7 @@
                 // Update Export-Beschreibung
                 const desc = document.getElementById('export-description');
                 if (desc) {
-                    desc.innerHTML = 'Nach dem Erstellen/Bearbeiten von Galerien können Sie die aktualisierte gallery.json herunterladen und zu GitHub hochladen.<br><small style="color: var(--accent);">Tipp: Konfigurieren Sie GitHub Auto-Push oben für automatisches Pushen!</small>';
+                    desc.innerHTML = 'Nach dem Erstellen/Bearbeiten von Galerien können Sie die aktualisierte gallery.json herunterladen und zu GitHub hochladen.<br><small class="text-accent">Tipp: Konfigurieren Sie GitHub Auto-Push oben für automatisches Pushen!</small>';
                 }
             }
         }
@@ -2359,13 +2436,13 @@
             const galleryId = gallery.id || 'unknown';
             const galleryName = gallery.name || 'Unbenannte Galerie';
             const imageCount = gallery.images?.length || 0;
-            const hasPassword = gallery.password ? '<span style="font-size: 0.75em; margin-left: 8px; padding: 3px 8px; border: 1px solid #444; border-radius: 999px; color: #e0e0e0; background: #2a2a2a;">Passwort</span>' : '';
+            const hasPassword = gallery.password ? '<span class="pill">Passwort</span>' : '';
             const description = gallery.description ? `<p class="gallery-description">${gallery.description}</p>` : '';
             
             item.innerHTML = `
                 <div class="gallery-item-info">
                     <h3>${galleryName} ${hasPassword}</h3>
-                    <span style="color: #888; font-size: 0.7em; margin-left: 8px;">ID: ${galleryId} | ${imageCount} Bilder</span>
+                    <span class="meta-muted">ID: ${galleryId} | ${imageCount} Bilder</span>
                     ${description}
                 </div>
                 <div class="gallery-item-actions">
@@ -3257,7 +3334,7 @@
             list.innerHTML = '';
             
             if (!galleryConfig.categories || galleryConfig.categories.length === 0) {
-                list.innerHTML = '<p style="color: #888; font-style: italic;">Noch keine Kategorien erstellt</p>';
+                list.innerHTML = '<p class="empty-italic">Noch keine Kategorien erstellt</p>';
                 return;
             }
             
@@ -3265,10 +3342,10 @@
                 const item = document.createElement('div');
                 item.className = 'category-row';
                 item.innerHTML = `
-                    <input id="category-name-${index}" type="text" value="${category.name}" style="padding: 8px; background: #2a2a2a; border: 1px solid #444; border-radius: 6px; color: #e0e0e0;">
-                    <input id="category-id-${index}" type="text" value="${category.id}" style="padding: 8px; background: #2a2a2a; border: 1px solid #444; border-radius: 6px; color: #e0e0e0;">
-                    <button class="btn-secondary" onclick="updateCategory(${index})" style="padding: 6px 12px; font-size: 0.85em;">Speichern</button>
-                    <button class="btn-danger" onclick="deleteCategory(${index})" style="padding: 6px 12px; font-size: 0.85em;">Löschen</button>
+                    <input id="category-name-${index}" type="text" value="${category.name}" class="input-compact">
+                    <input id="category-id-${index}" type="text" value="${category.id}" class="input-compact">
+                    <button class="btn-secondary btn-sm" onclick="updateCategory(${index})">Speichern</button>
+                    <button class="btn-danger btn-sm" onclick="deleteCategory(${index})">Löschen</button>
                 `;
                 list.appendChild(item);
             });
@@ -3399,7 +3476,7 @@
             list.innerHTML = '';
             
             if (!galleryConfig.portfolio || galleryConfig.portfolio.length === 0) {
-                list.innerHTML = '<p style="color: #888; font-style: italic;">Noch keine Portfolio-Bilder hinzugefügt</p>';
+                list.innerHTML = '<p class="empty-italic">Noch keine Portfolio-Bilder hinzugefügt</p>';
                 return;
             }
             
@@ -3407,13 +3484,13 @@
                 const portfolioItem = document.createElement('div');
                 portfolioItem.className = 'portfolio-row';
                 portfolioItem.innerHTML = `
-                    <img src="${item.image || item.url}" alt="${item.title || ''}" style="width: 100px; height: 64px; object-fit: cover; border-radius: 6px;">
-                    <div style="display: grid; gap: 6px;">
-                        <input id="portfolio-title-${index}" type="text" value="${item.title || ''}" placeholder="Titel" style="padding: 6px 8px; background: #2a2a2a; border: 1px solid #444; border-radius: 6px; color: #e0e0e0;">
-                        <input id="portfolio-desc-${index}" type="text" value="${item.description || ''}" placeholder="Beschreibung" style="padding: 6px 8px; background: #2a2a2a; border: 1px solid #444; border-radius: 6px; color: #e0e0e0;">
+                    <img src="${item.image || item.url}" alt="${item.title || ''}" class="portfolio-thumb">
+                    <div class="portfolio-fields">
+                        <input id="portfolio-title-${index}" type="text" value="${item.title || ''}" placeholder="Titel" class="input-compact-sm">
+                        <input id="portfolio-desc-${index}" type="text" value="${item.description || ''}" placeholder="Beschreibung" class="input-compact-sm">
                     </div>
-                    <button class="btn-secondary" onclick="updatePortfolioItem(${index})" style="padding: 6px 10px; font-size: 0.85em;">Speichern</button>
-                    <button class="btn-danger" onclick="deletePortfolioItem(${index})" style="padding: 6px 10px; font-size: 0.85em;">Löschen</button>
+                    <button class="btn-secondary btn-sm-narrow" onclick="updatePortfolioItem(${index})">Speichern</button>
+                    <button class="btn-danger btn-sm-narrow" onclick="deletePortfolioItem(${index})">Löschen</button>
                 `;
                 list.appendChild(portfolioItem);
             });

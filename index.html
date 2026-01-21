@@ -919,6 +919,7 @@
             border: 2px solid rgba(255,255,255,0.9);
             border-radius: 6px;
             background: rgba(0,0,0,0.3);
+            -webkit-backdrop-filter: blur(10px);
             backdrop-filter: blur(10px);
             display: flex;
             align-items: center;
@@ -992,6 +993,7 @@
             gap: 6px;
             padding: 8px 14px;
             background: rgba(0,0,0,0.6);
+            -webkit-backdrop-filter: blur(10px);
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255,255,255,0.2);
             border-radius: 8px;
@@ -1040,6 +1042,7 @@
             font-size: 12px;
             font-weight: 600;
             color: white;
+            -webkit-backdrop-filter: blur(10px);
             backdrop-filter: blur(10px);
             box-shadow: 0 2px 8px rgba(0,0,0,0.3);
             z-index: 5;
@@ -1051,6 +1054,7 @@
             left: 12px;
             padding: 8px 14px;
             background: rgba(212, 165, 116, 0.95);
+            -webkit-backdrop-filter: blur(10px);
             backdrop-filter: blur(10px);
             border-radius: 8px;
             font-size: 13px;
@@ -1246,6 +1250,7 @@
             font-weight: 600;
             transition: all 0.2s;
             background: rgba(0,0,0,0.3);
+            -webkit-backdrop-filter: blur(10px);
             backdrop-filter: blur(10px);
         }
         
@@ -1395,12 +1400,54 @@
         /* Favorit Button in Lightbox */
         #favorite-btn {
             background: rgba(0,0,0,0.6) !important;
+            -webkit-backdrop-filter: blur(10px);
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255,255,255,0.2) !important;
             color: #ffffff !important;
             padding: 6px 8px !important;
             font-size: 12px !important;
         }
+
+        /* Utilities (ersetzt Inline-Styles, reduziert Linter-Warnungen) */
+        .is-hidden { display: none; }
+        .empty-center { text-align: center; color: var(--text-secondary); padding: 28px 0; }
+        .empty-center-grid { text-align: center; color: var(--text-secondary); grid-column: 1 / -1; }
+        .center-muted { text-align: center; color: #888; margin-bottom: 20px; }
+        .error-text { color: #ff6b6b; margin-top: 10px; }
+
+        .gallery-layout-row { display: flex; gap: 20px; }
+        .gallery-main { flex: 1; display: flex; flex-direction: column; }
+        .gallery-flex { flex: 1; }
+
+        .sidebar-section--flush { margin-top: 0; padding-top: 0; border-top: none; }
+        .sidebar-input { width: 100%; padding: 6px 8px; background: var(--bg-primary); border: 1px solid var(--border); border-radius: 4px; color: var(--text-primary); font-size: 12px; }
+        .sidebar-input--mb { margin-bottom: 12px; }
+        .muted-small { color: #888; font-size: 0.75em; margin: 0; }
+
+        .bulk-actions-buttons { display: flex; flex-direction: column; gap: 6px; }
+        .btn-full { width: 100%; }
+        .btn-compact { padding: 6px 12px; font-size: 12px; }
+        .btn-compact-mt { margin-top: 6px; }
+        .btn-clear { background: #444; border-color: #555; }
+        .btn-center { justify-content: center; }
+
+        .viewer-actions { position: absolute; bottom: 10px; left: 10px; display: flex; gap: 10px; z-index: 10; }
+        .sidebar-close-btn { position: absolute; top: 12px; left: 8px; background: rgba(212, 165, 116, 0.2); border: 1px solid var(--accent); border-radius: 4px; color: var(--accent); font-size: 12px; cursor: pointer; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+        .rating-muted { color: #888; font-size: 0.75em; margin-top: 4px; }
+        .image-info { font-size: 0.8em; color: var(--text-secondary); line-height: 1.6; }
+
+        .gallery-card-preview--centered { display: flex; align-items: center; justify-content: center; background: var(--bg-tertiary); color: var(--text-secondary); }
+        .gallery-card-preview--ratio { padding-bottom: 65%; }
+        .gallery-card-header-actions { display: flex; align-items: center; gap: 6px; }
+
+        .selection-count { float: right; font-weight: 600; }
+        .selection-tag { background: rgba(212, 165, 116, 0.3); color: #ffffff; padding: 4px 8px; border-radius: 4px; margin-right: 5px; margin-bottom: 5px; display: inline-block; font-size: 0.8em; font-weight: 500; border: 1px solid rgba(212, 165, 116, 0.5); }
+
+        .download-progress-modal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: var(--bg-secondary); padding: 20px; border-radius: 8px; z-index: 10000; border: 2px solid var(--accent); min-width: 250px; }
+        .progress-title { margin-bottom: 10px; }
+        .progress-bar { width: 200px; height: 4px; background: var(--bg-tertiary); border-radius: 2px; margin-top: 10px; overflow: hidden; }
+        .progress-bar-fill { width: 0%; height: 100%; background: var(--accent); border-radius: 2px; transition: width 0.3s; }
+        .progress-text { margin-top: 10px; font-size: 0.85em; color: var(--text-secondary); }
         
         #favorite-btn.active {
             background: rgba(255, 107, 107, 0.8) !important;
@@ -1885,7 +1932,7 @@
         </header>
         
         <!-- Galerie-Auswahl (wird angezeigt wenn mehrere Galerien vorhanden) -->
-        <div id="gallery-selector" style="display: none;">
+        <div id="gallery-selector" class="is-hidden">
             <div class="selector-top">
                 <!-- Kategorie-Sidebar -->
                 <div class="category-sidebar" id="category-sidebar">
@@ -1895,7 +1942,7 @@
 
                 <!-- Portfolio rechts neben Sidebar -->
                 <div class="portfolio-area">
-                    <div class="portfolio-slider-wrapper" id="portfolio-slider-wrapper" style="display: none;">
+                    <div class="portfolio-slider-wrapper is-hidden" id="portfolio-slider-wrapper">
                         <!-- Slider 1 -->
                         <div class="portfolio-slider" id="portfolio-slider-1">
                             <div class="portfolio-slider-container" id="portfolio-slider-container-1"></div>
@@ -1923,7 +1970,7 @@
                 <div id="gallery-list"></div>
 
                 <!-- Call-to-Action Bereich -->
-                <div class="cta-section" id="cta-section" style="display: none;">
+                <div class="cta-section is-hidden" id="cta-section">
                     <h2>Bereit für dein Shooting?</h2>
                     <p>Buche jetzt einen Termin oder kontaktiere mich für eine individuelle Beratung. Ich freue mich auf deine Anfrage!</p>
                     <div class="cta-buttons">
@@ -1935,19 +1982,19 @@
         </div>
         
         <!-- Passwort-Formular -->
-        <div id="password-form" class="password-form" style="display: none;">
+        <div id="password-form" class="password-form is-hidden">
             <h2>Passwort erforderlich</h2>
-            <p style="text-align: center; color: #888; margin-bottom: 20px;" id="gallery-name-display"></p>
+            <p class="center-muted" id="gallery-name-display"></p>
             <input type="password" id="password-input" placeholder="Passwort eingeben" autofocus>
             <button onclick="checkPassword()">Anmelden</button>
-            <p id="password-error" style="color: #ff6b6b; margin-top: 10px; display: none;">Falsches Passwort</p>
+            <p id="password-error" class="error-text is-hidden">Falsches Passwort</p>
         </div>
         
         <!-- Galerie-Ansicht -->
-        <div id="gallery-container" style="display: none;">
+        <div id="gallery-container" class="is-hidden">
             <div class="gallery-header">
                 <div class="gallery-header-left">
-                    <button class="back-button" onclick="showGallerySelector()" id="back-button" style="display: none;">
+                    <button class="back-button is-hidden" onclick="showGallerySelector()" id="back-button">
                         ← Zurück
                     </button>
                     <div class="gallery-title">
@@ -1960,7 +2007,7 @@
                     <span class="gallery-chip" id="gallery-selected-chip">0 ausgewählt</span>
                 </div>
             </div>
-            <div style="display: flex; gap: 20px;">
+            <div class="gallery-layout-row">
                 <!-- Sidebar für Galerie-Übersicht -->
                 <div class="gallery-sidebar" id="gallery-sidebar">
                     <button class="sidebar-toggle" onclick="toggleGallerySidebar()" id="sidebar-toggle-btn">
@@ -1970,8 +2017,8 @@
                         <h3>Übersicht</h3>
                         
                         <!-- Suche -->
-                        <div class="sidebar-section" style="margin-top: 0; padding-top: 0; border-top: none;">
-                            <input type="text" id="search-input" placeholder="Suchen..." style="width: 100%; padding: 6px 8px; background: var(--bg-primary); border: 1px solid var(--border); border-radius: 4px; color: var(--text-primary); font-size: 12px; margin-bottom: 12px;">
+                        <div class="sidebar-section sidebar-section--flush">
+                            <input type="text" id="search-input" placeholder="Suchen..." class="sidebar-input sidebar-input--mb">
                         </div>
                         
                         <div class="sidebar-stats">
@@ -2018,37 +2065,37 @@
                         <div class="sidebar-section">
                             <h4>Auswahlen</h4>
                             <div class="selections-list" id="selections-list">
-                                <p style="color: #888; font-size: 0.75em; margin: 0;">Keine Auswahlen</p>
+                                <p class="muted-small">Keine Auswahlen</p>
                             </div>
                         </div>
                         
                         <!-- Bulk-Aktionen -->
-                        <div class="sidebar-section" id="bulk-actions-section" style="display: none;">
+                        <div class="sidebar-section is-hidden" id="bulk-actions-section">
                             <h4>Bulk-Aktionen</h4>
-                            <div style="display: flex; flex-direction: column; gap: 6px;">
-                                <button class="btn-secondary" onclick="bulkAddToFavorites()" style="width: 100%; padding: 6px 12px; font-size: 12px;">Als Favoriten markieren</button>
-                                <button class="btn-secondary" onclick="bulkSetFlag()" style="width: 100%; padding: 6px 12px; font-size: 12px;">Markierung setzen</button>
-                                <button class="btn-secondary" onclick="bulkAddToSelection()" style="width: 100%; padding: 6px 12px; font-size: 12px;">Zu Auswahl hinzufügen</button>
-                                <button class="btn-primary" onclick="bulkDownload()" style="width: 100%; padding: 6px 12px; font-size: 12px;">Als ZIP herunterladen</button>
-                                <button class="btn-secondary" onclick="exportAsPDF()" style="width: 100%; padding: 6px 12px; font-size: 12px; margin-top: 6px;">Als PDF exportieren</button>
-                                <button class="btn-secondary" onclick="clearSelection()" style="width: 100%; padding: 6px 12px; font-size: 12px; background: #444; border-color: #555;">✗ Auswahl aufheben</button>
+                            <div class="bulk-actions-buttons">
+                                <button class="btn-secondary btn-full btn-compact" onclick="bulkAddToFavorites()">Als Favoriten markieren</button>
+                                <button class="btn-secondary btn-full btn-compact" onclick="bulkSetFlag()">Markierung setzen</button>
+                                <button class="btn-secondary btn-full btn-compact" onclick="bulkAddToSelection()">Zu Auswahl hinzufügen</button>
+                                <button class="btn-primary btn-full btn-compact" onclick="bulkDownload()">Als ZIP herunterladen</button>
+                                <button class="btn-secondary btn-full btn-compact btn-compact-mt" onclick="exportAsPDF()">Als PDF exportieren</button>
+                                <button class="btn-secondary btn-full btn-compact btn-clear" onclick="clearSelection()">✗ Auswahl aufheben</button>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div style="flex: 1; display: flex; flex-direction: column;">
+                <div class="gallery-main">
                     <!-- Breadcrumb -->
-                    <div class="breadcrumb" id="breadcrumb" style="display: none;"></div>
-                    <div class="gallery" id="gallery" style="flex: 1;"></div>
+                    <div class="breadcrumb is-hidden" id="breadcrumb"></div>
+                    <div class="gallery gallery-flex" id="gallery"></div>
                 </div>
             </div>
         </div>
         
-        <div id="loading" class="loading" style="display: none;">
+        <div id="loading" class="loading is-hidden">
             <p>Lade Bilder...</p>
         </div>
         
-        <div id="error" class="error" style="display: none;">
+        <div id="error" class="error is-hidden">
             <p>Fehler beim Laden der Bilder</p>
         </div>
     </div>
@@ -2058,7 +2105,7 @@
         <button class="lightbox-nav lightbox-prev" onclick="previousImage()">‹</button>
         <div class="lightbox-content">
             <img id="lightbox-image" src="" alt="">
-            <div style="position: absolute; bottom: 10px; left: 10px; display: flex; gap: 10px; z-index: 10;">
+            <div class="viewer-actions">
                 <button class="download-btn" onclick="downloadImage()">Download</button>
                 <button class="download-btn" onclick="toggleSidebar()" id="feedback-toggle-btn">Feedback</button>
             </div>
@@ -2067,7 +2114,7 @@
         
         <!-- Feedback-Sidebar -->
         <div class="lightbox-sidebar" id="feedback-sidebar">
-            <button onclick="toggleSidebar()" style="position: absolute; top: 12px; left: 8px; background: rgba(212, 165, 116, 0.2); border: 1px solid var(--accent); border-radius: 4px; color: var(--accent); font-size: 12px; cursor: pointer; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; transition: all 0.2s;">&times;</button>
+            <button onclick="toggleSidebar()" class="sidebar-close-btn">&times;</button>
             <h3 id="feedback-image-name">Bild Feedback</h3>
             
             <!-- Bewertung -->
@@ -2080,7 +2127,7 @@
                     <span class="star" data-rating="4" onclick="setRating(4)">★</span>
                     <span class="star" data-rating="5" onclick="setRating(5)">★</span>
                 </div>
-                <p id="rating-text" style="color: #888; font-size: 0.75em; margin-top: 4px;">Keine Bewertung</p>
+                <p id="rating-text" class="rating-muted">Keine Bewertung</p>
             </div>
             
             <!-- Markierungen (Flags) -->
@@ -2097,7 +2144,7 @@
             <!-- Favorit -->
             <div class="feedback-section">
                 <h4>Favorit</h4>
-                <button class="gallery-item-btn gallery-item-like" id="favorite-btn" onclick="toggleFavorite()" style="width: 100%; justify-content: center;">
+                <button class="gallery-item-btn gallery-item-like btn-full btn-center" id="favorite-btn" onclick="toggleFavorite()">
                     <span id="favorite-text">Als Favorit markieren</span>
                 </button>
             </div>
@@ -2106,22 +2153,22 @@
             <div class="feedback-section">
                 <h4>Kommentare</h4>
                 <textarea class="comment-input" id="comment-input" placeholder="Ihr Kommentar..."></textarea>
-                <button class="btn-primary" onclick="addComment()" style="width: 100%;">Kommentar hinzufügen</button>
+                <button class="btn-primary btn-full" onclick="addComment()">Kommentar hinzufügen</button>
                 <div class="comment-list" id="comment-list"></div>
             </div>
             
             <!-- Auswahl -->
             <div class="feedback-section">
                 <h4>Auswahl</h4>
-                <input type="text" id="selection-name" placeholder="Auswahl-Name" style="width: 100%; padding: 6px 8px; background: var(--bg-primary); border: 1px solid var(--border); border-radius: 4px; color: var(--text-primary); margin-bottom: 6px; font-size: 12px;">
-                <button class="btn-secondary" onclick="addToSelection()" style="width: 100%;">Zu Auswahl hinzufügen</button>
+                <input type="text" id="selection-name" placeholder="Auswahl-Name" class="sidebar-input sidebar-input--mb">
+                <button class="btn-secondary btn-full" onclick="addToSelection()">Zu Auswahl hinzufügen</button>
                 <div id="current-selections"></div>
             </div>
             
             <!-- Bild-Info -->
             <div class="feedback-section">
                 <h4>Bild-Informationen</h4>
-                <div id="image-info" style="font-size: 0.8em; color: var(--text-secondary); line-height: 1.6;">
+                <div id="image-info" class="image-info">
                     <div><strong>Name:</strong> <span id="info-name">-</span></div>
                     <div><strong>Größe:</strong> <span id="info-size">-</span></div>
                     <div><strong>Auflösung:</strong> <span id="info-resolution">-</span></div>
@@ -2554,7 +2601,7 @@
             galleryList.innerHTML = '';
             
             if (!galleryConfig || !galleryConfig.galleries || galleryConfig.galleries.length === 0) {
-                galleryList.innerHTML = '<p style="text-align: center; color: var(--text-secondary); padding: 28px 0;">Keine Galerien gefunden</p>';
+                galleryList.innerHTML = '<p class="empty-center">Keine Galerien gefunden</p>';
                 return;
             }
             
@@ -2576,7 +2623,7 @@
             }
             
             if (filteredGalleries.length === 0) {
-                galleryList.innerHTML = '<p style="text-align: center; color: var(--text-secondary); padding: 28px 0;">Keine Galerien in dieser Kategorie gefunden</p>';
+                galleryList.innerHTML = '<p class="empty-center">Keine Galerien in dieser Kategorie gefunden</p>';
                 return;
             }
             
@@ -2722,9 +2769,9 @@
             
             if (!previewImage) {
                 if (gallery.password) {
-                    previewImage = `<div class="gallery-card-preview" style="display: flex; align-items: center; justify-content: center; background: var(--bg-tertiary); color: var(--text-secondary);">Geschützt</div>`;
+                    previewImage = `<div class="gallery-card-preview gallery-card-preview--centered">Geschützt</div>`;
                 } else {
-                    previewImage = `<div class="gallery-card-preview" style="display: flex; align-items: center; justify-content: center; background: var(--bg-tertiary); color: var(--text-secondary);">Keine Bilder</div>`;
+                    previewImage = `<div class="gallery-card-preview gallery-card-preview--centered">Keine Bilder</div>`;
                 }
             }
             
@@ -2733,7 +2780,7 @@
                 // img-Tag vorhanden - alles gut
             } else {
                 // div placeholder - muss padding-bottom haben
-                previewImage = previewImage.replace('class="gallery-card-preview"', 'class="gallery-card-preview" style="padding-bottom: 65%;"');
+                previewImage = previewImage.replace('class="gallery-card-preview"', 'class="gallery-card-preview gallery-card-preview--ratio"');
             }
             
             card.innerHTML = `
@@ -2741,7 +2788,7 @@
                 <div class="gallery-card-content">
                     <div class="gallery-card-header">
                         <h3>${gallery.name || 'Unbenannte Galerie'}</h3>
-                        <div style="display: flex; align-items: center; gap: 6px;">
+                        <div class="gallery-card-header-actions">
                             ${isEmpty ? '<span class="gallery-card-badge">Bald verfügbar</span>' : ''}
                             ${gallery.password ? '<span class="gallery-card-badge">Geschützt</span>' : ''}
                         </div>
@@ -2842,7 +2889,7 @@
             const gallery = document.getElementById('gallery');
             
             if (images.length === 0) {
-                gallery.innerHTML = '<p style="text-align: center; color: var(--text-secondary); grid-column: 1 / -1;">Keine Bilder gefunden</p>';
+                gallery.innerHTML = '<p class="empty-center-grid">Keine Bilder gefunden</p>';
                 return;
             }
             
@@ -3167,14 +3214,14 @@
             
             const selectionsList = document.getElementById('selections-list');
             if (selectionsSet.size === 0) {
-                selectionsList.innerHTML = '<p style="color: #888; font-size: 0.75em; margin: 0;">Keine Auswahlen</p>';
+                selectionsList.innerHTML = '<p class="muted-small">Keine Auswahlen</p>';
             } else {
                 selectionsList.innerHTML = Array.from(selectionsSet).map(s => {
                     const count = currentImages.filter((img, index) => {
                         const imageId = img.id || `img_${index}`;
                         return (feedbackData.selections[imageId] || []).includes(s);
                     }).length;
-                    return `<div class="selection-item clickable" onclick="filterBySelection('${s.replace(/'/g, "\\'")}')" title="Nur Bilder in dieser Auswahl">${s} <span style="float: right; font-weight: 600;">${count}</span></div>`;
+                    return `<div class="selection-item clickable" onclick="filterBySelection('${s.replace(/'/g, "\\'")}')" title="Nur Bilder in dieser Auswahl">${s} <span class="selection-count">${count}</span></div>`;
                 }).join('');
             }
         }
@@ -3407,8 +3454,8 @@
             
             // Zeige Progress
             const progressDiv = document.createElement('div');
-            progressDiv.style.cssText = 'position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: var(--bg-secondary); padding: 20px; border-radius: 8px; z-index: 10000; border: 2px solid var(--accent);';
-            progressDiv.innerHTML = `<p>Lade ${selected.length} Bild(er) herunter...</p><div style="width: 200px; height: 4px; background: var(--bg-tertiary); border-radius: 2px; margin-top: 10px;"><div id="download-progress" style="width: 0%; height: 100%; background: var(--accent); border-radius: 2px; transition: width 0.3s;"></div></div>`;
+            progressDiv.className = 'download-progress-modal';
+            progressDiv.innerHTML = `<p>Lade ${selected.length} Bild(er) herunter...</p><div class="progress-bar"><div id="download-progress" class="progress-bar-fill"></div></div>`;
             document.body.appendChild(progressDiv);
             
             let downloaded = 0;
@@ -3505,8 +3552,8 @@
             
             // Zeige Progress
             const progressDiv = document.createElement('div');
-            progressDiv.style.cssText = 'position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: var(--bg-secondary); padding: 20px; border-radius: 8px; z-index: 10000; border: 2px solid var(--accent); min-width: 250px;';
-            progressDiv.innerHTML = `<p style="margin-bottom: 10px;">Erstelle ZIP...</p><div style="width: 200px; height: 4px; background: var(--bg-tertiary); border-radius: 2px;"><div id="download-progress" style="width: 0%; height: 100%; background: var(--accent); border-radius: 2px; transition: width 0.3s;"></div></div><p id="progress-text" style="margin-top: 10px; font-size: 0.85em; color: var(--text-secondary);">0 / ${selected.length}</p>`;
+            progressDiv.className = 'download-progress-modal';
+            progressDiv.innerHTML = `<p class="progress-title">Erstelle ZIP...</p><div class="progress-bar"><div id="download-progress" class="progress-bar-fill"></div></div><p id="progress-text" class="progress-text">0 / ${selected.length}</p>`;
             document.body.appendChild(progressDiv);
             
             const zip = new JSZip();
@@ -3739,7 +3786,7 @@
             commentList.innerHTML = '';
             
             if (comments.length === 0) {
-                commentList.innerHTML = '<p style="color: #888; font-size: 0.75em; margin: 0;">Noch keine Kommentare</p>';
+                commentList.innerHTML = '<p class="muted-small">Noch keine Kommentare</p>';
                 return;
             }
             
@@ -3761,9 +3808,9 @@
             const selections = feedbackData.selections[imageId] || [];
             
             if (selections.length === 0) {
-                selectionsDiv.innerHTML = '<p style="color: #888; font-size: 0.75em; margin: 0;">Nicht in einer Auswahl</p>';
+                selectionsDiv.innerHTML = '<p class="muted-small">Nicht in einer Auswahl</p>';
             } else {
-                selectionsDiv.innerHTML = selections.map(s => `<span style="background: rgba(212, 165, 116, 0.3); color: #ffffff; padding: 4px 8px; border-radius: 4px; margin-right: 5px; margin-bottom: 5px; display: inline-block; font-size: 0.8em; font-weight: 500; border: 1px solid rgba(212, 165, 116, 0.5);">${s}</span>`).join('');
+                selectionsDiv.innerHTML = selections.map(s => `<span class="selection-tag">${s}</span>`).join('');
             }
         }
         
