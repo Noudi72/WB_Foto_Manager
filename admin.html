@@ -271,28 +271,28 @@
             background: #1a1a1a;
             border: 1px solid #444;
             border-radius: 8px;
-            padding: 12px;
-            margin-bottom: 10px;
+            padding: 8px 10px;
+            margin-bottom: 8px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
         }
         
         .gallery-item-info h3 {
-            margin-bottom: 4px;
+            margin-bottom: 2px;
             color: #e0e0e0;
-            font-size: 1em;
+            font-size: 0.95em;
         }
         
         .gallery-item-info p {
             color: #888;
-            font-size: 0.8em;
+            font-size: 0.75em;
         }
         
         .gallery-item-actions {
             display: flex;
-            gap: 8px;
+            gap: 6px;
         }
         
         .alert {
@@ -3041,17 +3041,39 @@
             
             galleryConfig.portfolio.forEach((item, index) => {
                 const portfolioItem = document.createElement('div');
-                portfolioItem.style.cssText = 'display: flex; align-items: center; gap: 15px; padding: 15px; background: #1a1a1a; border-radius: 6px; margin-bottom: 10px;';
+                portfolioItem.style.cssText = 'display: grid; grid-template-columns: 100px 1fr auto auto; gap: 10px; padding: 10px; background: #1a1a1a; border-radius: 6px; margin-bottom: 8px; align-items: center;';
                 portfolioItem.innerHTML = `
-                    <img src="${item.image || item.url}" alt="${item.title || ''}" style="width: 120px; height: 80px; object-fit: cover; border-radius: 6px;">
-                    <div style="flex: 1;">
-                        <strong style="color: #e0e0e0; display: block; margin-bottom: 5px;">${item.title || 'Ohne Titel'}</strong>
-                        <p style="color: #888; font-size: 0.85em; margin: 0;">${item.description || 'Keine Beschreibung'}</p>
+                    <img src="${item.image || item.url}" alt="${item.title || ''}" style="width: 100px; height: 64px; object-fit: cover; border-radius: 6px;">
+                    <div style="display: grid; gap: 6px;">
+                        <input id="portfolio-title-${index}" type="text" value="${item.title || ''}" placeholder="Titel" style="padding: 6px 8px; background: #2a2a2a; border: 1px solid #444; border-radius: 6px; color: #e0e0e0;">
+                        <input id="portfolio-desc-${index}" type="text" value="${item.description || ''}" placeholder="Beschreibung" style="padding: 6px 8px; background: #2a2a2a; border: 1px solid #444; border-radius: 6px; color: #e0e0e0;">
                     </div>
-                    <button class="btn-danger" onclick="deletePortfolioItem(${index})" style="padding: 6px 12px; font-size: 0.85em;">Löschen</button>
+                    <button class="btn-secondary" onclick="updatePortfolioItem(${index})" style="padding: 6px 10px; font-size: 0.85em;">Speichern</button>
+                    <button class="btn-danger" onclick="deletePortfolioItem(${index})" style="padding: 6px 10px; font-size: 0.85em;">Löschen</button>
                 `;
                 list.appendChild(portfolioItem);
             });
+        }
+
+        async function updatePortfolioItem(index) {
+            ensureGalleryConfig();
+            const titleInput = document.getElementById(`portfolio-title-${index}`);
+            const descInput = document.getElementById(`portfolio-desc-${index}`);
+            if (!titleInput || !descInput) return;
+
+            const item = galleryConfig.portfolio[index];
+            if (!item) return;
+
+            item.title = titleInput.value.trim() || null;
+            item.description = descInput.value.trim() || null;
+            galleryConfig.generated = new Date().toISOString();
+            displayPortfolio();
+
+            if (githubConfig) {
+                await pushGalleryJsonToGitHub();
+            }
+
+            showAlert('Portfolio-Text aktualisiert', 'success');
         }
         
         async function deletePortfolioItem(index) {

@@ -32,32 +32,45 @@
         }
         
         body.light-mode {
-            --bg-primary: #ffffff;
-            --bg-secondary: #f5f5f5;
-            --bg-tertiary: #e0e0e0;
-            --text-primary: #1a1a1a;
-            --text-secondary: #666;
-            --border: #ddd;
+            --bg-primary: #f6f8fc;
+            --bg-secondary: #ffffff;
+            --bg-tertiary: #eef2f8;
+            --text-primary: #1f2630;
+            --text-secondary: #5e6a7a;
+            --border: #d7deea;
         }
         
         /* Light Mode Anpassungen */
         body.light-mode .gallery-card {
             background: var(--bg-secondary);
-            border: 2px solid var(--border);
+            border: 1px solid var(--border);
         }
         
         body.light-mode .gallery-card:hover {
             border-color: var(--accent);
-            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.2);
+            box-shadow: 0 12px 26px rgba(102, 126, 234, 0.2);
         }
         
         body.light-mode .gallery-card h3 {
             color: #1a1a1a !important;
             font-weight: 700;
         }
+
+        body.light-mode .hero-stat {
+            background: rgba(255,255,255,0.9);
+            border-color: var(--border);
+            box-shadow: 0 6px 16px rgba(31, 38, 48, 0.08);
+        }
+
+        body.light-mode .admin-link,
+        body.light-mode .theme-toggle {
+            background: rgba(255,255,255,0.9);
+            border-color: var(--border);
+            color: var(--text-primary);
+        }
         
         body.light-mode .gallery-card p {
-            color: #444;
+            color: #536074;
         }
         
         body.light-mode .gallery-folder-header {
@@ -81,7 +94,7 @@
         }
         
         body.light-mode .gallery-card-preview {
-            background: #e0e0e0;
+            background: #e8ecf5;
         }
         
         body.light-mode .gallery-item {
@@ -89,11 +102,11 @@
         }
         
         body.light-mode .gallery-item-overlay {
-            background: linear-gradient(to bottom, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.05) 50%, rgba(0,0,0,0.3) 100%);
+            background: linear-gradient(to bottom, rgba(9, 13, 20, 0.08) 0%, rgba(9, 13, 20, 0.04) 50%, rgba(9, 13, 20, 0.25) 100%);
         }
         
         body.light-mode .stat-item {
-            background: rgba(102, 126, 234, 0.05);
+            background: rgba(124, 92, 255, 0.08);
             border-left-color: var(--accent);
         }
         
@@ -114,17 +127,17 @@
         }
         
         body.light-mode .selection-item {
-            background: rgba(102, 126, 234, 0.05);
+            background: rgba(124, 92, 255, 0.08);
             border-left-color: var(--accent);
         }
         
         body.light-mode .comment-item {
-            background: var(--bg-primary);
+            background: var(--bg-secondary);
             border-left-color: var(--accent);
         }
         
         body.light-mode .comment-input {
-            background: var(--bg-primary);
+            background: var(--bg-secondary);
             border-color: var(--border);
             color: var(--text-primary);
         }
@@ -396,8 +409,8 @@
         }
 
         .logo {
-            width: 68px;
-            height: 68px;
+            width: 84px;
+            height: 84px;
             border-radius: 16px;
             object-fit: contain;
             background: rgba(255,255,255,0.06);
@@ -424,7 +437,7 @@
         /* Portfolio Slider */
         .portfolio-slider {
             width: 100%;
-            height: 300px;
+            height: 240px;
             position: relative;
             margin-bottom: 32px;
             border-radius: 20px;
@@ -1702,8 +1715,8 @@
             }
             
             .logo {
-                width: 60px;
-                height: 60px;
+                width: 72px;
+                height: 72px;
             }
             
             .theme-toggle {
