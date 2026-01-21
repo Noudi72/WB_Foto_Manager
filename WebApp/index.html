@@ -6,23 +6,57 @@
     <title>WB Foto Manager - Galerie</title>
     <style>
         :root {
-            color-scheme: dark;
-            --bg: #0f1115;
-            --surface: #171a21;
-            --surface-2: #1f2430;
-            --surface-3: #232938;
-            --border: #2a3142;
-            --text: #e7eaf0;
-            --muted: #9aa3b2;
-            --accent: #7c5cff;
-            --accent-2: #59d6ff;
-            --success: #43d9a3;
-            --warning: #ffd166;
-            --shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+            color-scheme: light;
+            --bg: #faf6f1;
+            --bg-grad: radial-gradient(circle at top, rgba(212, 165, 116, 0.06), transparent 55%);
+            --surface: #ffffff;
+            --surface-2: #f5ede5;
+            --surface-3: #efe3d7;
+            --border: #e8ddd1;
+            --text: #4a3f38;
+            --muted: #8b7d75;
+            --accent: #d4a574;
+            --accent-2: #c9945e;
+            --accent-border: rgba(212, 165, 116, 0.55);
+            --accent-contrast: #2a1b10;
+            --success: #2e9b74;
+            --warning: #d5a233;
+            --danger: #cc5a5a;
+            --overlay: rgba(13, 11, 8, 0.82);
+            --caption-overlay: rgba(35, 31, 26, 0.72);
+            --header-bg: rgba(255, 255, 255, 0.78);
+            --nav-bg: rgba(35, 31, 26, 0.55);
+            --shadow: 0 20px 50px rgba(0, 0, 0, 0.10);
+            --shadow-soft: 0 12px 36px rgba(0, 0, 0, 0.07);
             --tile-size: 280px;
             --radius-lg: 18px;
             --radius-md: 12px;
             --radius-sm: 8px;
+        }
+
+        body.dark-mode {
+            color-scheme: dark;
+            --bg: #141312;
+            --bg-grad: radial-gradient(circle at top, rgba(212, 165, 116, 0.10), transparent 55%);
+            --surface: #1c1a18;
+            --surface-2: #23201d;
+            --surface-3: #2a2521;
+            --border: #2e2a26;
+            --text: #f1ece6;
+            --muted: #b7a89c;
+            --accent: #d4a574;
+            --accent-2: #e0b07f;
+            --accent-border: rgba(212, 165, 116, 0.55);
+            --accent-contrast: #2a1b10;
+            --success: #43d9a3;
+            --warning: #ffd166;
+            --danger: #ff6b6b;
+            --overlay: rgba(8, 9, 12, 0.96);
+            --caption-overlay: rgba(9, 10, 12, 0.84);
+            --header-bg: rgba(20, 19, 18, 0.82);
+            --nav-bg: rgba(10, 12, 16, 0.65);
+            --shadow: 0 18px 45px rgba(0, 0, 0, 0.55);
+            --shadow-soft: 0 12px 36px rgba(0, 0, 0, 0.30);
         }
 
         * {
@@ -33,7 +67,8 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background: radial-gradient(circle at top, #191d28 0%, #0f1115 60%);
+            background: var(--bg);
+            background-image: var(--bg-grad);
             color: var(--text);
             min-height: 100vh;
         }
@@ -54,14 +89,14 @@
             top: 0;
             z-index: 100;
             backdrop-filter: blur(16px);
-            background: rgba(15, 17, 21, 0.8);
+            background: var(--header-bg);
             border-bottom: 1px solid var(--border);
         }
 
         .site-header-inner {
             max-width: 1400px;
             margin: 0 auto;
-            padding: 18px 28px;
+            padding: 16px 20px;
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -75,8 +110,8 @@
         }
 
         .brand-logo {
-            width: 44px;
-            height: 44px;
+            width: 52px;
+            height: 52px;
             object-fit: contain;
             border-radius: 10px;
             background: var(--surface-2);
@@ -116,10 +151,24 @@
             font-size: 0.8rem;
         }
 
+        .theme-toggle {
+            padding: 6px 12px;
+            background: var(--surface-2);
+            border-radius: 999px;
+            border: 1px solid var(--border);
+            color: var(--text);
+            font-size: 0.8rem;
+            cursor: pointer;
+        }
+
+        .theme-toggle:hover {
+            background: var(--surface-3);
+        }
+
         .container {
             max-width: 1400px;
             margin: 0 auto;
-            padding: 32px 28px 60px;
+            padding: 22px 20px 56px;
             width: 100%;
         }
 
@@ -127,16 +176,17 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 24px;
-            margin-bottom: 24px;
-            padding: 24px;
+            gap: 18px;
+            margin-bottom: 18px;
+            padding: 18px;
             border-radius: var(--radius-lg);
-            background: linear-gradient(135deg, rgba(124, 92, 255, 0.15), rgba(89, 214, 255, 0.1));
-            border: 1px solid rgba(124, 92, 255, 0.3);
+            background: var(--surface);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-soft);
         }
 
         .hero h1 {
-            font-size: 2.4rem;
+            font-size: 2.1rem;
             margin-bottom: 8px;
         }
 
@@ -149,19 +199,19 @@
         .hero-meta {
             display: grid;
             grid-template-columns: repeat(3, minmax(0, 1fr));
-            gap: 12px;
+            gap: 10px;
             min-width: 320px;
         }
 
         .meta-card {
             background: var(--surface);
             border-radius: var(--radius-md);
-            padding: 16px;
+            padding: 12px;
             border: 1px solid var(--border);
             display: flex;
             flex-direction: column;
             gap: 8px;
-            min-height: 88px;
+            min-height: 78px;
         }
 
         .meta-label {
@@ -172,15 +222,15 @@
         }
 
         .meta-value {
-            font-size: 1.4rem;
+            font-size: 1.25rem;
             font-weight: 600;
         }
 
         .toolbar {
             display: grid;
             grid-template-columns: 1fr auto;
-            gap: 16px;
-            margin-bottom: 18px;
+            gap: 12px;
+            margin-bottom: 14px;
         }
 
         .toolbar-left,
@@ -263,7 +313,7 @@
         .gallery {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(var(--tile-size), 1fr));
-            gap: 18px;
+            gap: 14px;
             padding: 8px 0 24px;
         }
 
@@ -274,7 +324,7 @@
             cursor: pointer;
             background: var(--surface-2);
             border: 1px solid var(--border);
-            box-shadow: 0 10px 24px rgba(0, 0, 0, 0.25);
+            box-shadow: var(--shadow-soft);
             transition: transform 0.2s ease, box-shadow 0.2s ease, border 0.2s ease;
         }
 
@@ -283,14 +333,14 @@
             position: absolute;
             inset: 0;
             background: linear-gradient(120deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.01), rgba(255, 255, 255, 0.05));
-            opacity: 0.4;
+            opacity: 0.18;
             pointer-events: none;
         }
 
         .gallery-item:hover {
-            transform: translateY(-6px);
-            border-color: rgba(124, 92, 255, 0.5);
-            box-shadow: 0 18px 30px rgba(0, 0, 0, 0.45);
+            transform: translateY(-3px);
+            border-color: var(--accent-border);
+            box-shadow: var(--shadow);
         }
 
         .gallery-item img {
@@ -306,7 +356,7 @@
             right: 0;
             bottom: 0;
             padding: 12px;
-            background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(9, 10, 12, 0.8) 70%);
+            background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, var(--caption-overlay) 70%);
             color: var(--text);
             display: flex;
             flex-direction: column;
@@ -330,7 +380,7 @@
             align-items: center;
             justify-content: space-between;
             gap: 10px;
-            margin-bottom: 16px;
+            margin-bottom: 12px;
             color: var(--muted);
             font-size: 0.9rem;
         }
@@ -383,10 +433,10 @@
         .password-form button {
             width: 100%;
             padding: 12px;
-            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-2) 100%);
-            border: none;
+            background: var(--accent);
+            border: 1px solid transparent;
             border-radius: var(--radius-sm);
-            color: #0f1115;
+            color: var(--accent-contrast);
             font-size: 16px;
             font-weight: 700;
             cursor: pointer;
@@ -397,11 +447,17 @@
             opacity: 0.9;
         }
 
+        .password-error {
+            color: var(--danger);
+            margin-top: 10px;
+            display: none;
+        }
+
         .lightbox {
             display: none;
             position: fixed;
             inset: 0;
-            background: rgba(8, 9, 12, 0.96);
+            background: var(--overlay);
             z-index: 1000;
             justify-content: center;
             align-items: center;
@@ -423,7 +479,7 @@
 
         .lightbox-media {
             position: relative;
-            background: #0b0d12;
+            background: var(--surface-3);
             border-radius: var(--radius-lg);
             border: 1px solid var(--border);
             display: flex;
@@ -478,8 +534,8 @@
         }
 
         .button.primary {
-            background: linear-gradient(135deg, var(--accent), var(--accent-2));
-            color: #0f1115;
+            background: var(--accent);
+            color: var(--accent-contrast);
             font-weight: 700;
         }
 
@@ -501,7 +557,7 @@
             position: absolute;
             top: 50%;
             transform: translateY(-50%);
-            background: rgba(10, 12, 16, 0.7);
+            background: var(--nav-bg);
             color: var(--text);
             border: 1px solid var(--border);
             padding: 14px 18px;
@@ -553,7 +609,7 @@
             }
 
             .hero h1 {
-                font-size: 2rem;
+                font-size: 1.85rem;
             }
 
             .hero-meta {
@@ -562,7 +618,7 @@
         }
     </style>
 </head>
-<body>
+<body class="dark-mode">
     <div class="page">
         <header class="site-header">
             <div class="site-header-inner">
@@ -576,6 +632,7 @@
                 <div class="header-actions">
                     <span class="badge" id="gallery-version">Version –</span>
                     <span class="badge" id="gallery-generated">Update –</span>
+                    <button class="theme-toggle" id="theme-toggle" type="button" aria-pressed="true" title="Hell/Dunkel wechseln">Dunkel</button>
                 </div>
             </div>
         </header>
@@ -605,7 +662,6 @@
             <section class="toolbar">
                 <div class="toolbar-left">
                     <div class="search-field">
-                        <span>🔍</span>
                         <input type="search" id="search-input" placeholder="Nach Dateiname suchen…" autocomplete="off">
                     </div>
                     <div class="select-field">
@@ -629,8 +685,8 @@
                 </div>
                 <div class="toolbar-right">
                     <div class="toggle-group" id="density-toggle">
-                        <button data-density="compact">Kompakt</button>
-                        <button data-density="comfortable" class="active">Komfort</button>
+                        <button data-density="compact" class="active">Kompakt</button>
+                        <button data-density="comfortable">Komfort</button>
                         <button data-density="spacious">Groß</button>
                     </div>
                 </div>
@@ -646,7 +702,7 @@
                 <p>Bitte melde dich an, um die geschützte Galerie zu öffnen.</p>
                 <input type="password" id="password-input" placeholder="Passwort eingeben" autofocus>
                 <button onclick="checkPassword()">Galerie öffnen</button>
-                <p id="password-error" style="color: #ff6b6b; margin-top: 10px; display: none;">Falsches Passwort</p>
+                <p id="password-error" class="password-error">Falsches Passwort</p>
             </section>
 
             <section id="gallery-container">
@@ -699,6 +755,28 @@
     </div>
     
     <script>
+        // Theme Management
+        function updateThemeToggleLabel() {
+            const button = document.getElementById('theme-toggle');
+            if (!button) return;
+            const isDark = document.body.classList.contains('dark-mode');
+            button.textContent = isDark ? 'Dunkel' : 'Hell';
+            button.setAttribute('aria-pressed', String(isDark));
+        }
+
+        function initTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            const isDark = savedTheme === 'dark';
+            document.body.classList.toggle('dark-mode', isDark);
+            updateThemeToggleLabel();
+        }
+
+        function toggleTheme() {
+            const isDark = document.body.classList.toggle('dark-mode');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            updateThemeToggleLabel();
+        }
+
         // Konfiguration
         let galleryConfig = null;
         let allImages = [];
@@ -708,13 +786,13 @@
             query: '',
             sort: 'date-desc',
             orientation: 'all',
-            density: 'comfortable'
+            density: 'compact'
         };
 
         const densityMap = {
-            compact: 220,
-            comfortable: 280,
-            spacious: 340
+            compact: 210,
+            comfortable: 260,
+            spacious: 320
         };
         
         // Lade Konfiguration von gallery.json
@@ -1008,6 +1086,9 @@
         
         // Initialisierung
         (async () => {
+            initTheme();
+            document.getElementById('theme-toggle')?.addEventListener('click', toggleTheme);
+
             await loadConfig();
             updateHeaderMeta();
 
