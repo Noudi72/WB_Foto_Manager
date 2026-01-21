@@ -229,7 +229,7 @@
             grid-template-columns: repeat(3, minmax(0, 1fr));
             gap: 12px;
         }
-
+        
         .hero-stat {
             background: rgba(15, 17, 21, 0.6);
             border: 1px solid var(--border);
@@ -238,17 +238,101 @@
             display: flex;
             flex-direction: column;
             gap: 6px;
+            transition: all 0.3s;
         }
-
+        
+        .hero-stat:hover {
+            border-color: rgba(124, 92, 255, 0.5);
+            background: rgba(124, 92, 255, 0.08);
+            transform: translateY(-2px);
+        }
+        
         .hero-stat span {
             text-transform: uppercase;
             font-size: 0.7rem;
             letter-spacing: 0.08em;
             color: var(--text-secondary);
         }
-
+        
         .hero-stat strong {
             font-size: 1.4rem;
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        /* Call-to-Action Bereich */
+        .cta-section {
+            margin-top: 40px;
+            padding: 32px;
+            background: linear-gradient(135deg, rgba(124, 92, 255, 0.12) 0%, rgba(89, 214, 255, 0.08) 100%);
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            text-align: center;
+            box-shadow: var(--shadow);
+        }
+        
+        .cta-section h2 {
+            font-size: 2em;
+            margin-bottom: 12px;
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .cta-section p {
+            color: var(--text-secondary);
+            font-size: 1.1em;
+            margin-bottom: 24px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .cta-buttons {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .cta-button {
+            padding: 14px 28px;
+            border-radius: 999px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .cta-button.primary {
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%);
+            color: white;
+            box-shadow: 0 4px 16px rgba(124, 92, 255, 0.4);
+        }
+        
+        .cta-button.primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 24px rgba(124, 92, 255, 0.5);
+        }
+        
+        .cta-button.secondary {
+            background: rgba(255,255,255,0.06);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+        }
+        
+        .cta-button.secondary:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+            background: rgba(124, 92, 255, 0.1);
         }
         
         body.light-mode header.site-header {
@@ -340,12 +424,20 @@
         /* Portfolio Slider */
         .portfolio-slider {
             width: 100%;
-            height: 400px;
+            height: 360px;
             position: relative;
-            margin-bottom: 40px;
-            border-radius: 16px;
+            margin-bottom: 32px;
+            border-radius: 20px;
             overflow: hidden;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+            border: 1px solid var(--border);
+        }
+        
+        @media (max-width: 768px) {
+            .portfolio-slider {
+                height: 280px;
+                margin-bottom: 24px;
+            }
         }
         
         .portfolio-slider-container {
@@ -632,11 +724,11 @@
         
         .gallery-folder-header {
             grid-column: 1 / -1;
-            margin: 26px 0 14px 0;
-            padding: 14px 18px;
-            background: rgba(124, 92, 255, 0.12);
-            border-radius: 14px;
-            border: 1px solid rgba(124, 92, 255, 0.35);
+            margin: 24px 0 12px 0;
+            padding: 12px 16px;
+            background: rgba(124, 92, 255, 0.1);
+            border-radius: 12px;
+            border: 1px solid rgba(124, 92, 255, 0.3);
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -645,7 +737,7 @@
         .gallery-folder-header h3 {
             margin: 0;
             color: var(--accent);
-            font-size: 1.1em;
+            font-size: 0.95em;
             font-weight: 600;
             display: flex;
             align-items: center;
@@ -1608,12 +1700,28 @@
             }
             
             .gallery-selector {
-                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-                gap: 15px;
+                grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+                gap: 12px;
+            }
+            
+            .gallery-card-preview {
+                height: 140px;
             }
             
             .gallery-card-content {
-                padding: 16px;
+                padding: 12px;
+            }
+            
+            .gallery-card h3 {
+                font-size: 0.95em;
+            }
+            
+            .gallery-card p {
+                font-size: 0.75em;
+            }
+            
+            .gallery-card .image-count {
+                font-size: 0.75em;
             }
             
             .gallery {
@@ -1693,11 +1801,33 @@
             }
             
             .gallery-selector {
-                grid-template-columns: 1fr;
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+                gap: 10px;
             }
             
             .gallery-card-preview {
-                height: 150px;
+                height: 120px;
+            }
+            
+            .gallery-card-content {
+                padding: 10px;
+            }
+            
+            .gallery-card h3 {
+                font-size: 0.9em;
+            }
+            
+            .gallery-card p {
+                font-size: 0.7em;
+                margin-bottom: 8px;
+            }
+            
+            .gallery-card-footer {
+                padding-top: 8px;
+            }
+            
+            .gallery-card .image-count {
+                font-size: 0.7em;
             }
         }
         
@@ -1782,6 +1912,20 @@
                         </div>
                     </div>
                     <div class="gallery-selector" id="gallery-list"></div>
+                    
+                    <!-- Call-to-Action Bereich -->
+                    <div class="cta-section" id="cta-section" style="display: none;">
+                        <h2>Bereit für dein Shooting?</h2>
+                        <p>Buche jetzt einen Termin oder kontaktiere mich für eine individuelle Beratung. Ich freue mich auf deine Anfrage!</p>
+                        <div class="cta-buttons">
+                            <a href="mailto:info@wbfoto.ch?subject=Shooting-Anfrage" class="cta-button primary">
+                                📧 Termin anfragen
+                            </a>
+                            <a href="tel:+41123456789" class="cta-button secondary">
+                                📞 Jetzt anrufen
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -2462,6 +2606,12 @@
             initPortfolioSlider();
             initCategorySidebar();
             displayFilteredGalleries();
+            
+            // Zeige CTA-Bereich wenn Galerien vorhanden
+            const ctaSection = document.getElementById('cta-section');
+            if (ctaSection && galleryConfig && galleryConfig.galleries && galleryConfig.galleries.length > 0) {
+                ctaSection.style.display = 'block';
+            }
         }
         
         // Erstelle Galerie-Karte
@@ -2475,20 +2625,33 @@
                 const firstImage = gallery.images[0];
                 let thumbnailUrl = firstImage.thumbnailUrl || firstImage.url;
                 
-                // Verbessere Thumbnail-Qualität für Vorschaubild (500x500px für Galerie-Karten)
+                // Optimierte Thumbnail-Qualität für kompakte Galerie-Karten (300x300px)
                 if (thumbnailUrl.includes('res.cloudinary.com') && thumbnailUrl.includes('/upload/')) {
-                    // Ersetze alte kleine Thumbnails durch größere
+                    // Ersetze alte kleine Thumbnails durch optimierte Größe
                     if (thumbnailUrl.includes('/c_limit,h_60,w_90/') || thumbnailUrl.includes('/c_fill,h_60,w_90/')) {
                         thumbnailUrl = thumbnailUrl.replace(
                             /\/upload\/[^\/]+\//,
-                            '/upload/c_fill,h_500,w_500,q_auto:good,f_auto/'
+                            '/upload/c_fill,h_300,w_300,q_auto:good,f_auto/'
                         );
                     } else if (!thumbnailUrl.includes('/c_') && !thumbnailUrl.includes('/w_') && !thumbnailUrl.includes('/h_')) {
                         // Keine Transformation - füge hinzu
                         thumbnailUrl = thumbnailUrl.replace(
                             /\/upload\//,
-                            '/upload/c_fill,h_500,w_500,q_auto:good,f_auto/'
+                            '/upload/c_fill,h_300,w_300,q_auto:good,f_auto/'
                         );
+                    } else {
+                        // Bereits Transformation vorhanden - optimiere falls zu groß
+                        const match = thumbnailUrl.match(/\/upload\/[^\/]+\/(c_[^\/]+)/);
+                        if (match) {
+                            // Prüfe ob größer als 300px
+                            const sizeMatch = thumbnailUrl.match(/[hw]_(\d+)/);
+                            if (sizeMatch && parseInt(sizeMatch[1]) > 400) {
+                                thumbnailUrl = thumbnailUrl.replace(
+                                    /\/upload\/[^\/]+\//,
+                                    '/upload/c_fill,h_300,w_300,q_auto:good,f_auto/'
+                                );
+                            }
+                        }
                     }
                 }
                 
@@ -2497,9 +2660,9 @@
             
             if (!previewImage) {
                 if (gallery.password) {
-                    previewImage = `<div class="gallery-card-preview" style="display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, rgba(102, 126, 234, 0.2) 0%, rgba(118, 75, 162, 0.2) 100%);"><span style="font-size: 3em;">🔒</span></div>`;
+                    previewImage = `<div class="gallery-card-preview" style="display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, rgba(124, 92, 255, 0.15) 0%, rgba(89, 214, 255, 0.1) 100%);"><span style="font-size: 2.5em; opacity: 0.8;">🔒</span></div>`;
                 } else {
-                    previewImage = `<div class="gallery-card-preview" style="display: flex; align-items: center; justify-content: center; background: var(--bg-primary);"><span style="font-size: 3em; opacity: 0.3;">📷</span></div>`;
+                    previewImage = `<div class="gallery-card-preview" style="display: flex; align-items: center; justify-content: center; background: var(--bg-primary);"><span style="font-size: 2.5em; opacity: 0.25;">📷</span></div>`;
                 }
             }
             
