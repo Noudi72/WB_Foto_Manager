@@ -1035,12 +1035,31 @@
             background: transparent;
             color: #ff6b6b;
         }
+
+        .gallery-item-badge-stack-left,
+        .gallery-item-badge-stack-right {
+            position: absolute;
+            top: 8px;
+            display: flex;
+            gap: 6px;
+            align-items: center;
+            pointer-events: none;
+            z-index: 6;
+        }
+
+        .gallery-item-badge-stack-left {
+            left: 44px;
+            max-width: calc(100% - 108px);
+            flex-wrap: wrap;
+        }
+
+        .gallery-item-badge-stack-right {
+            right: 8px;
+        }
         
         /* Badges für Markierungen */
         .gallery-item-badge {
-            position: absolute;
-            top: 8px;
-            right: 8px;
+            position: static;
             padding: 2px 6px;
             border-radius: 6px;
             font-size: 10px;
@@ -1061,9 +1080,7 @@
         .gallery-item-badge.badge--final { color: #bf5af2; }
         
         .selection-badge {
-            position: absolute;
-            bottom: 8px;
-            left: 8px;
+            position: static;
             padding: 2px 6px;
             background: transparent;
             -webkit-backdrop-filter: none;
@@ -1077,7 +1094,7 @@
             box-shadow: none;
             z-index: 5;
             white-space: nowrap;
-            max-width: calc(100% - 130px);
+            max-width: 100%;
             overflow: hidden;
             text-overflow: ellipsis;
             letter-spacing: 0.3px;
@@ -1091,9 +1108,7 @@
         .selection-badge.badge-tone-6 { color: #bf5af2; }
 
         .rating-badge {
-            position: absolute;
-            top: 40px;
-            left: 8px;
+            position: static;
             padding: 2px 6px;
             border-radius: 6px;
             font-size: 10px;
@@ -1788,7 +1803,7 @@
 
         .rating-summary {
             display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
+            grid-template-columns: 1fr 1fr;
             gap: 6px;
             margin-top: 8px;
         }
@@ -1802,17 +1817,18 @@
             background: rgba(0,0,0,0.3);
             border-radius: 4px;
             border-left: 2px solid transparent;
+            min-width: 0;
         }
 
         .rating-pill {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            padding: 2px 6px;
+            padding: 2px 5px;
             border-radius: 999px;
             background: rgba(255, 214, 10, 0.12);
             color: #ffd60a;
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 800;
             line-height: 1;
             letter-spacing: 0.01em;
@@ -1822,8 +1838,14 @@
         .rating-count {
             color: #e0e0e0;
             font-weight: 700;
-            font-size: 0.85em;
+            font-size: 0.82em;
             font-variant-numeric: tabular-nums;
+        }
+
+        @media (min-width: 1200px) {
+            .rating-summary {
+                grid-template-columns: 1fr 1fr 1fr;
+            }
         }
         
         .selections-list {
@@ -3866,8 +3888,13 @@
             if (!item || !imageId) return;
             
             // Entferne alte Badges
-            const oldBadges = item.querySelectorAll('.gallery-item-badge, .selection-badge, .rating-badge');
+            const oldBadges = item.querySelectorAll('.gallery-item-badge, .selection-badge, .rating-badge, .gallery-item-badge-stack-left, .gallery-item-badge-stack-right');
             oldBadges.forEach(b => b.remove());
+
+            const leftStack = document.createElement('div');
+            leftStack.className = 'gallery-item-badge-stack-left';
+            const rightStack = document.createElement('div');
+            rightStack.className = 'gallery-item-badge-stack-right';
             
             const flag = feedbackData.flags[imageId];
             if (flag) {
@@ -3880,7 +3907,7 @@
                     'final': 'Final'
                 };
                 badge.textContent = flagLabels[flag] || flag;
-                item.appendChild(badge);
+                rightStack.appendChild(badge);
             }
             
             const selections = feedbackData.selections[imageId] || [];
@@ -3889,7 +3916,7 @@
                 const primary = selections[0];
                 selectionBadge.className = `selection-badge ${getSelectionToneClass(primary)}`;
                 selectionBadge.textContent = `${primary}${selections.length > 1 ? ` +${selections.length - 1}` : ''}`;
-                item.appendChild(selectionBadge);
+                leftStack.appendChild(selectionBadge);
             }
 
             const rating = feedbackData.ratings[imageId] || 0;
@@ -3897,8 +3924,11 @@
                 const ratingBadge = document.createElement('div');
                 ratingBadge.className = 'rating-badge';
                 ratingBadge.textContent = `★ ${rating}`;
-                item.appendChild(ratingBadge);
+                leftStack.appendChild(ratingBadge);
             }
+
+            if (leftStack.childNodes.length > 0) item.appendChild(leftStack);
+            if (rightStack.childNodes.length > 0) item.appendChild(rightStack);
         }
         
         // Update alle Badges
