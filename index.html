@@ -897,19 +897,19 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: linear-gradient(to bottom, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.1) 50%, rgba(0,0,0,0.6) 100%);
+            background: linear-gradient(to bottom, rgba(0,0,0,0.26) 0%, rgba(0,0,0,0.06) 50%, rgba(0,0,0,0.38) 100%);
             display: flex;
             flex-direction: column;
             justify-content: space-between;
             padding: 10px;
-            opacity: 0;
+            opacity: 1;
             transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             pointer-events: none;
         }
         
-        .gallery-item:hover .gallery-item-overlay {
-            opacity: 1;
-            pointer-events: all;
+        .gallery-item-overlay .gallery-item-checkbox,
+        .gallery-item-overlay .gallery-item-actions {
+            pointer-events: auto;
         }
         
         /* Checkbox oben links */
@@ -1048,14 +1048,15 @@
             -webkit-backdrop-filter: none;
             backdrop-filter: none;
             box-shadow: none;
-            text-shadow: none;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.65);
+            filter: drop-shadow(0 1px 2px rgba(0,0,0,0.55));
             z-index: 5;
         }
 
-        .gallery-item-badge.badge--reject { color: #ff6b6b; }
-        .gallery-item-badge.badge--review { color: #ffd93d; }
-        .gallery-item-badge.badge--approve { color: #6bcf7f; }
-        .gallery-item-badge.badge--final { color: #c6b6ff; }
+        .gallery-item-badge.badge--reject { color: #ff3b30; }
+        .gallery-item-badge.badge--review { color: #ffd60a; }
+        .gallery-item-badge.badge--approve { color: #34c759; }
+        .gallery-item-badge.badge--final { color: #bf5af2; }
         
         .selection-badge {
             position: absolute;
@@ -1069,7 +1070,8 @@
             font-size: 10px;
             font-weight: 700;
             color: var(--accent);
-            text-shadow: none;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.65);
+            filter: drop-shadow(0 1px 2px rgba(0,0,0,0.55));
             box-shadow: none;
             z-index: 5;
             white-space: nowrap;
@@ -1079,12 +1081,12 @@
             letter-spacing: 0.3px;
         }
 
-        .selection-badge.badge-tone-1 { color: #d4a574; }
-        .selection-badge.badge-tone-2 { color: #ff8f6b; }
-        .selection-badge.badge-tone-3 { color: #5bd2ff; }
-        .selection-badge.badge-tone-4 { color: #6bcf7f; }
-        .selection-badge.badge-tone-5 { color: #ffd93d; }
-        .selection-badge.badge-tone-6 { color: #c6b6ff; }
+        .selection-badge.badge-tone-1 { color: #ff2d55; }
+        .selection-badge.badge-tone-2 { color: #ff9500; }
+        .selection-badge.badge-tone-3 { color: #0a84ff; }
+        .selection-badge.badge-tone-4 { color: #30d158; }
+        .selection-badge.badge-tone-5 { color: #ffd60a; }
+        .selection-badge.badge-tone-6 { color: #bf5af2; }
 
         .rating-badge {
             position: absolute;
@@ -1094,15 +1096,26 @@
             border-radius: 6px;
             font-size: 10px;
             font-weight: 700;
-            color: #ffd93d;
+            color: #ffd60a;
             background: transparent;
             -webkit-backdrop-filter: none;
             backdrop-filter: none;
             box-shadow: none;
-            text-shadow: none;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.65);
+            filter: drop-shadow(0 1px 2px rgba(0,0,0,0.55));
             z-index: 5;
             white-space: nowrap;
             pointer-events: none;
+        }
+
+        .storage-warning {
+            margin: 10px 0 0 0;
+            padding: 8px 10px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 59, 48, 0.35);
+            background: rgba(255, 59, 48, 0.10);
+            color: var(--text-primary);
+            font-size: 0.9rem;
         }
         
         .lightbox {
@@ -2392,6 +2405,78 @@
             return false;
         }
 
+        function isIndexedDbAvailable() {
+            try {
+                return typeof indexedDB !== 'undefined';
+            } catch {
+                return false;
+            }
+        }
+
+        let _idbPromise = null;
+
+        function openIdb() {
+            if (_idbPromise) return _idbPromise;
+            if (!isIndexedDbAvailable()) {
+                _idbPromise = Promise.resolve(null);
+                return _idbPromise;
+            }
+
+            _idbPromise = new Promise((resolve) => {
+                const request = indexedDB.open('wbfm', 1);
+                request.onupgradeneeded = () => {
+                    const db = request.result;
+                    if (!db.objectStoreNames.contains('kv')) {
+                        db.createObjectStore('kv');
+                    }
+                };
+                request.onsuccess = () => resolve(request.result);
+                request.onerror = () => resolve(null);
+            });
+
+            return _idbPromise;
+        }
+
+        async function idbGet(key) {
+            const db = await openIdb();
+            if (!db) return null;
+
+            return await new Promise((resolve) => {
+                const tx = db.transaction('kv', 'readonly');
+                const store = tx.objectStore('kv');
+                const req = store.get(key);
+                req.onsuccess = () => resolve(req.result ?? null);
+                req.onerror = () => resolve(null);
+            });
+        }
+
+        async function idbSet(key, value) {
+            const db = await openIdb();
+            if (!db) return false;
+
+            return await new Promise((resolve) => {
+                const tx = db.transaction('kv', 'readwrite');
+                const store = tx.objectStore('kv');
+                const req = store.put(value, key);
+                req.onsuccess = () => resolve(true);
+                req.onerror = () => resolve(false);
+            });
+        }
+
+        function ensureStorageWarningVisible(message) {
+            const container = document.querySelector('.header-inner');
+            if (!container) return;
+
+            let el = document.getElementById('storage-warning');
+            if (!el) {
+                el = document.createElement('div');
+                el.id = 'storage-warning';
+                el.className = 'storage-warning';
+                container.appendChild(el);
+            }
+            el.textContent = message;
+        }
+
         function getSelectionToneClass(selectionName) {
             const text = String(selectionName || '');
             let hash = 0;
@@ -2562,27 +2647,38 @@
         }
         
         // Lade Feedback-Daten
-        function loadFeedbackData() {
+        async function loadFeedbackData() {
             const saved = safeStorageGet('gallery_feedback');
             if (saved) {
                 try {
                     feedbackData = normalizeFeedbackData(JSON.parse(saved));
+                    return;
                 } catch (e) {
                     console.error('Fehler beim Laden der Feedback-Daten:', e);
+                }
+            }
+
+            const idbSaved = await idbGet('gallery_feedback');
+            if (typeof idbSaved === 'string' && idbSaved) {
+                try {
+                    feedbackData = normalizeFeedbackData(JSON.parse(idbSaved));
+                } catch (e) {
+                    console.error('Fehler beim Laden der IndexedDB Feedback-Daten:', e);
                 }
             }
         }
         
         // Speichere Feedback-Daten
         function saveFeedbackData() {
-            const ok = safeStorageSet('gallery_feedback', JSON.stringify(normalizeFeedbackData(feedbackData)));
+            const payload = JSON.stringify(normalizeFeedbackData(feedbackData));
+            const ok = safeStorageSet('gallery_feedback', payload);
+            // Zusätzlich nach IndexedDB spiegeln (robuster in restriktiven Browsern)
+            void idbSet('gallery_feedback', payload);
+
             if (!ok) {
-                console.warn('Feedback konnte nicht persistent gespeichert werden (Storage nicht verfügbar).');
+                ensureStorageWarningVisible('Hinweis: Der Browser blockiert Speicher. Bewertungen/Feedback können nach einem Neustart verloren gehen.');
             }
         }
-        
-        // Initialisiere Feedback-System
-        loadFeedbackData();
         
         // Lade Konfiguration von gallery.json
         async function loadConfig() {
@@ -4112,6 +4208,9 @@
         (async () => {
             // Theme initialisieren
             initTheme();
+
+            // Feedback initialisieren (inkl. IndexedDB Fallback)
+            await loadFeedbackData();
             
             // Suche initialisieren
             initSearch();
