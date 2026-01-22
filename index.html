@@ -22,6 +22,7 @@
             --border: #e8ddd1;
             --shadow: 0 20px 50px rgba(0,0,0,0.08);
             --lightbox-sidebar-width: 200px;
+            --sticky-sidebar-top: 18px;
         }
         
         body {
@@ -534,7 +535,7 @@
             border-radius: 14px;
             box-shadow: var(--shadow);
             position: sticky;
-            top: 24px;
+            top: calc(var(--sticky-sidebar-top) + env(safe-area-inset-top, 0px));
             align-self: flex-start;
         }
         
@@ -800,10 +801,19 @@
             padding: 16px 18px;
             border-radius: 16px;
             border: 1px solid var(--border);
-            background: var(--bg-secondary);
+            background: rgba(255,255,255,0.78);
             box-shadow: var(--shadow);
             margin-bottom: 18px;
             flex-wrap: wrap;
+            position: sticky;
+            top: calc(var(--sticky-sidebar-top) + env(safe-area-inset-top, 0px));
+            z-index: 50;
+            -webkit-backdrop-filter: blur(12px);
+            backdrop-filter: blur(12px);
+        }
+
+        body.dark-mode .gallery-header {
+            background: rgba(28,26,24,0.78);
         }
 
         .gallery-header-left {
@@ -829,6 +839,48 @@
             flex-wrap: wrap;
         }
 
+        .quick-filters {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            padding: 10px 6px 14px;
+            overflow-x: auto;
+        }
+
+        .quick-filter-chip {
+            border: 1px solid var(--border);
+            background: rgba(255,255,255,0.06);
+            color: var(--text-primary);
+            padding: 7px 10px;
+            border-radius: 999px;
+            font-size: 0.85rem;
+            font-weight: 650;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: transform 0.15s ease, border-color 0.15s ease, background 0.15s ease, color 0.15s ease;
+            flex: 0 0 auto;
+        }
+
+        .quick-filter-chip:hover {
+            border-color: rgba(212, 165, 116, 0.6);
+            background: rgba(212, 165, 116, 0.10);
+            transform: translateY(-1px);
+        }
+
+        .quick-filter-chip.active {
+            border-color: var(--accent);
+            background: rgba(212, 165, 116, 0.16);
+            color: var(--accent);
+        }
+
+        .quick-filter-sep {
+            width: 1px;
+            height: 18px;
+            background: var(--border);
+            flex: 0 0 auto;
+            opacity: 0.9;
+        }
+
         .gallery-chip {
             padding: 8px 12px;
             border-radius: 999px;
@@ -836,6 +888,30 @@
             background: rgba(255,255,255,0.04);
             font-size: 0.85rem;
             color: var(--text-primary);
+        }
+
+        .gallery-chip-button {
+            -webkit-appearance: none;
+            appearance: none;
+            border: 1px solid var(--border);
+            background: rgba(255,255,255,0.04);
+            color: var(--text-primary);
+            padding: 8px 12px;
+            border-radius: 999px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            line-height: 1;
+        }
+
+        .gallery-chip-button:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .gallery-chip-button:focus-visible {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(212, 165, 116, 0.35);
         }
 
         .back-button {
@@ -884,11 +960,325 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            opacity: 0;
+            transition: opacity 0.25s ease, transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .gallery-item.is-loaded img {
+            opacity: 1;
         }
         
         .gallery-item:hover img {
             transform: scale(1.1);
+        }
+
+        /* Pro Focus Rings */
+        :where(
+            button,
+            a,
+            input,
+            select,
+            textarea,
+            .gallery-item-btn,
+            .category-button,
+            .theme-toggle,
+            .admin-link,
+            .sidebar-toggle,
+            .gallery-item-checkbox
+        ):focus-visible {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(212, 165, 116, 0.32);
+        }
+
+        /* Bottom Selection Bar */
+        .selection-bar {
+            position: fixed;
+            left: 50%;
+            transform: translateX(-50%);
+            bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+            width: min(980px, calc(100% - 32px));
+            z-index: 120;
+        }
+
+        .selection-bar-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 12px 14px;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            background: rgba(255,255,255,0.78);
+            box-shadow: var(--shadow);
+            -webkit-backdrop-filter: blur(14px);
+            backdrop-filter: blur(14px);
+        }
+
+        body.dark-mode .selection-bar-inner {
+            background: rgba(28,26,24,0.78);
+        }
+
+        .selection-bar-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 0;
+        }
+
+        .selection-bar-count {
+            font-weight: 800;
+            letter-spacing: 0.01em;
+            color: var(--text-primary);
+            white-space: nowrap;
+        }
+
+        .selection-bar-hint {
+            color: var(--text-secondary);
+            font-size: 0.85em;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .selection-bar-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+        }
+
+        .lightbox-open .selection-bar {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .has-selection-bar #gallery-container {
+            padding-bottom: calc(92px + env(safe-area-inset-bottom, 0px));
+        }
+
+        @media (max-width: 520px) {
+            .selection-bar-inner {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .selection-bar-actions {
+                justify-content: stretch;
+            }
+            .selection-bar-actions button {
+                width: 100%;
+                justify-content: center;
+            }
+            .selection-bar-hint {
+                display: none;
+            }
+        }
+
+        /* Toasts */
+        .toast-container {
+            position: fixed;
+            right: 16px;
+            bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+            z-index: 200;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            pointer-events: none;
+            max-width: min(420px, calc(100% - 32px));
+        }
+
+        .toast {
+            pointer-events: none;
+            padding: 12px 14px;
+            border-radius: 14px;
+            border: 1px solid var(--border);
+            background: rgba(255,255,255,0.84);
+            color: var(--text-primary);
+            box-shadow: var(--shadow);
+            -webkit-backdrop-filter: blur(14px);
+            backdrop-filter: blur(14px);
+            transform: translateY(8px);
+            opacity: 0;
+            transition: opacity 0.2s ease, transform 0.2s ease;
+        }
+
+        body.dark-mode .toast {
+            background: rgba(28,26,24,0.84);
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .toast strong {
+            display: block;
+            font-size: 0.9em;
+            margin-bottom: 2px;
+        }
+
+        .toast p {
+            margin: 0;
+            color: var(--text-secondary);
+            font-size: 0.85em;
+        }
+
+        .toast--success { border-color: rgba(107, 207, 127, 0.45); }
+        .toast--warning { border-color: rgba(255, 217, 61, 0.45); }
+        .toast--danger { border-color: rgba(255, 107, 107, 0.45); }
+
+        /* Modals (Confirm + Help) */
+        body.modal-open {
+            overflow: hidden;
+        }
+
+        .modal-backdrop {
+            position: fixed;
+            inset: 0;
+            z-index: 12000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: calc(18px + env(safe-area-inset-top, 0px)) 18px calc(18px + env(safe-area-inset-bottom, 0px));
+            background: rgba(0,0,0,0.55);
+            -webkit-backdrop-filter: blur(12px);
+            backdrop-filter: blur(12px);
+        }
+
+        .modal-backdrop.is-hidden {
+            display: none;
+        }
+
+        .modal {
+            width: min(720px, 100%);
+            max-height: calc(100vh - 56px);
+            overflow: auto;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            box-shadow: 0 22px 70px rgba(0,0,0,0.45);
+            padding: 16px;
+            color: var(--text-primary);
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .modal-title {
+            font-size: 1.02rem;
+            font-weight: 800;
+            letter-spacing: 0.01em;
+        }
+
+        .modal-close {
+            -webkit-appearance: none;
+            appearance: none;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            border-radius: 12px;
+            width: 36px;
+            height: 36px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            line-height: 1;
+        }
+
+        .modal-close:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .modal-body {
+            margin-top: 10px;
+            color: var(--text-secondary);
+        }
+
+        .modal-message {
+            margin: 0;
+            white-space: pre-line;
+        }
+
+        .modal-actions {
+            margin-top: 14px;
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            flex-wrap: wrap;
+        }
+
+        .btn-danger {
+            border-color: rgba(255, 107, 107, 0.55) !important;
+            background: rgba(255, 107, 107, 0.14) !important;
+            color: #ffb7b7 !important;
+        }
+
+        .shortcuts-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+            margin-top: 12px;
+        }
+
+        .shortcuts-section {
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 12px;
+            background: rgba(255,255,255,0.04);
+        }
+
+        body.dark-mode .shortcuts-section {
+            background: rgba(255,255,255,0.03);
+        }
+
+        .shortcuts-section h4 {
+            margin: 0 0 10px;
+            font-size: 0.95rem;
+            color: var(--text-primary);
+        }
+
+        .shortcut-row {
+            display: flex;
+            gap: 10px;
+            align-items: baseline;
+            justify-content: space-between;
+            padding: 7px 0;
+            border-top: 1px dashed rgba(255,255,255,0.08);
+        }
+
+        .shortcut-row:first-of-type {
+            border-top: none;
+            padding-top: 0;
+        }
+
+        .shortcut-row span {
+            color: var(--text-secondary);
+        }
+
+        kbd {
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+            font-size: 0.85em;
+            padding: 2px 7px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: rgba(255,255,255,0.06);
+            color: var(--text-primary);
+            white-space: nowrap;
+        }
+
+        /* Disabled buttons (pro feedback) */
+        button:disabled,
+        button[aria-disabled="true"] {
+            opacity: 0.55;
+            cursor: not-allowed;
+            transform: none !important;
         }
         
         /* Overlay - erscheint beim Hover */
@@ -1743,11 +2133,22 @@
         .selection-count { float: right; font-weight: 600; }
         .selection-tag { background: rgba(212, 165, 116, 0.3); color: #ffffff; padding: 4px 8px; border-radius: 4px; margin-right: 5px; margin-bottom: 5px; display: inline-block; font-size: 0.8em; font-weight: 500; border: 1px solid rgba(212, 165, 116, 0.5); }
 
-        .download-progress-modal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: var(--bg-secondary); padding: 20px; border-radius: 8px; z-index: 10000; border: 2px solid var(--accent); min-width: 250px; }
         .progress-title { margin-bottom: 10px; }
         .progress-bar { width: 200px; height: 4px; background: var(--bg-tertiary); border-radius: 2px; margin-top: 10px; overflow: hidden; }
         .progress-bar-fill { width: 0%; height: 100%; background: var(--accent); border-radius: 2px; transition: width 0.3s; }
         .progress-text { margin-top: 10px; font-size: 0.85em; color: var(--text-secondary); }
+
+        /* Progress modal tweaks */
+        #progress-modal .progress-bar {
+            width: 100%;
+            max-width: 520px;
+            height: 6px;
+            margin-top: 12px;
+        }
+
+        #progress-modal .progress-text {
+            margin-top: 12px;
+        }
         
         #favorite-btn.active {
             background: rgba(255, 107, 107, 0.8) !important;
@@ -1791,7 +2192,9 @@
         
         /* Gallery Sidebar (für Übersicht) */
         .gallery-sidebar {
-            position: relative;
+            position: sticky;
+            top: calc(var(--sticky-sidebar-top) + env(safe-area-inset-top, 0px));
+            align-self: flex-start;
             width: 200px;
             min-width: 200px;
             background: linear-gradient(180deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
@@ -1861,7 +2264,7 @@
         .sidebar-content h3 {
             font-size: 1em;
             margin-bottom: 12px;
-            color: #e0e0e0;
+            color: var(--text-primary);
             border-bottom: 1px solid var(--accent);
             padding-bottom: 6px;
             padding-left: 42px;
@@ -1871,7 +2274,7 @@
         .sidebar-content h4 {
             font-size: 0.85em;
             margin-bottom: 8px;
-            color: #e0e0e0;
+            color: var(--text-secondary);
             font-weight: 600;
             margin-top: 12px;
         }
@@ -1893,12 +2296,12 @@
         }
         
         .stat-label {
-            color: #aaa;
+            color: var(--text-secondary);
             font-size: 0.75em;
         }
         
         .stat-value {
-            color: #e0e0e0;
+            color: var(--text-primary);
             font-weight: 700;
             font-size: 0.9em;
         }
@@ -1906,7 +2309,7 @@
         .sidebar-section {
             margin-top: 12px;
             padding-top: 12px;
-            border-top: 1px solid #333;
+            border-top: 1px solid var(--border);
         }
         
         .flag-summary {
@@ -1920,7 +2323,8 @@
             align-items: center;
             gap: 6px;
             padding: 6px;
-            background: rgba(0,0,0,0.3);
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
             border-radius: 4px;
         }
         
@@ -1953,11 +2357,11 @@
         
         .flag-badge.black {
             background: rgba(136, 136, 136, 0.2);
-            color: #aaa;
+            color: var(--text-secondary);
         }
         
         .flag-count {
-            color: #e0e0e0;
+            color: var(--text-primary);
             font-weight: 600;
             font-size: 0.85em;
         }
@@ -1975,7 +2379,8 @@
             justify-content: space-between;
             gap: 6px;
             padding: 6px;
-            background: rgba(0,0,0,0.3);
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
             border-radius: 4px;
             border-left: 2px solid transparent;
             min-width: 0;
@@ -1997,7 +2402,7 @@
         }
 
         .rating-count {
-            color: #e0e0e0;
+            color: var(--text-primary);
             font-weight: 700;
             font-size: 0.82em;
             font-variant-numeric: tabular-nums;
@@ -2020,7 +2425,7 @@
             background: rgba(212, 165, 116, 0.1);
             border-radius: 4px;
             border-left: 2px solid var(--accent);
-            color: #ffffff;
+            color: var(--text-primary);
             font-size: 0.8em;
             font-weight: 500;
             margin-bottom: 4px;
@@ -2031,18 +2436,18 @@
         
         .selection-item.clickable:hover {
             background: rgba(212, 165, 116, 0.2) !important;
-            color: #ffffff !important;
+            color: var(--text-primary) !important;
         }
         
         .selection-item.clickable.active {
             background: rgba(212, 165, 116, 0.5) !important;
             border-left-width: 3px !important;
-            color: #ffffff !important;
+            color: var(--text-primary) !important;
             font-weight: 600;
         }
         
         .selection-item span {
-            color: #ffffff !important;
+            color: var(--text-primary) !important;
             font-weight: 600;
         }
         
@@ -2352,8 +2757,29 @@
                 </div>
                 <div class="gallery-header-actions">
                     <span class="gallery-chip" id="gallery-count-chip">– Bilder</span>
+                    <span class="gallery-chip" id="gallery-visible-chip">– sichtbar</span>
+                    <span class="gallery-chip" id="gallery-filter-chip">Alle</span>
                     <span class="gallery-chip" id="gallery-selected-chip">0 ausgewählt</span>
+                    <button type="button" class="gallery-chip-button" id="shortcuts-help-btn" title="Shortcuts anzeigen (?)">? Hilfe</button>
                 </div>
+            </div>
+
+            <!-- Quick Filters (Picdrop-inspiriert) -->
+            <div class="quick-filters" id="quick-filters" aria-label="Schnellfilter">
+                <button type="button" class="quick-filter-chip" data-filter-type="all">Alle</button>
+                <button type="button" class="quick-filter-chip" data-filter-type="selected">Ausgewählt</button>
+                <button type="button" class="quick-filter-chip" data-filter-type="favorites">Favoriten</button>
+                <button type="button" class="quick-filter-chip" data-filter-type="commented">Kommentare</button>
+                <button type="button" class="quick-filter-chip" data-filter-type="rated" data-filter-rating="5">5★</button>
+                <button type="button" class="quick-filter-chip" data-filter-rating="4">4★</button>
+                <button type="button" class="quick-filter-chip" data-filter-rating="3">3★</button>
+                <button type="button" class="quick-filter-chip" data-filter-rating="2">2★</button>
+                <button type="button" class="quick-filter-chip" data-filter-rating="1">1★</button>
+                <span class="quick-filter-sep" aria-hidden="true"></span>
+                <button type="button" class="quick-filter-chip" data-filter-flag="reject">✗ Reject</button>
+                <button type="button" class="quick-filter-chip" data-filter-flag="review">! Review</button>
+                <button type="button" class="quick-filter-chip" data-filter-flag="approve">✓ Approve</button>
+                <button type="button" class="quick-filter-chip" data-filter-flag="final">★ Final</button>
             </div>
             <div class="gallery-layout-row">
                 <!-- Sidebar für Galerie-Übersicht -->
@@ -2512,6 +2938,24 @@
                     <div class="gallery gallery-flex" id="gallery"></div>
                 </div>
             </div>
+
+            <!-- Bottom Selection Bar (immer griffbereit) -->
+            <div class="selection-bar is-hidden" id="selection-bar" aria-live="polite" aria-atomic="true">
+                <div class="selection-bar-inner">
+                    <div class="selection-bar-left">
+                        <span class="selection-bar-count" id="selection-bar-count">0 ausgewählt</span>
+                        <span class="selection-bar-hint">Download / Export / Reset – plus Favorit & Auswahl</span>
+                    </div>
+                    <div class="selection-bar-actions">
+                        <button class="btn-secondary btn-compact is-hidden" type="button" id="selection-bar-undo" title="Letzte Auswahl wiederherstellen">Undo</button>
+                        <button class="btn-secondary btn-compact" type="button" id="selection-bar-reset">Reset</button>
+                        <button class="btn-secondary btn-compact" type="button" id="selection-bar-favorite">Favorit</button>
+                        <button class="btn-secondary btn-compact" type="button" id="selection-bar-add-selection">Zu Auswahl</button>
+                        <button class="btn-secondary btn-compact" type="button" id="selection-bar-export">Export</button>
+                        <button class="btn-primary btn-compact" type="button" id="selection-bar-download">Download</button>
+                    </div>
+                </div>
+            </div>
         </div>
         
         <div id="loading" class="loading is-hidden">
@@ -2606,6 +3050,109 @@
                         <div><strong>Quelle:</strong> <span id="info-source">-</span></div>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toasts (Micro-Feedback) -->
+    <div class="toast-container" id="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+    <!-- Confirm Modal (non-blocking window.confirm replacement) -->
+    <div class="modal-backdrop is-hidden" id="confirm-modal" role="dialog" aria-modal="true" aria-labelledby="confirm-modal-title" aria-describedby="confirm-modal-message">
+        <div class="modal" role="document">
+            <div class="modal-header">
+                <div class="modal-title" id="confirm-modal-title">Bestätigen</div>
+                <button type="button" class="modal-close" id="confirm-modal-close" aria-label="Schließen">×</button>
+            </div>
+            <div class="modal-body">
+                <p class="modal-message" id="confirm-modal-message"></p>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn-secondary" id="confirm-modal-cancel">Abbrechen</button>
+                <button type="button" class="btn-primary" id="confirm-modal-ok">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Shortcuts Help Modal -->
+    <div class="modal-backdrop is-hidden" id="shortcuts-modal" role="dialog" aria-modal="true" aria-labelledby="shortcuts-modal-title">
+        <div class="modal" role="document">
+            <div class="modal-header">
+                <div class="modal-title" id="shortcuts-modal-title">Shortcuts</div>
+                <button type="button" class="modal-close" id="shortcuts-modal-close" aria-label="Schließen">×</button>
+            </div>
+            <div class="modal-body">
+                <p class="modal-message">Toggle: <kbd>?</kbd> (Shift + /). Schließen: <kbd>Esc</kbd>.</p>
+
+                <div class="shortcuts-grid">
+                    <div class="shortcuts-section">
+                        <h4>Navigation</h4>
+                        <div class="shortcut-row"><kbd>Esc</kbd><span>Lightbox schließen / Auswahl aufheben</span></div>
+                        <div class="shortcut-row"><kbd>←</kbd><span>Vorheriges Bild (Lightbox)</span></div>
+                        <div class="shortcut-row"><kbd>→</kbd><span>Nächstes Bild (Lightbox)</span></div>
+                    </div>
+
+                    <div class="shortcuts-section">
+                        <h4>Auswahl</h4>
+                        <div class="shortcut-row"><kbd>Shift</kbd> + Click<span>Range-Select (zwischen zwei Bildern)</span></div>
+                        <div class="shortcut-row"><kbd>Cmd/Ctrl</kbd> + <kbd>A</kbd><span>Alle sichtbaren auswählen</span></div>
+                        <div class="shortcut-row"><kbd>Space</kbd><span>Aktuelles Bild auswählen (Lightbox)</span></div>
+                        <div class="shortcut-row"><kbd>U</kbd><span>Undo (zuletzt aufgehobene Auswahl)</span></div>
+                    </div>
+
+                    <div class="shortcuts-section">
+                        <h4>Aktionen</h4>
+                        <div class="shortcut-row"><kbd>D</kbd><span>Download als ZIP</span></div>
+                        <div class="shortcut-row"><kbd>E</kbd><span>Export (JSON Liste)</span></div>
+                        <div class="shortcut-row"><kbd>F</kbd><span>Favorit togglen (Lightbox) / Favorit setzen (Bulk)</span></div>
+                        <div class="shortcut-row"><kbd>S</kbd><span>Zu Auswahl hinzufügen (Bulk)</span></div>
+                    </div>
+
+                    <div class="shortcuts-section">
+                        <h4>Filter</h4>
+                        <div class="shortcut-row"><kbd>Shift</kbd> + <kbd>1</kbd>.. <kbd>5</kbd><span>Rating-Filter</span></div>
+                        <div class="shortcut-row"><kbd>Shift</kbd> + <kbd>0</kbd><span>Zurück zu Alle</span></div>
+                        <div class="shortcut-row"><kbd>Alt/Option</kbd> + <kbd>1</kbd>.. <kbd>4</kbd><span>Flag-Filter (reject/review/approve/final)</span></div>
+                        <div class="shortcut-row"><kbd>Alt/Option</kbd> + <kbd>0</kbd><span>Zurück zu Alle</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Prompt Modal (non-blocking window.prompt replacement) -->
+    <div class="modal-backdrop is-hidden" id="prompt-modal" role="dialog" aria-modal="true" aria-labelledby="prompt-modal-title" aria-describedby="prompt-modal-message">
+        <div class="modal" role="document">
+            <div class="modal-header">
+                <div class="modal-title" id="prompt-modal-title">Eingabe</div>
+                <button type="button" class="modal-close" id="prompt-modal-close" aria-label="Schließen">×</button>
+            </div>
+            <div class="modal-body">
+                <p class="modal-message" id="prompt-modal-message"></p>
+                <input type="text" class="sidebar-input" id="prompt-modal-input" autocomplete="off" spellcheck="false">
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn-secondary" id="prompt-modal-cancel">Abbrechen</button>
+                <button type="button" class="btn-primary" id="prompt-modal-ok">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Progress Modal (Download/ZIP progress) -->
+    <div class="modal-backdrop is-hidden" id="progress-modal" role="dialog" aria-modal="true" aria-labelledby="progress-modal-title" aria-describedby="progress-modal-message">
+        <div class="modal" role="document">
+            <div class="modal-header">
+                <div class="modal-title" id="progress-modal-title">Download</div>
+                <button type="button" class="modal-close" id="progress-modal-close" aria-label="Schließen">×</button>
+            </div>
+            <div class="modal-body">
+                <p class="modal-message" id="progress-modal-message">–</p>
+                <div class="progress-bar" aria-hidden="true"><div id="progress-modal-bar" class="progress-bar-fill"></div></div>
+                <p id="progress-modal-text" class="progress-text">0%</p>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn-secondary" id="progress-modal-cancel">Abbrechen</button>
+                <button type="button" class="btn-primary is-hidden" id="progress-modal-ok">OK</button>
             </div>
         </div>
     </div>
@@ -3059,6 +3606,7 @@
                 searchInput.addEventListener('input', (e) => {
                     searchQuery = e.target.value.toLowerCase().trim();
                     applySearchAndFilter();
+                    updateFilterUI();
                 });
             }
         }
@@ -3142,6 +3690,16 @@
             } else if (noResultsMsg) {
                 noResultsMsg.remove();
             }
+
+            updateGalleryVisibleChip(visibleCount, items.length);
+        }
+
+        function updateGalleryVisibleChip(visibleCount, totalCount = null) {
+            const chip = document.getElementById('gallery-visible-chip');
+            if (!chip) return;
+
+            const total = Number.isFinite(Number(totalCount)) ? Number(totalCount) : null;
+            chip.textContent = total !== null ? `${visibleCount} / ${total} sichtbar` : `${visibleCount} sichtbar`;
         }
         
         // Lade Feedback-Daten
@@ -3715,6 +4273,7 @@
                 item.className = 'gallery-item';
                 const imageId = getFeedbackImageId(image, index);
                 item.dataset.imageId = imageId;
+                item.dataset.index = String(index);
                 
                 // Erstelle hochwertiges Thumbnail-URL mit Progressive Loading
                 let imgSrc = image.thumbnailUrl || image.url || `./images/${image.name}`;
@@ -3761,6 +4320,12 @@
                 const img = document.createElement('img');
                 img.alt = image.name || 'Bild';
                 img.loading = 'lazy';
+                img.decoding = 'async';
+
+                item.classList.remove('is-loaded');
+                img.addEventListener('load', () => {
+                    item.classList.add('is-loaded');
+                }, { once: true });
                 
                 // Progressive Loading: Lade zuerst Low Quality, dann High Quality
                 img.src = lowQualitySrc;
@@ -3813,7 +4378,7 @@
                 checkbox.className = 'gallery-item-checkbox';
                 checkbox.onclick = (e) => {
                     e.stopPropagation();
-                    toggleImageSelection(imageId);
+                    toggleImageSelection(imageId, e);
                 };
                 overlay.appendChild(checkbox);
                 
@@ -3875,6 +4440,9 @@
             
             // Update Sidebar-Statistiken
             updateSidebarStats();
+
+            // Selection Bar initial ausrichten
+            updateSelectionBar();
             
             // Filter anwenden
             applyFilter();
@@ -3950,8 +4518,24 @@
         // Update Filter UI (aktive Zustände)
         function updateFilterUI() {
             // Entferne alle aktiven Zustände
-            document.querySelectorAll('.stat-item, .flag-summary-item, .rating-summary-item, .selection-item').forEach(el => {
+            document.querySelectorAll('.stat-item, .flag-summary-item, .rating-summary-item, .selection-item, .quick-filter-chip').forEach(el => {
                 el.classList.remove('active');
+            });
+
+            // Quick filter chips
+            const chips = Array.from(document.querySelectorAll('.quick-filter-chip'));
+            chips.forEach(chip => {
+                const type = chip.dataset.filterType;
+                const flag = chip.dataset.filterFlag;
+                const rating = chip.dataset.filterRating;
+
+                if (flag && currentFilter.flag === flag) chip.classList.add('active');
+                if (rating && currentFilter.type === 'rated' && Number(currentFilter.ratingValue) === Number(rating)) chip.classList.add('active');
+                if (type && currentFilter.type === type) {
+                    // Spezialfall: rated chip ohne feste ratingValue ist hier nicht aktiv
+                    if (!(type === 'rated' && !chip.dataset.filterRating)) chip.classList.add('active');
+                }
+                if (type === 'all' && currentFilter.type === 'all' && !currentFilter.flag) chip.classList.add('active');
             });
             
             // Setze aktiven Zustand für Typ-Filter
@@ -4000,6 +4584,47 @@
                     }
                 });
             }
+
+            // Header Filter Chip
+            const filterChip = document.getElementById('gallery-filter-chip');
+            if (filterChip) {
+                const parts = [];
+                if (searchQuery) parts.push(`Suche: ${searchQuery}`);
+                if (currentFilter.flag) parts.push(`Flag: ${currentFilter.flag}`);
+                if (currentFilter.type === 'rated' && currentFilter.ratingValue) parts.push(`Rating: ${currentFilter.ratingValue}★`);
+                else if (currentFilter.type === 'favorites') parts.push('Favoriten');
+                else if (currentFilter.type === 'commented') parts.push('Kommentare');
+                else if (currentFilter.type === 'selected') parts.push('Ausgewählt');
+                else if (currentFilter.type === 'selection' && currentFilter.selectionName) parts.push(`Auswahl: ${currentFilter.selectionName}`);
+                else parts.push('Alle');
+                filterChip.textContent = parts.join(' · ');
+            }
+        }
+
+        function initQuickFilters() {
+            const container = document.getElementById('quick-filters');
+            if (!container) return;
+
+            container.addEventListener('click', (e) => {
+                const btn = e.target.closest('.quick-filter-chip');
+                if (!btn) return;
+
+                const type = btn.dataset.filterType;
+                const flag = btn.dataset.filterFlag;
+                const rating = btn.dataset.filterRating;
+
+                if (flag) {
+                    filterByFlag(flag);
+                    return;
+                }
+                if (rating) {
+                    filterByRating(Number(rating));
+                    return;
+                }
+                if (type) {
+                    filterByType(type);
+                }
+            });
         }
         
         // Update Sidebar Statistiken
@@ -4062,6 +4687,8 @@
             const gallerySelectedChip = document.getElementById('gallery-selected-chip');
             if (galleryCountChip) galleryCountChip.textContent = `${total} Bilder`;
             if (gallerySelectedChip) gallerySelectedChip.textContent = `${selected} ausgewählt`;
+
+            updateSelectionBar(selected);
             
             document.getElementById('flag-reject').textContent = flagCounts.reject;
             document.getElementById('flag-review').textContent = flagCounts.review;
@@ -4178,6 +4805,7 @@
             img.src = imageUrl;
             img.alt = image.name || 'Bild';
             lightbox.classList.add('active');
+            document.body.classList.add('lightbox-open');
 
             if (sidebar && window.matchMedia && window.matchMedia('(min-width: 1100px)').matches) {
                 sidebar.classList.add('open');
@@ -4187,20 +4815,38 @@
             updateFeedbackSidebar();
         }
         
-        // Toggle Bild-Auswahl
-        function toggleImageSelection(imageId) {
+        // Toggle Bild-Auswahl (inkl. Shift-Range)
+        function toggleImageSelection(imageId, event = null) {
             const item = document.querySelector(`[data-image-id="${imageId}"]`);
             if (!item) return;
-            
-            const checkbox = item.querySelector('.gallery-item-checkbox');
-            if (checkbox.classList.contains('checked')) {
-                checkbox.classList.remove('checked');
-                checkbox.textContent = '';
-                item.classList.remove('selected');
+
+            // Wenn der Nutzer nach einem Reset wieder manuell auswählt, Undo invalidieren
+            if (!window.__selectionUndoRestoring) {
+                clearSelectionUndo();
+            }
+
+            const currentIndexRaw = item.dataset.index;
+            const currentIndex = currentIndexRaw !== undefined ? Number(currentIndexRaw) : NaN;
+
+            const isShift = Boolean(event && event.shiftKey);
+            if (isShift && Number.isFinite(currentIndex) && Number.isFinite(lastSelectionIndex)) {
+                const from = Math.min(lastSelectionIndex, currentIndex);
+                const to = Math.max(lastSelectionIndex, currentIndex);
+                const visibleItems = getBulkTargetItems('visible');
+
+                visibleItems
+                    .filter(el => {
+                        const idx = Number(el.dataset.index);
+                        return Number.isFinite(idx) && idx >= from && idx <= to;
+                    })
+                    .forEach(el => setGalleryItemSelected(el, true));
             } else {
-                checkbox.classList.add('checked');
-                checkbox.textContent = '✓';
-                item.classList.add('selected');
+                const isSelected = item.classList.contains('selected');
+                setGalleryItemSelected(item, !isSelected);
+            }
+
+            if (Number.isFinite(currentIndex)) {
+                lastSelectionIndex = currentIndex;
             }
             
             // Update Sidebar-Statistiken
@@ -4237,6 +4883,717 @@
                 btn.disabled = selectedCount === 0;
                 btn.setAttribute('aria-disabled', selectedCount === 0 ? 'true' : 'false');
             });
+
+            updateSelectionBar(selectedCount);
+        }
+
+        let selectionUndoSnapshot = null;
+        let selectionUndoTimer = null;
+        let lastSelectionIndex = null;
+
+        function showToast(title, message = '', variant = 'info', ttlMs = 2500) {
+            const container = document.getElementById('toast-container');
+            if (!container) return;
+
+            const toast = document.createElement('div');
+            toast.className = `toast toast--${variant}`;
+            toast.innerHTML = `<strong>${String(title || '').replace(/</g, '&lt;')}</strong>${message ? `<p>${String(message).replace(/</g, '&lt;')}</p>` : ''}`;
+            container.appendChild(toast);
+
+            requestAnimationFrame(() => toast.classList.add('show'));
+            window.setTimeout(() => {
+                toast.classList.remove('show');
+                window.setTimeout(() => toast.remove(), 220);
+            }, ttlMs);
+        }
+
+        let confirmModalState = {
+            resolve: null,
+            previousFocus: null
+        };
+
+        let promptModalState = {
+            resolve: null,
+            previousFocus: null,
+            validate: null,
+            normalize: null
+        };
+
+        let progressModalState = {
+            abortController: null,
+            stage: null, // 'fetch' | 'zip'
+            cancelled: false
+        };
+
+        let choiceModalState = {
+            resolve: null,
+            previousFocus: null
+        };
+
+        function isModalOpen() {
+            const confirmEl = document.getElementById('confirm-modal');
+            const shortcutsEl = document.getElementById('shortcuts-modal');
+            const promptEl = document.getElementById('prompt-modal');
+            const progressEl = document.getElementById('progress-modal');
+            const choiceEl = document.getElementById('choice-modal');
+            const confirmOpen = confirmEl && !confirmEl.classList.contains('is-hidden');
+            const shortcutsOpen = shortcutsEl && !shortcutsEl.classList.contains('is-hidden');
+            const promptOpen = promptEl && !promptEl.classList.contains('is-hidden');
+            const progressOpen = progressEl && !progressEl.classList.contains('is-hidden');
+            const choiceOpen = choiceEl && !choiceEl.classList.contains('is-hidden');
+            return Boolean(confirmOpen || shortcutsOpen || promptOpen || progressOpen || choiceOpen);
+        }
+
+        function closeShortcutsModal() {
+            const el = document.getElementById('shortcuts-modal');
+            if (!el) return;
+            el.classList.add('is-hidden');
+            if (!isModalOpen()) document.body.classList.remove('modal-open');
+        }
+
+        function openShortcutsModal() {
+            const el = document.getElementById('shortcuts-modal');
+            if (!el) return;
+            el.classList.remove('is-hidden');
+            document.body.classList.add('modal-open');
+            const closeBtn = document.getElementById('shortcuts-modal-close');
+            if (closeBtn) closeBtn.focus();
+        }
+
+        function toggleShortcutsModal(force) {
+            const el = document.getElementById('shortcuts-modal');
+            if (!el) return;
+            const shouldOpen = typeof force === 'boolean' ? force : el.classList.contains('is-hidden');
+            if (shouldOpen) openShortcutsModal();
+            else closeShortcutsModal();
+        }
+
+        function closeConfirmModal(result) {
+            const el = document.getElementById('confirm-modal');
+            if (el) el.classList.add('is-hidden');
+
+            const prev = confirmModalState.previousFocus;
+            confirmModalState.previousFocus = null;
+
+            const resolver = confirmModalState.resolve;
+            confirmModalState.resolve = null;
+
+            if (!isModalOpen()) document.body.classList.remove('modal-open');
+            if (prev && typeof prev.focus === 'function') {
+                try { prev.focus(); } catch (_) {}
+            }
+
+            if (typeof resolver === 'function') resolver(Boolean(result));
+        }
+
+        function closePromptModal(value) {
+            const el = document.getElementById('prompt-modal');
+            if (el) el.classList.add('is-hidden');
+
+            const prev = promptModalState.previousFocus;
+            promptModalState.previousFocus = null;
+
+            const resolver = promptModalState.resolve;
+            promptModalState.resolve = null;
+            promptModalState.validate = null;
+            promptModalState.normalize = null;
+
+            if (!isModalOpen()) document.body.classList.remove('modal-open');
+            if (prev && typeof prev.focus === 'function') {
+                try { prev.focus(); } catch (_) {}
+            }
+
+            if (typeof resolver === 'function') resolver(value);
+        }
+
+        function isProgressModalOpen() {
+            const el = document.getElementById('progress-modal');
+            return Boolean(el && !el.classList.contains('is-hidden'));
+        }
+
+        function setProgressModalCancelable(cancelable) {
+            const cancelBtn = document.getElementById('progress-modal-cancel');
+            const okBtn = document.getElementById('progress-modal-ok');
+            if (cancelBtn) cancelBtn.classList.toggle('is-hidden', !cancelable);
+            if (okBtn) okBtn.classList.toggle('is-hidden', cancelable);
+        }
+
+        function openProgressModal({ title = 'Download', message = 'Bitte warten…', cancelable = true } = {}) {
+            const el = document.getElementById('progress-modal');
+            const titleEl = document.getElementById('progress-modal-title');
+            const msgEl = document.getElementById('progress-modal-message');
+            const barEl = document.getElementById('progress-modal-bar');
+            const textEl = document.getElementById('progress-modal-text');
+            if (!el || !titleEl || !msgEl || !barEl || !textEl) return;
+
+            titleEl.textContent = String(title || 'Download');
+            msgEl.textContent = String(message || 'Bitte warten…');
+            barEl.style.width = '0%';
+            textEl.textContent = '0%';
+
+            setProgressModalCancelable(Boolean(cancelable));
+            el.classList.remove('is-hidden');
+            document.body.classList.add('modal-open');
+
+            const focusBtn = document.getElementById(cancelable ? 'progress-modal-cancel' : 'progress-modal-ok');
+            if (focusBtn) focusBtn.focus();
+        }
+
+        function updateProgressModal({ title, message, percent, text } = {}) {
+            const titleEl = document.getElementById('progress-modal-title');
+            const msgEl = document.getElementById('progress-modal-message');
+            const barEl = document.getElementById('progress-modal-bar');
+            const textEl = document.getElementById('progress-modal-text');
+            if (titleEl && title !== undefined) titleEl.textContent = String(title);
+            if (msgEl && message !== undefined) msgEl.textContent = String(message);
+            if (barEl && typeof percent === 'number' && Number.isFinite(percent)) {
+                const clamped = Math.max(0, Math.min(100, percent));
+                barEl.style.width = `${clamped}%`;
+            }
+            if (textEl && text !== undefined) textEl.textContent = String(text);
+        }
+
+        function closeProgressModal() {
+            const el = document.getElementById('progress-modal');
+            if (el) el.classList.add('is-hidden');
+            if (!isModalOpen()) document.body.classList.remove('modal-open');
+        }
+
+        function ensureChoiceModal() {
+            let el = document.getElementById('choice-modal');
+            if (el) return el;
+
+            el = document.createElement('div');
+            el.id = 'choice-modal';
+            el.className = 'modal-backdrop is-hidden';
+            el.setAttribute('role', 'dialog');
+            el.setAttribute('aria-modal', 'true');
+            el.innerHTML = `
+                <div class="modal" role="document">
+                    <div class="modal-header">
+                        <div class="modal-title" id="choice-modal-title">Aktion</div>
+                        <button type="button" class="modal-close" id="choice-modal-close" aria-label="Schließen">×</button>
+                    </div>
+                    <div class="modal-body">
+                        <p class="modal-message" id="choice-modal-message"></p>
+                        <div class="modal-actions" id="choice-modal-actions"></div>
+                    </div>
+                </div>
+            `.trim();
+            document.body.appendChild(el);
+
+            const closeBtn = el.querySelector('#choice-modal-close');
+            if (closeBtn) closeBtn.addEventListener('click', () => closeChoiceModal(null));
+
+            el.addEventListener('click', (e) => {
+                if (e.target === el) closeChoiceModal(null);
+            });
+
+            el.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    e.preventDefault();
+                    closeChoiceModal(null);
+                }
+            });
+
+            return el;
+        }
+
+        function closeChoiceModal(value) {
+            const el = document.getElementById('choice-modal');
+            if (el) el.classList.add('is-hidden');
+
+            const prev = choiceModalState.previousFocus;
+            choiceModalState.previousFocus = null;
+
+            const resolver = choiceModalState.resolve;
+            choiceModalState.resolve = null;
+
+            if (!isModalOpen()) document.body.classList.remove('modal-open');
+            if (prev && typeof prev.focus === 'function') {
+                try { prev.focus(); } catch (_) {}
+            }
+
+            if (typeof resolver === 'function') resolver(value);
+        }
+
+        function choiceAction({ title = 'Aktion', message = '', choices = [] } = {}) {
+            const el = ensureChoiceModal();
+            const titleEl = el.querySelector('#choice-modal-title');
+            const msgEl = el.querySelector('#choice-modal-message');
+            const actionsEl = el.querySelector('#choice-modal-actions');
+            if (!titleEl || !msgEl || !actionsEl) return Promise.resolve(null);
+
+            if (choiceModalState.resolve) {
+                closeChoiceModal(null);
+            }
+
+            choiceModalState.previousFocus = document.activeElement;
+            titleEl.textContent = String(title || 'Aktion');
+            msgEl.textContent = String(message || '');
+            actionsEl.innerHTML = '';
+
+            (Array.isArray(choices) ? choices : []).forEach((c, idx) => {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = c.primary ? 'btn-primary' : 'btn-secondary';
+                if (c.dangerous) btn.classList.add('btn-danger');
+                btn.textContent = String(c.label || c.id || 'OK');
+                btn.addEventListener('click', () => closeChoiceModal(c.id));
+                actionsEl.appendChild(btn);
+                if (idx === 0) {
+                    // focus first action by default
+                    requestAnimationFrame(() => {
+                        try { btn.focus(); } catch (_) {}
+                    });
+                }
+            });
+
+            el.classList.remove('is-hidden');
+            document.body.classList.add('modal-open');
+
+            return new Promise((resolve) => {
+                choiceModalState.resolve = resolve;
+            });
+        }
+
+        function cancelProgressModal() {
+            if (!isProgressModalOpen()) return;
+            if (progressModalState.stage === 'zip') {
+                showToast('Abbrechen', 'Während ZIP-Erstellung nicht mehr abbrechbar.', 'warning', 3200);
+                return;
+            }
+            progressModalState.cancelled = true;
+            if (progressModalState.abortController) {
+                try { progressModalState.abortController.abort(); } catch (_) {}
+            }
+            updateProgressModal({ title: 'Abbrechen…', message: 'Stoppe Downloads…' });
+        }
+
+        function confirmAction({
+            title = 'Bestätigen',
+            message = '',
+            confirmText = 'OK',
+            cancelText = 'Abbrechen',
+            dangerous = false
+        } = {}) {
+            const el = document.getElementById('confirm-modal');
+            const titleEl = document.getElementById('confirm-modal-title');
+            const msgEl = document.getElementById('confirm-modal-message');
+            const okBtn = document.getElementById('confirm-modal-ok');
+            const cancelBtn = document.getElementById('confirm-modal-cancel');
+            if (!el || !titleEl || !msgEl || !okBtn || !cancelBtn) {
+                return Promise.resolve(false);
+            }
+
+            if (confirmModalState.resolve) {
+                closeConfirmModal(false);
+            }
+
+            confirmModalState.previousFocus = document.activeElement;
+
+            titleEl.textContent = String(title || 'Bestätigen');
+            msgEl.textContent = String(message || '');
+            okBtn.textContent = String(confirmText || 'OK');
+            cancelBtn.textContent = String(cancelText || 'Abbrechen');
+            const hasCancel = cancelText !== null && cancelText !== undefined && String(cancelText).length > 0;
+            cancelBtn.classList.toggle('is-hidden', !hasCancel);
+            okBtn.classList.toggle('btn-danger', Boolean(dangerous));
+
+            el.classList.remove('is-hidden');
+            document.body.classList.add('modal-open');
+            okBtn.focus();
+
+            return new Promise((resolve) => {
+                confirmModalState.resolve = resolve;
+            });
+        }
+
+        function promptAction({
+            title = 'Eingabe',
+            message = '',
+            placeholder = '',
+            defaultValue = '',
+            okText = 'OK',
+            cancelText = 'Abbrechen',
+            validate = null,
+            normalize = (v) => String(v ?? '').trim(),
+            invalidMessage = 'Bitte gültige Eingabe machen.'
+        } = {}) {
+            const el = document.getElementById('prompt-modal');
+            const titleEl = document.getElementById('prompt-modal-title');
+            const msgEl = document.getElementById('prompt-modal-message');
+            const inputEl = document.getElementById('prompt-modal-input');
+            const okBtn = document.getElementById('prompt-modal-ok');
+            const cancelBtn = document.getElementById('prompt-modal-cancel');
+
+            if (!el || !titleEl || !msgEl || !inputEl || !okBtn || !cancelBtn) {
+                return Promise.resolve(null);
+            }
+
+            if (promptModalState.resolve) {
+                closePromptModal(null);
+            }
+
+            promptModalState.previousFocus = document.activeElement;
+            promptModalState.validate = typeof validate === 'function' ? validate : null;
+            promptModalState.normalize = typeof normalize === 'function' ? normalize : null;
+
+            titleEl.textContent = String(title || 'Eingabe');
+            msgEl.textContent = String(message || '');
+            inputEl.placeholder = String(placeholder || '');
+            inputEl.value = String(defaultValue ?? '');
+            okBtn.textContent = String(okText || 'OK');
+            cancelBtn.textContent = String(cancelText || 'Abbrechen');
+
+            el.classList.remove('is-hidden');
+            document.body.classList.add('modal-open');
+
+            requestAnimationFrame(() => {
+                try {
+                    inputEl.focus();
+                    inputEl.select();
+                } catch (_) {}
+            });
+
+            return new Promise((resolve) => {
+                promptModalState.resolve = resolve;
+
+                const tryOk = () => {
+                    const raw = inputEl.value;
+                    const normalized = promptModalState.normalize ? promptModalState.normalize(raw) : String(raw ?? '').trim();
+                    if (promptModalState.validate && !promptModalState.validate(normalized)) {
+                        showToast('Eingabe', String(invalidMessage || 'Ungültig.'), 'warning', 3200);
+                        try { inputEl.focus(); } catch (_) {}
+                        return;
+                    }
+                    closePromptModal(normalized);
+                };
+
+                // Replace any existing handlers
+                okBtn.onclick = (e) => {
+                    e.preventDefault();
+                    tryOk();
+                };
+                cancelBtn.onclick = (e) => {
+                    e.preventDefault();
+                    closePromptModal(null);
+                };
+            });
+        }
+
+        function initOverlays() {
+            const confirmEl = document.getElementById('confirm-modal');
+            const confirmClose = document.getElementById('confirm-modal-close');
+            const confirmCancel = document.getElementById('confirm-modal-cancel');
+            const confirmOk = document.getElementById('confirm-modal-ok');
+
+            if (confirmClose) confirmClose.addEventListener('click', () => closeConfirmModal(false));
+            if (confirmCancel) confirmCancel.addEventListener('click', () => closeConfirmModal(false));
+            if (confirmOk) confirmOk.addEventListener('click', () => closeConfirmModal(true));
+            if (confirmEl) {
+                confirmEl.addEventListener('click', (e) => {
+                    if (e.target === confirmEl) closeConfirmModal(false);
+                });
+                confirmEl.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape') {
+                        e.preventDefault();
+                        closeConfirmModal(false);
+                    }
+                    if (e.key === 'Enter') {
+                        const cancelBtn = document.getElementById('confirm-modal-cancel');
+                        const hasCancel = cancelBtn && !cancelBtn.classList.contains('is-hidden');
+                        if (!hasCancel) {
+                            e.preventDefault();
+                            closeConfirmModal(true);
+                        }
+                    }
+                });
+            }
+
+            const shortcutsEl = document.getElementById('shortcuts-modal');
+            const shortcutsClose = document.getElementById('shortcuts-modal-close');
+            if (shortcutsClose) shortcutsClose.addEventListener('click', () => closeShortcutsModal());
+            if (shortcutsEl) {
+                shortcutsEl.addEventListener('click', (e) => {
+                    if (e.target === shortcutsEl) closeShortcutsModal();
+                });
+            }
+
+            const helpBtn = document.getElementById('shortcuts-help-btn');
+            if (helpBtn) helpBtn.addEventListener('click', () => toggleShortcutsModal(true));
+
+            const promptEl = document.getElementById('prompt-modal');
+            const promptClose = document.getElementById('prompt-modal-close');
+            const promptCancel = document.getElementById('prompt-modal-cancel');
+            const promptOk = document.getElementById('prompt-modal-ok');
+            const promptInput = document.getElementById('prompt-modal-input');
+
+            if (promptClose) promptClose.addEventListener('click', () => closePromptModal(null));
+            if (promptCancel) promptCancel.addEventListener('click', () => closePromptModal(null));
+            if (promptEl) {
+                promptEl.addEventListener('click', (e) => {
+                    if (e.target === promptEl) closePromptModal(null);
+                });
+                promptEl.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape') {
+                        e.preventDefault();
+                        closePromptModal(null);
+                        return;
+                    }
+                    if (e.key === 'Enter') {
+                        if (document.activeElement === promptInput) {
+                            e.preventDefault();
+                            if (promptOk) promptOk.click();
+                        }
+                    }
+                });
+            }
+
+            const progressEl = document.getElementById('progress-modal');
+            const progressClose = document.getElementById('progress-modal-close');
+            const progressCancel = document.getElementById('progress-modal-cancel');
+            const progressOk = document.getElementById('progress-modal-ok');
+            if (progressClose) progressClose.addEventListener('click', () => cancelProgressModal());
+            if (progressCancel) progressCancel.addEventListener('click', () => cancelProgressModal());
+            if (progressOk) progressOk.addEventListener('click', () => closeProgressModal());
+            if (progressEl) {
+                progressEl.addEventListener('click', (e) => {
+                    if (e.target === progressEl) cancelProgressModal();
+                });
+                progressEl.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape') {
+                        e.preventDefault();
+                        cancelProgressModal();
+                    }
+                });
+            }
+        }
+
+        function getSelectedItems() {
+            return Array.from(document.querySelectorAll('.gallery-item.selected'));
+        }
+
+        function setGalleryItemSelected(item, selected) {
+            if (!item) return;
+            item.classList.toggle('selected', Boolean(selected));
+            const checkbox = item.querySelector('.gallery-item-checkbox');
+            if (checkbox) {
+                checkbox.classList.toggle('checked', Boolean(selected));
+                checkbox.textContent = selected ? '✓' : '';
+            }
+        }
+
+        function selectAllVisible() {
+            const items = getBulkTargetItems('visible');
+            if (items.length === 0) {
+                showToast('Keine Bilder', 'Nichts sichtbar zum Auswählen.', 'warning');
+                return;
+            }
+            items.forEach(item => setGalleryItemSelected(item, true));
+            updateBulkActionsVisibility();
+            updateSidebarStats();
+            showToast('Auswahl', `${items.length} sichtbar ausgewählt`, 'success');
+        }
+
+        function hasSelectionUndo() {
+            return Boolean(selectionUndoSnapshot && Array.isArray(selectionUndoSnapshot.imageIds) && selectionUndoSnapshot.imageIds.length > 0);
+        }
+
+        function setSelectionUndo(imageIds) {
+            if (!Array.isArray(imageIds) || imageIds.length === 0) return;
+            selectionUndoSnapshot = { imageIds: Array.from(new Set(imageIds)), createdAt: Date.now() };
+
+            if (selectionUndoTimer) window.clearTimeout(selectionUndoTimer);
+            selectionUndoTimer = window.setTimeout(() => {
+                clearSelectionUndo();
+                updateSelectionBar();
+            }, 20000);
+
+            updateSelectionBar();
+        }
+
+        function clearSelectionUndo() {
+            selectionUndoSnapshot = null;
+            if (selectionUndoTimer) {
+                window.clearTimeout(selectionUndoTimer);
+                selectionUndoTimer = null;
+            }
+            const undoBtn = document.getElementById('selection-bar-undo');
+            if (undoBtn) undoBtn.classList.add('is-hidden');
+        }
+
+        function restoreSelectionUndo() {
+            if (!hasSelectionUndo()) return;
+            const ids = selectionUndoSnapshot.imageIds;
+
+            window.__selectionUndoRestoring = true;
+            try {
+                ids.forEach(imageId => {
+                    const item = document.querySelector(`[data-image-id="${imageId}"]`);
+                    if (!item) return;
+                    item.classList.add('selected');
+                    const checkbox = item.querySelector('.gallery-item-checkbox');
+                    if (checkbox) {
+                        checkbox.classList.add('checked');
+                        checkbox.textContent = '✓';
+                    }
+                });
+            } finally {
+                window.__selectionUndoRestoring = false;
+            }
+
+            clearSelectionUndo();
+            updateBulkActionsVisibility();
+            updateSidebarStats();
+        }
+
+        function updateSelectionBar(selectedCount = null) {
+            const count = (selectedCount === null || selectedCount === undefined)
+                ? document.querySelectorAll('.gallery-item.selected').length
+                : Number(selectedCount);
+
+            const bar = document.getElementById('selection-bar');
+            const countEl = document.getElementById('selection-bar-count');
+            if (!bar || !countEl) return;
+
+            countEl.textContent = `${count} ausgewählt`;
+
+            const undoBtn = document.getElementById('selection-bar-undo');
+            if (undoBtn) undoBtn.classList.toggle('is-hidden', !hasSelectionUndo());
+
+            const resetBtn = document.getElementById('selection-bar-reset');
+            const exportBtn = document.getElementById('selection-bar-export');
+            const downloadBtn = document.getElementById('selection-bar-download');
+            const favoriteBtn = document.getElementById('selection-bar-favorite');
+            const addSelectionBtn = document.getElementById('selection-bar-add-selection');
+
+            const disableActions = count === 0;
+            [resetBtn, exportBtn, downloadBtn, favoriteBtn, addSelectionBtn].forEach(btn => {
+                if (!btn) return;
+                btn.disabled = disableActions;
+                btn.setAttribute('aria-disabled', disableActions ? 'true' : 'false');
+            });
+
+            const galleryContainer = document.getElementById('gallery-container');
+            const galleryVisible = galleryContainer && galleryContainer.style.display !== 'none';
+            const shouldShow = (count > 0 || hasSelectionUndo()) && galleryVisible;
+
+            bar.classList.toggle('is-hidden', !shouldShow);
+            document.body.classList.toggle('has-selection-bar', shouldShow);
+        }
+
+        function exportSelectedList() {
+            const selectedItems = Array.from(document.querySelectorAll('.gallery-item.selected'));
+            if (selectedItems.length === 0) {
+                showToast('Keine Auswahl', 'Bitte erst Bilder auswählen.', 'warning');
+                return 0;
+            }
+
+            const items = selectedItems
+                .map(item => item.dataset.imageId)
+                .filter(Boolean)
+                .map(imageId => {
+                    const imageIndex = findImageIndexByFeedbackId(imageId);
+                    const image = currentImages?.[imageIndex];
+                    if (!image) return null;
+
+                    const imageUrl = image.url || `./images/${image.name}`;
+                    let downloadUrl = imageUrl;
+                    if (imageUrl.includes('res.cloudinary.com') && imageUrl.includes('/upload/')) {
+                        downloadUrl = imageUrl.replace(/\/upload\/[^\/]+\//, '/upload/');
+                    }
+
+                    return {
+                        id: imageId,
+                        name: image.name || `image_${imageIndex}`,
+                        url: downloadUrl
+                    };
+                })
+                .filter(Boolean);
+
+            const payload = {
+                exportedAt: new Date().toISOString(),
+                gallery: currentGallery?.name || null,
+                count: items.length,
+                items
+            };
+
+            const date = new Date().toISOString().split('T')[0];
+            downloadJsonFile(`selection-export-${date}.json`, payload);
+
+            showToast('Export erstellt', `${items.length} Bild(er) als JSON exportiert.`, 'success');
+            return items.length;
+        }
+
+        function downloadJsonFile(fileName, payload) {
+            try {
+                const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = String(fileName || 'export.json');
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
+                return true;
+            } catch (e) {
+                console.error('JSON Export fehlgeschlagen:', e);
+                return false;
+            }
+        }
+
+        function initSelectionBar() {
+            const resetBtn = document.getElementById('selection-bar-reset');
+            const exportBtn = document.getElementById('selection-bar-export');
+            const downloadBtn = document.getElementById('selection-bar-download');
+            const favoriteBtn = document.getElementById('selection-bar-favorite');
+            const addSelectionBtn = document.getElementById('selection-bar-add-selection');
+            const undoBtn = document.getElementById('selection-bar-undo');
+
+            if (resetBtn) resetBtn.addEventListener('click', () => {
+                const selectedIds = Array.from(document.querySelectorAll('.gallery-item.selected'))
+                    .map(el => el.dataset.imageId)
+                    .filter(Boolean);
+                if (selectedIds.length === 0) {
+                    showToast('Keine Auswahl', 'Nichts zum Zurücksetzen.', 'warning');
+                    return;
+                }
+                setSelectionUndo(selectedIds);
+                clearSelection();
+                showToast('Auswahl aufgehoben', 'Undo ist kurz verfügbar.', 'warning', 3200);
+            });
+            if (exportBtn) exportBtn.addEventListener('click', () => exportSelectedList());
+            if (downloadBtn) downloadBtn.addEventListener('click', () => {
+                const count = document.querySelectorAll('.gallery-item.selected').length;
+                if (count === 0) {
+                    showToast('Keine Auswahl', 'Nichts zum Download.', 'warning');
+                    return;
+                }
+                Promise.resolve(bulkDownload()).catch(err => console.error(err));
+            });
+            if (favoriteBtn) favoriteBtn.addEventListener('click', () => {
+                const changed = bulkAddToFavorites();
+                if (!changed) {
+                    showToast('Keine Auswahl', 'Bitte erst Bilder auswählen.', 'warning');
+                    return;
+                }
+                showToast('Favoriten gesetzt', `${changed} Bild(er) markiert.`, 'success');
+            });
+            if (addSelectionBtn) addSelectionBtn.addEventListener('click', () => {
+                Promise.resolve(bulkAddToSelection()).then((result) => {
+                    if (!result) return;
+                    showToast('Zur Auswahl hinzugefügt', `${result.count} Bild(er) → „${result.name}“`, 'success');
+                }).catch(err => console.error(err));
+            });
+            if (undoBtn) undoBtn.addEventListener('click', () => {
+                if (!hasSelectionUndo()) return;
+                restoreSelectionUndo();
+                showToast('Undo', 'Auswahl wiederhergestellt.', 'success');
+            });
+
+            updateSelectionBar();
         }
         
         // Bulk-Aktionen
@@ -4252,7 +5609,7 @@
                             bulkAddToFavorites();
                             break;
                         case 'clear-flag':
-                            bulkClearFlag(scope);
+                            void bulkClearFlag(scope);
                             break;
                         case 'add-selection':
                             bulkAddToSelection();
@@ -4267,19 +5624,19 @@
                             clearSelection();
                             break;
                         case 'clear-favorites':
-                            bulkClearFavorites(scope);
+                            void bulkClearFavorites(scope);
                             break;
                         case 'clear-ratings':
-                            bulkClearRatings(scope);
+                            void bulkClearRatings(scope);
                             break;
                         case 'clear-comments':
-                            bulkClearComments(scope);
+                            void bulkClearComments(scope);
                             break;
                         case 'clear-selections':
-                            bulkClearSelections(scope);
+                            void bulkClearSelections(scope);
                             break;
                         case 'reset-feedback':
-                            bulkResetFeedback(scope);
+                            void bulkResetFeedback(scope);
                             break;
                         default:
                             break;
@@ -4318,11 +5675,16 @@
                 .filter(Boolean);
         }
 
-        function confirmBulkReset(scope, whatLabel) {
+        async function confirmBulkReset(scope, whatLabel) {
             if (scope !== 'gallery') return true;
             const galleryName = currentGallery?.name || 'diese Galerie';
-            if (!confirm(`ACHTUNG: ${whatLabel} in "${galleryName}" löschen?\n\nDas kann nicht rückgängig gemacht werden.`)) return false;
-            return true;
+            return await confirmAction({
+                title: 'Achtung',
+                message: `ACHTUNG: ${whatLabel} in "${galleryName}" löschen?\n\nDas kann nicht rückgängig gemacht werden.`,
+                confirmText: 'Löschen',
+                cancelText: 'Abbrechen',
+                dangerous: true
+            });
         }
 
         function refreshGalleryAfterBulkChange(affectedImageIds = null) {
@@ -4360,7 +5722,7 @@
         function bulkApplyFlag(flag, scope = 'selected') {
             const imageIds = getBulkTargetImageIds(scope);
             if (imageIds.length === 0) {
-                alert(scope === 'visible' ? 'Keine sichtbaren Bilder' : 'Keine Bilder ausgewählt');
+                showToast('Keine Auswahl', scope === 'visible' ? 'Keine sichtbaren Bilder.' : 'Keine Bilder ausgewählt.', 'warning');
                 return;
             }
 
@@ -4378,6 +5740,7 @@
 
         function bulkAddToFavorites() {
             const selected = document.querySelectorAll('.gallery-item.selected');
+            if (selected.length === 0) return 0;
             selected.forEach(item => {
                 const imageId = item.dataset.imageId;
                 if (imageId) {
@@ -4388,11 +5751,21 @@
             saveFeedbackData();
             updateAllImageBadges();
             updateSidebarStats();
+            return selected.length;
         }
         
-        function bulkSetFlag() {
+        async function bulkSetFlag() {
             // Legacy (wird nicht mehr von UI verwendet): belassen für Abwärtskompatibilität
-            const flag = prompt('Markierung wählen:\n1 = Abgelehnt\n2 = Prüfen\n3 = Genehmigt\n4 = Final', '3');
+            const flag = await promptAction({
+                title: 'Markierung',
+                message: 'Markierung wählen:\n1 = Abgelehnt\n2 = Prüfen\n3 = Genehmigt\n4 = Final',
+                placeholder: '1-4',
+                defaultValue: '3',
+                okText: 'Setzen',
+                cancelText: 'Abbrechen',
+                validate: (v) => ['1', '2', '3', '4'].includes(String(v)),
+                invalidMessage: 'Bitte 1–4 eingeben.'
+            });
             if (!flag) return;
 
             const flagMap = { '1': 'reject', '2': 'review', '3': 'approve', '4': 'final' };
@@ -4402,18 +5775,25 @@
             bulkApplyFlag(selectedFlag, 'selected');
         }
 
-        function bulkClearFlag(scope = 'selected') {
+        async function bulkClearFlag(scope = 'selected') {
             const imageIds = getBulkTargetImageIds(scope);
             if (imageIds.length === 0) {
-                alert(scope === 'visible' ? 'Keine sichtbaren Bilder' : 'Keine Bilder ausgewählt');
+                showToast('Keine Auswahl', scope === 'visible' ? 'Keine sichtbaren Bilder.' : 'Keine Bilder ausgewählt.', 'warning');
                 return;
             }
 
             if (scope === 'gallery') {
-                if (!confirmBulkReset(scope, 'Markierungen')) return;
+                if (!await confirmBulkReset(scope, 'Markierungen')) return;
             } else {
                 const label = scope === 'visible' ? 'sichtbaren' : 'ausgewählten';
-                if (!confirm(`Markierungen von ${imageIds.length} ${label} Bild(er)n entfernen?`)) return;
+                const ok = await confirmAction({
+                    title: 'Markierungen entfernen',
+                    message: `Markierungen von ${imageIds.length} ${label} Bild(er)n entfernen?`,
+                    confirmText: 'Entfernen',
+                    cancelText: 'Abbrechen',
+                    dangerous: true
+                });
+                if (!ok) return;
             }
 
             imageIds.forEach(imageId => {
@@ -4424,13 +5804,13 @@
             refreshGalleryAfterBulkChange(imageIds);
         }
 
-        function bulkClearFavorites(scope = 'selected') {
+        async function bulkClearFavorites(scope = 'selected') {
             const imageIds = getBulkTargetImageIds(scope);
             if (imageIds.length === 0) {
-                alert('Keine Bilder gefunden');
+                showToast('Keine Bilder', 'Keine Bilder gefunden.', 'warning');
                 return;
             }
-            if (!confirmBulkReset(scope, 'Favoriten')) return;
+            if (!await confirmBulkReset(scope, 'Favoriten')) return;
 
             imageIds.forEach(imageId => {
                 delete feedbackData.favorites[imageId];
@@ -4439,13 +5819,13 @@
             refreshGalleryAfterBulkChange(imageIds);
         }
 
-        function bulkClearRatings(scope = 'selected') {
+        async function bulkClearRatings(scope = 'selected') {
             const imageIds = getBulkTargetImageIds(scope);
             if (imageIds.length === 0) {
-                alert('Keine Bilder gefunden');
+                showToast('Keine Bilder', 'Keine Bilder gefunden.', 'warning');
                 return;
             }
-            if (!confirmBulkReset(scope, 'Bewertungen')) return;
+            if (!await confirmBulkReset(scope, 'Bewertungen')) return;
 
             imageIds.forEach(imageId => {
                 delete feedbackData.ratings[imageId];
@@ -4454,13 +5834,13 @@
             refreshGalleryAfterBulkChange(imageIds);
         }
 
-        function bulkClearComments(scope = 'selected') {
+        async function bulkClearComments(scope = 'selected') {
             const imageIds = getBulkTargetImageIds(scope);
             if (imageIds.length === 0) {
-                alert('Keine Bilder gefunden');
+                showToast('Keine Bilder', 'Keine Bilder gefunden.', 'warning');
                 return;
             }
-            if (!confirmBulkReset(scope, 'Kommentare')) return;
+            if (!await confirmBulkReset(scope, 'Kommentare')) return;
 
             imageIds.forEach(imageId => {
                 delete feedbackData.comments[imageId];
@@ -4469,13 +5849,13 @@
             refreshGalleryAfterBulkChange(imageIds);
         }
 
-        function bulkClearSelections(scope = 'selected') {
+        async function bulkClearSelections(scope = 'selected') {
             const imageIds = getBulkTargetImageIds(scope);
             if (imageIds.length === 0) {
-                alert('Keine Bilder gefunden');
+                showToast('Keine Bilder', 'Keine Bilder gefunden.', 'warning');
                 return;
             }
-            if (!confirmBulkReset(scope, 'Auswahlen')) return;
+            if (!await confirmBulkReset(scope, 'Auswahlen')) return;
 
             imageIds.forEach(imageId => {
                 delete feedbackData.selections[imageId];
@@ -4484,13 +5864,13 @@
             refreshGalleryAfterBulkChange(imageIds);
         }
 
-        function bulkResetFeedback(scope = 'gallery') {
+        async function bulkResetFeedback(scope = 'gallery') {
             const imageIds = getBulkTargetImageIds(scope);
             if (imageIds.length === 0) {
-                alert('Keine Bilder gefunden');
+                showToast('Keine Bilder', 'Keine Bilder gefunden.', 'warning');
                 return;
             }
-            if (!confirmBulkReset(scope, 'ALLES Feedback')) return;
+            if (!await confirmBulkReset(scope, 'ALLES Feedback')) return;
 
             imageIds.forEach(imageId => {
                 delete feedbackData.flags[imageId];
@@ -4504,36 +5884,51 @@
             refreshGalleryAfterBulkChange(imageIds);
         }
         
-        function bulkAddToSelection() {
-            const selectionName = prompt('Auswahl-Name eingeben:');
-            if (!selectionName || !selectionName.trim()) return;
-            
+        async function bulkAddToSelection() {
             const selected = document.querySelectorAll('.gallery-item.selected');
+            if (selected.length === 0) {
+                showToast('Keine Auswahl', 'Bitte erst Bilder auswählen.', 'warning');
+                return null;
+            }
+
+            const selectionName = await promptAction({
+                title: 'Zur Auswahl hinzufügen',
+                message: `Auswahl-Name eingeben (für ${selected.length} Bild(er))`,
+                placeholder: 'z.B. "Finale Auswahl"',
+                defaultValue: '',
+                okText: 'Hinzufügen',
+                cancelText: 'Abbrechen',
+                validate: (v) => String(v).trim().length > 0,
+                invalidMessage: 'Bitte einen Auswahl-Namen eingeben.'
+            });
+            if (!selectionName) return null;
+
+            const trimmed = String(selectionName).trim();
+            let changed = 0;
             selected.forEach(item => {
                 const imageId = item.dataset.imageId;
                 if (imageId) {
                     if (!feedbackData.selections[imageId]) {
                         feedbackData.selections[imageId] = [];
                     }
-                    if (!feedbackData.selections[imageId].includes(selectionName.trim())) {
-                        feedbackData.selections[imageId].push(selectionName.trim());
+                    if (!feedbackData.selections[imageId].includes(trimmed)) {
+                        feedbackData.selections[imageId].push(trimmed);
+                        changed++;
                     }
                 }
             });
             saveFeedbackData();
             updateAllImageBadges();
             updateSidebarStats();
+
+            return { name: trimmed, count: changed };
         }
         
         function clearSelection() {
             document.querySelectorAll('.gallery-item.selected').forEach(item => {
-                item.classList.remove('selected');
-                const checkbox = item.querySelector('.gallery-item-checkbox');
-                if (checkbox) {
-                    checkbox.classList.remove('checked');
-                    checkbox.textContent = '';
-                }
+                setGalleryItemSelected(item, false);
             });
+            lastSelectionIndex = null;
             updateBulkActionsVisibility();
             updateSidebarStats();
         }
@@ -4542,11 +5937,27 @@
         async function bulkDownload() {
             const selected = document.querySelectorAll('.gallery-item.selected');
             if (selected.length === 0) {
-                alert('Keine Bilder ausgewählt');
+                showToast('Keine Auswahl', 'Bitte erst Bilder auswählen.', 'warning');
                 return;
             }
-            
-            if (!confirm(`${selected.length} Bild(er) als ZIP herunterladen?`)) return;
+
+            const ok = await confirmAction({
+                title: 'Download',
+                message: `${selected.length} Bild(er) als ZIP herunterladen?`,
+                confirmText: 'Download',
+                cancelText: 'Abbrechen'
+            });
+            if (!ok) return;
+
+            progressModalState.abortController = new AbortController();
+            progressModalState.stage = 'fetch';
+            progressModalState.cancelled = false;
+
+            openProgressModal({
+                title: 'Download',
+                message: `Lade ${selected.length} Bild(er)…`,
+                cancelable: true
+            });
             
             // Lade JSZip dynamisch
             if (!window.JSZip) {
@@ -4559,49 +5970,197 @@
                 });
             }
             
-            // Zeige Progress
-            const progressDiv = document.createElement('div');
-            progressDiv.className = 'download-progress-modal';
-            progressDiv.innerHTML = `<p class="progress-title">Erstelle ZIP...</p><div class="progress-bar"><div id="download-progress" class="progress-bar-fill"></div></div><p id="progress-text" class="progress-text">0 / ${selected.length}</p>`;
-            document.body.appendChild(progressDiv);
-            
             const zip = new JSZip();
-            let processed = 0;
-            
-            try {
-                for (const item of selected) {
-                    const imageId = item.dataset.imageId;
-                    if (!imageId) continue;
 
-                    const imageIndex = findImageIndexByFeedbackId(imageId);
-                    const image = currentImages[imageIndex];
-                    if (!image) continue;
-                    
+            const workItems = [];
+            for (const item of selected) {
+                const imageId = item.dataset.imageId;
+                if (!imageId) continue;
+
+                const imageIndex = findImageIndexByFeedbackId(imageId);
+                const image = currentImages[imageIndex];
+                if (!image) continue;
+
+                const imageUrl = image.url || `./images/${image.name}`;
+                let downloadUrl = imageUrl;
+
+                // Für Cloudinary: Entferne Transformationen
+                if (imageUrl.includes('res.cloudinary.com') && imageUrl.includes('/upload/')) {
+                    downloadUrl = imageUrl.replace(/\/upload\/[^\/]+\//, '/upload/');
+                }
+
+                const fileName = image.name || `image_${imageIndex}.jpg`;
+                workItems.push({ imageId, imageIndex, image, downloadUrl, fileName });
+            }
+
+            if (workItems.length === 0) {
+                closeProgressModal();
+                showToast('Keine Bilder', 'Keine gültigen Bilder zum Download gefunden.', 'warning');
+                return;
+            }
+
+            const fetchAndAdd = async (wi, signal) => {
+                const response = await fetch(wi.downloadUrl, { signal });
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+                const blob = await response.blob();
+                zip.file(wi.fileName, blob);
+            };
+
+            const processItems = async (items, label) => {
+                let done = 0;
+                const failed = [];
+
+                updateProgressModal({
+                    title: 'Download',
+                    message: `${label}…`,
+                    percent: 0,
+                    text: `0 / ${items.length}`
+                });
+
+                for (const wi of items) {
+                    if (progressModalState.cancelled) break;
+
                     try {
-                        const imageUrl = image.url || `./images/${image.name}`;
-                        let downloadUrl = imageUrl;
-                        
-                        // Für Cloudinary: Entferne Transformationen
-                        if (imageUrl.includes('res.cloudinary.com') && imageUrl.includes('/upload/')) {
-                            downloadUrl = imageUrl.replace(/\/upload\/[^\/]+\//, '/upload/');
-                        }
-                        
-                        const response = await fetch(downloadUrl);
-                        const blob = await response.blob();
-                        const fileName = image.name || `image_${imageIndex}.jpg`;
-                        zip.file(fileName, blob);
-                        
-                        processed++;
-                        const progress = (processed / selected.length) * 100;
-                        document.getElementById('download-progress').style.width = progress + '%';
-                        document.getElementById('progress-text').textContent = `${processed} / ${selected.length}`;
+                        await fetchAndAdd(wi, progressModalState.abortController?.signal);
                     } catch (error) {
-                        console.error('Fehler beim Laden von Bild:', error);
+                        if (error && (error.name === 'AbortError' || String(error).includes('AbortError'))) {
+                            progressModalState.cancelled = true;
+                            break;
+                        }
+                        failed.push({ wi, error });
+                    } finally {
+                        done++;
+                        const progress = (done / items.length) * 100;
+                        updateProgressModal({
+                            title: 'Download',
+                            message: `${label}…`,
+                            percent: progress,
+                            text: `${done} / ${items.length}`
+                        });
                     }
                 }
+
+                return { done, failed };
+            };
+            
+            try {
+                const firstPass = await processItems(workItems, `Lade ${workItems.length} Bild(er)`);
+
+                if (progressModalState.cancelled) {
+                    closeProgressModal();
+                    showToast('Download abgebrochen', 'Der Download wurde abgebrochen.', 'warning', 3200);
+                    return;
+                }
+
+                let failed = firstPass.failed;
+
+                if (failed.length > 0) {
+                    closeProgressModal();
+                    const exportFailures = () => {
+                        const payload = {
+                            exportedAt: new Date().toISOString(),
+                            gallery: currentGallery?.name || null,
+                            attempted: workItems.length,
+                            failed: failed.length,
+                            items: failed.map(f => ({
+                                fileName: f.wi?.fileName || null,
+                                url: f.wi?.downloadUrl || null,
+                                error: String(f.error?.message || f.error || 'Unbekannt')
+                            }))
+                        };
+                        const date = new Date().toISOString().split('T')[0];
+                        const ok = downloadJsonFile(`download-failures-${date}.json`, payload);
+                        showToast('Fehlerliste', ok ? 'Als JSON exportiert.' : 'Export fehlgeschlagen.', ok ? 'success' : 'danger', 3200);
+                    };
+
+                    let choice = null;
+                    while (true) {
+                        choice = await choiceAction({
+                            title: 'Einige Bilder fehlgeschlagen',
+                            message: `${failed.length} von ${workItems.length} Bild(er)n konnten nicht geladen werden.\n\nWas möchtest du tun?`,
+                            choices: [
+                                { id: 'retry', label: 'Retry', primary: true },
+                                { id: 'continue', label: 'Weiter ohne', primary: false },
+                                { id: 'export', label: 'Fehler exportieren', primary: false },
+                                { id: 'abort', label: 'Abbrechen', dangerous: true }
+                            ]
+                        });
+
+                        if (choice === 'export') {
+                            exportFailures();
+                            continue;
+                        }
+                        break;
+                    }
+
+                    if (choice === 'abort' || choice === null) {
+                        showToast('Abgebrochen', 'ZIP-Download wurde abgebrochen.', 'warning', 3200);
+                        return;
+                    }
+
+                    if (choice === 'retry') {
+                        // retry only failed items
+                        progressModalState.abortController = new AbortController();
+                        progressModalState.stage = 'fetch';
+                        progressModalState.cancelled = false;
+                        openProgressModal({
+                            title: 'Retry',
+                            message: `Versuche ${failed.length} Bild(er) erneut…`,
+                            cancelable: true
+                        });
+
+                        const retryItems = failed.map(f => f.wi);
+                        const retryPass = await processItems(retryItems, `Retry ${retryItems.length} Bild(er)`);
+
+                        if (progressModalState.cancelled) {
+                            closeProgressModal();
+                            showToast('Retry abgebrochen', 'Der Retry wurde abgebrochen.', 'warning', 3200);
+                            return;
+                        }
+
+                        failed = retryPass.failed;
+                        closeProgressModal();
+                    }
+
+                    if (failed.length > 0) {
+                        const examples = failed.slice(0, 4).map(f => f.wi?.fileName).filter(Boolean);
+                        showToast(
+                            'Übersprungen',
+                            `${failed.length} Bild(er) konnten nicht geladen werden${examples.length ? ` (z.B. ${examples.join(', ')})` : ''}.`,
+                            'warning',
+                            4200
+                        );
+                    }
+
+                    // reopen progress modal for zip stage
+                    openProgressModal({ title: 'ZIP', message: 'Erstelle ZIP…', cancelable: false });
+                }
+
+                // ZIP stage (not cancellable)
+                progressModalState.stage = 'zip';
+                setProgressModalCancelable(false);
+                updateProgressModal({
+                    title: 'ZIP',
+                    message: 'Erstelle ZIP…',
+                    percent: 0,
+                    text: '0%'
+                });
                 
                 // Erstelle ZIP
-                const zipBlob = await zip.generateAsync({ type: 'blob' });
+                const zipBlob = await zip.generateAsync(
+                    { type: 'blob' },
+                    (metadata) => {
+                        const pct = Number(metadata?.percent);
+                        if (Number.isFinite(pct)) {
+                            updateProgressModal({
+                                percent: pct,
+                                text: `${Math.round(pct)}%`
+                            });
+                        }
+                    }
+                );
                 const url = window.URL.createObjectURL(zipBlob);
                 const a = document.createElement('a');
                 a.href = url;
@@ -4610,12 +6169,17 @@
                 a.click();
                 window.URL.revokeObjectURL(url);
                 document.body.removeChild(a);
-                
-                progressDiv.remove();
-                alert(`${processed} Bild(er) erfolgreich als ZIP heruntergeladen`);
+
+                closeProgressModal();
+                const totalOk = workItems.length - (failed?.length || 0);
+                showToast('Download fertig', `${totalOk} Bild(er) als ZIP heruntergeladen.`, 'success', 3200);
             } catch (error) {
-                progressDiv.remove();
-                alert('Fehler beim Erstellen der ZIP-Datei: ' + error.message);
+                closeProgressModal();
+                showToast('Download fehlgeschlagen', String(error?.message || error || 'Unbekannter Fehler'), 'danger', 4500);
+            } finally {
+                progressModalState.abortController = null;
+                progressModalState.stage = null;
+                progressModalState.cancelled = false;
             }
         }
         
@@ -4623,11 +6187,16 @@
         async function exportAsPDF() {
             const selected = document.querySelectorAll('.gallery-item.selected');
             if (selected.length === 0) {
-                alert('Keine Bilder ausgewählt');
+                showToast('Keine Auswahl', 'Bitte erst Bilder auswählen.', 'warning');
                 return;
             }
-            
-            alert('PDF-Export wird vorbereitet...\n\nHinweis: Für vollständigen PDF-Export wird eine externe Bibliothek benötigt. Aktuell können Sie die Bilder als ZIP herunterladen.');
+
+            await confirmAction({
+                title: 'PDF-Export',
+                message: 'PDF-Export ist aktuell noch nicht implementiert.\n\nHinweis: Für vollständigen PDF-Export wird eine externe Bibliothek benötigt. Aktuell können Sie die Bilder als ZIP herunterladen.',
+                confirmText: 'OK',
+                cancelText: null
+            });
             // TODO: PDF-Export mit jsPDF implementieren
         }
         
@@ -4840,7 +6409,8 @@
             const text = commentInput.value.trim();
             
             if (!text) {
-                alert('Bitte geben Sie einen Kommentar ein');
+                showToast('Kommentar', 'Bitte einen Kommentar eingeben.', 'warning');
+                try { commentInput.focus(); } catch (_) {}
                 return;
             }
             
@@ -4879,7 +6449,11 @@
             const selectionName = document.getElementById('selection-name').value.trim();
             
             if (!selectionName) {
-                alert('Bitte geben Sie einen Auswahl-Namen ein');
+                showToast('Auswahl', 'Bitte einen Auswahl-Namen eingeben.', 'warning');
+                const input = document.getElementById('selection-name');
+                if (input) {
+                    try { input.focus(); } catch (_) {}
+                }
                 return;
             }
             
@@ -4962,6 +6536,7 @@
         
         function closeLightbox() {
             document.getElementById('lightbox').classList.remove('active');
+            document.body.classList.remove('lightbox-open');
         }
         
         function nextImage() {
@@ -5038,13 +6613,186 @@
             }
         }
         
-        // Tastatur-Navigation
+        // Tastatur (Picdrop-inspiriert)
         document.addEventListener('keydown', (e) => {
+            const activeEl = document.activeElement;
+            const isTyping = !!activeEl && (
+                activeEl.tagName === 'INPUT' ||
+                activeEl.tagName === 'TEXTAREA' ||
+                activeEl.tagName === 'SELECT' ||
+                activeEl.isContentEditable
+            );
+            if (isTyping) return;
+
+            // Modals first
+            if (isModalOpen()) {
+                if (e.key === 'Escape') {
+                    e.preventDefault();
+                    closeShortcutsModal();
+                    closeConfirmModal(false);
+                    closePromptModal(null);
+                    cancelProgressModal();
+                    closeChoiceModal(null);
+                }
+                return;
+            }
+
+            // Help (Picdrop-style)
+            if (e.key === '?' || (e.key === '/' && e.shiftKey)) {
+                e.preventDefault();
+                toggleShortcutsModal();
+                return;
+            }
+
             const lightbox = document.getElementById('lightbox');
-            if (lightbox.classList.contains('active')) {
-                if (e.key === 'Escape') closeLightbox();
-                if (e.key === 'ArrowRight') nextImage();
-                if (e.key === 'ArrowLeft') previousImage();
+            const lightboxActive = lightbox && lightbox.classList.contains('active');
+            const key = (e.key || '').toLowerCase();
+
+            if (lightboxActive) {
+                if (e.key === 'Escape') {
+                    e.preventDefault();
+                    closeLightbox();
+                    return;
+                }
+                if (e.key === 'ArrowRight') {
+                    e.preventDefault();
+                    nextImage();
+                    return;
+                }
+                if (e.key === 'ArrowLeft') {
+                    e.preventDefault();
+                    previousImage();
+                    return;
+                }
+                if (e.key === ' ') {
+                    // Space: Auswahl togglen für aktuelles Bild
+                    e.preventDefault();
+                    const image = currentImages?.[currentImageIndex];
+                    if (!image) return;
+                    const imageId = getFeedbackImageId(image, currentImageIndex);
+                    if (!imageId) return;
+                    toggleImageSelection(imageId, { shiftKey: false });
+                    return;
+                }
+                if (key === 'f') {
+                    e.preventDefault();
+                    toggleFavorite();
+                    showToast('Favorit', 'Für aktuelles Bild umgeschaltet.', 'success');
+                    return;
+                }
+                return;
+            }
+
+            const galleryContainer = document.getElementById('gallery-container');
+            const galleryVisible = galleryContainer && galleryContainer.style.display !== 'none';
+            if (!galleryVisible) return;
+
+            // Quick Filter Shortcuts
+            // Shift+1..5 => Rating filter, Shift+0 => reset
+            if (e.shiftKey && !e.altKey && !e.metaKey && !e.ctrlKey) {
+                if (['1', '2', '3', '4', '5'].includes(e.key)) {
+                    e.preventDefault();
+                    filterByRating(Number(e.key));
+                    showToast('Filter', `Rating ${e.key}★`, 'success');
+                    return;
+                }
+                if (e.key === '0') {
+                    e.preventDefault();
+                    filterByType('all');
+                    showToast('Filter', 'Zurück zu Alle', 'success');
+                    return;
+                }
+            }
+
+            // Alt/Option+1..4 => Flag filter, Alt/Option+0 => reset
+            if (e.altKey && !e.metaKey && !e.ctrlKey) {
+                const flagMap = { '1': 'reject', '2': 'review', '3': 'approve', '4': 'final' };
+                if (flagMap[e.key]) {
+                    e.preventDefault();
+                    filterByFlag(flagMap[e.key]);
+                    showToast('Filter', `Flag ${flagMap[e.key]}`, 'success');
+                    return;
+                }
+                if (e.key === '0') {
+                    e.preventDefault();
+                    filterByType('all');
+                    showToast('Filter', 'Zurück zu Alle', 'success');
+                    return;
+                }
+            }
+
+            // Cmd/Ctrl + A: alle sichtbaren auswählen
+            if ((e.metaKey || e.ctrlKey) && key === 'a') {
+                e.preventDefault();
+                selectAllVisible();
+                return;
+            }
+
+            const selectedCount = document.querySelectorAll('.gallery-item.selected').length;
+
+            if (e.key === 'Escape') {
+                if (selectedCount > 0) {
+                    e.preventDefault();
+                    clearSelection();
+                    showToast('Auswahl', 'Aufgehoben.', 'warning');
+                }
+                return;
+            }
+
+            // D: Download (ZIP)
+            if (key === 'd') {
+                if (selectedCount === 0) {
+                    showToast('Keine Auswahl', 'Nichts zum Download.', 'warning');
+                    return;
+                }
+                e.preventDefault();
+                Promise.resolve(bulkDownload()).catch(err => console.error(err));
+                return;
+            }
+
+            // E: Export (JSON)
+            if (key === 'e') {
+                if (selectedCount === 0) {
+                    showToast('Keine Auswahl', 'Nichts zum Export.', 'warning');
+                    return;
+                }
+                e.preventDefault();
+                exportSelectedList();
+                return;
+            }
+
+            // F: Favorit setzen (bulk)
+            if (key === 'f') {
+                if (selectedCount === 0) {
+                    showToast('Keine Auswahl', 'Nichts zu favorisieren.', 'warning');
+                    return;
+                }
+                e.preventDefault();
+                const changed = bulkAddToFavorites();
+                showToast('Favoriten gesetzt', `${changed} Bild(er) markiert.`, 'success');
+                return;
+            }
+
+            // S: Zu Auswahl hinzufügen
+            if (key === 's') {
+                if (selectedCount === 0) {
+                    showToast('Keine Auswahl', 'Nichts hinzuzufügen.', 'warning');
+                    return;
+                }
+                e.preventDefault();
+                Promise.resolve(bulkAddToSelection()).then((result) => {
+                    if (result) showToast('Zur Auswahl hinzugefügt', `${result.count} Bild(er) → „${result.name}“`, 'success');
+                }).catch(err => console.error(err));
+                return;
+            }
+
+            // U: Undo (Reset)
+            if (key === 'u') {
+                if (!hasSelectionUndo()) return;
+                e.preventDefault();
+                restoreSelectionUndo();
+                showToast('Undo', 'Auswahl wiederhergestellt.', 'success');
+                return;
             }
         });
 
@@ -5066,8 +6814,17 @@
             // Suche initialisieren
             initSearch();
 
+            // Quick Filters initialisieren
+            initQuickFilters();
+
+            // Overlays (Confirm + Help)
+            initOverlays();
+
             // Bulk-Aktionen initialisieren
             initBulkActionButtons();
+
+            // Bottom Selection Bar initialisieren
+            initSelectionBar();
             
             await loadConfig();
             
