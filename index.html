@@ -2354,6 +2354,7 @@
                     <button class="flag-btn green" data-flag="approve" title="Genehmigen" onclick="setFlag('approve')">Genehmigen</button>
                     <button class="flag-btn black" data-flag="final" title="Final" onclick="setFlag('final')">Final</button>
                 </div>
+                <button class="btn-secondary btn-full btn-compact" onclick="clearFlag()">Markierung entfernen</button>
             </div>
             
             <!-- Favorit -->
@@ -4462,6 +4463,25 @@
             updateSidebarStats();
             
             // Filter neu anwenden (falls Flag-Filter aktiv)
+            if (currentFilter.flag) {
+                applyFilter();
+            }
+        }
+
+        // Clear Flag
+        function clearFlag() {
+            const image = currentImages[currentImageIndex];
+            if (!image) return;
+
+            const imageId = getFeedbackImageId(image, currentImageIndex);
+            if (!feedbackData.flags[imageId]) return;
+
+            delete feedbackData.flags[imageId];
+            saveFeedbackData();
+            updateFlagButtons(null);
+            updateAllImageBadges();
+            updateSidebarStats();
+
             if (currentFilter.flag) {
                 applyFilter();
             }
