@@ -1785,6 +1785,46 @@
             font-weight: 600;
             font-size: 0.85em;
         }
+
+        .rating-summary {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 6px;
+            margin-top: 8px;
+        }
+
+        .rating-summary-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 6px;
+            padding: 6px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 4px;
+            border-left: 2px solid transparent;
+        }
+
+        .rating-pill {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2px 6px;
+            border-radius: 999px;
+            background: rgba(255, 214, 10, 0.12);
+            color: #ffd60a;
+            font-size: 12px;
+            font-weight: 800;
+            line-height: 1;
+            letter-spacing: 0.01em;
+            white-space: nowrap;
+        }
+
+        .rating-count {
+            color: #e0e0e0;
+            font-weight: 700;
+            font-size: 0.85em;
+            font-variant-numeric: tabular-nums;
+        }
         
         .selections-list {
             display: flex;
@@ -2163,6 +2203,10 @@
                                 <span class="stat-label">Kommentiert:</span>
                                 <span class="stat-value" id="stat-commented">0</span>
                             </div>
+                            <div class="stat-item clickable" onclick="filterByType('rated')" title="Nur bewertete Bilder">
+                                <span class="stat-label">Bewertet:</span>
+                                <span class="stat-value" id="stat-rated">0</span>
+                            </div>
                         </div>
                         
                         <div class="sidebar-section">
@@ -2183,6 +2227,29 @@
                                 <div class="flag-summary-item clickable" onclick="filterByFlag('final')" title="Nur finale Bilder">
                                     <span class="flag-badge black">★</span>
                                     <span class="flag-count" id="flag-final">0</span>
+                                </div>
+                            </div>
+
+                            <div class="rating-summary" id="rating-summary" aria-label="Bewertungsübersicht">
+                                <div class="rating-summary-item clickable" data-rating="5" onclick="filterByRating(5)" title="Nur 5 Sterne">
+                                    <span class="rating-pill">5★</span>
+                                    <span class="rating-count" id="rating-count-5">0</span>
+                                </div>
+                                <div class="rating-summary-item clickable" data-rating="4" onclick="filterByRating(4)" title="Nur 4 Sterne">
+                                    <span class="rating-pill">4★</span>
+                                    <span class="rating-count" id="rating-count-4">0</span>
+                                </div>
+                                <div class="rating-summary-item clickable" data-rating="3" onclick="filterByRating(3)" title="Nur 3 Sterne">
+                                    <span class="rating-pill">3★</span>
+                                    <span class="rating-count" id="rating-count-3">0</span>
+                                </div>
+                                <div class="rating-summary-item clickable" data-rating="2" onclick="filterByRating(2)" title="Nur 2 Sterne">
+                                    <span class="rating-pill">2★</span>
+                                    <span class="rating-count" id="rating-count-2">0</span>
+                                </div>
+                                <div class="rating-summary-item clickable" data-rating="1" onclick="filterByRating(1)" title="Nur 1 Stern">
+                                    <span class="rating-pill">1★</span>
+                                    <span class="rating-count" id="rating-count-1">0</span>
                                 </div>
                             </div>
                         </div>
@@ -2253,6 +2320,7 @@
                     <span class="star" data-rating="5" onclick="setRating(5)">★</span>
                 </div>
                 <p id="rating-text" class="rating-muted">Keine Bewertung</p>
+                <button class="btn-secondary btn-full btn-compact" onclick="setRating(0)">Bewertung entfernen</button>
             </div>
             
             <!-- Markierungen (Flags) -->
@@ -2788,6 +2856,13 @@
                     } else if (currentFilter.type === 'commented') {
                         const comments = feedbackData.comments[imageId] || [];
                         shouldShow = comments.length > 0;
+                    } else if (currentFilter.type === 'rated') {
+                        const rating = Number(feedbackData.ratings[imageId] || 0);
+                        if (currentFilter.ratingValue) {
+                            shouldShow = rating === Number(currentFilter.ratingValue);
+                        } else {
+                            shouldShow = rating > 0;
+                        }
                     } else if (currentFilter.type === 'selection' && currentFilter.selectionName) {
                         const selections = feedbackData.selections[imageId] || [];
                         shouldShow = selections.includes(currentFilter.selectionName);
@@ -3563,9 +3638,10 @@
         
         // Aktiver Filter
         let currentFilter = {
-            type: 'all',  // 'all', 'selected', 'favorites', 'commented', 'selection'
+            type: 'all',  // 'all', 'selected', 'favorites', 'commented', 'rated', 'selection'
             flag: null,   // 'reject', 'review', 'approve', 'final', null
-            selectionName: null  // Name der Auswahl, wenn type === 'selection'
+            selectionName: null,  // Name der Auswahl, wenn type === 'selection'
+            ratingValue: null     // 1..5 wenn type === 'rated'
         };
         
         // Toggle Gallery Sidebar
@@ -3581,6 +3657,7 @@
             currentFilter.type = type;
             currentFilter.flag = null;
             currentFilter.selectionName = null;
+            currentFilter.ratingValue = null;
             applyFilter();
             updateFilterUI();
         }
@@ -3596,6 +3673,26 @@
                 currentFilter.type = 'all';
             }
             currentFilter.selectionName = null;
+            currentFilter.ratingValue = null;
+            applyFilter();
+            updateFilterUI();
+        }
+
+        // Filter nach Bewertung
+        function filterByRating(ratingValue) {
+            const nextRating = Number(ratingValue);
+            if (!Number.isFinite(nextRating) || nextRating < 1 || nextRating > 5) return;
+
+            if (currentFilter.type === 'rated' && currentFilter.ratingValue === nextRating) {
+                currentFilter.type = 'all';
+                currentFilter.ratingValue = null;
+            } else {
+                currentFilter.type = 'rated';
+                currentFilter.ratingValue = nextRating;
+            }
+
+            currentFilter.flag = null;
+            currentFilter.selectionName = null;
             applyFilter();
             updateFilterUI();
         }
@@ -3608,7 +3705,7 @@
         // Update Filter UI (aktive Zustände)
         function updateFilterUI() {
             // Entferne alle aktiven Zustände
-            document.querySelectorAll('.stat-item, .flag-summary-item, .selection-item').forEach(el => {
+            document.querySelectorAll('.stat-item, .flag-summary-item, .rating-summary-item, .selection-item').forEach(el => {
                 el.classList.remove('active');
             });
             
@@ -3628,7 +3725,8 @@
                 const typeMap = {
                     'selected': 1,
                     'favorites': 2,
-                    'commented': 3
+                    'commented': 3,
+                    'rated': 4
                 };
                 if (typeMap[currentFilter.type] !== undefined) {
                     statItems[typeMap[currentFilter.type]].classList.add('active');
@@ -3648,6 +3746,15 @@
                     flagItems[flagMap[currentFilter.flag]].classList.add('active');
                 }
             }
+
+            // Setze aktiven Zustand für Rating-Filter
+            if (currentFilter.type === 'rated' && currentFilter.ratingValue) {
+                document.querySelectorAll('.rating-summary-item').forEach(item => {
+                    if (Number(item.dataset.rating) === Number(currentFilter.ratingValue)) {
+                        item.classList.add('active');
+                    }
+                });
+            }
         }
         
         // Update Sidebar Statistiken
@@ -3660,6 +3767,17 @@
                 const comments = feedbackData.comments[id] || [];
                 return comments.length > 0 && currentIds.has(id);
             }).length;
+            const rated = Object.entries(feedbackData.ratings).filter(([id, value]) => {
+                const rating = Number(value || 0);
+                return rating > 0 && currentIds.has(id);
+            }).length;
+
+            const ratingCounts = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
+            currentImages.forEach((img, index) => {
+                const imageId = getFeedbackImageId(img, index);
+                const rating = Number(feedbackData.ratings[imageId] || 0);
+                if (Object.prototype.hasOwnProperty.call(ratingCounts, rating)) ratingCounts[rating]++;
+            });
             
             // Flag-Zähler
             const flagCounts = {
@@ -3682,6 +3800,18 @@
             document.getElementById('stat-selected').textContent = selected;
             document.getElementById('stat-favorites').textContent = favorites;
             document.getElementById('stat-commented').textContent = commented;
+            document.getElementById('stat-rated').textContent = rated;
+
+            const r1 = document.getElementById('rating-count-1');
+            const r2 = document.getElementById('rating-count-2');
+            const r3 = document.getElementById('rating-count-3');
+            const r4 = document.getElementById('rating-count-4');
+            const r5 = document.getElementById('rating-count-5');
+            if (r1) r1.textContent = ratingCounts[1];
+            if (r2) r2.textContent = ratingCounts[2];
+            if (r3) r3.textContent = ratingCounts[3];
+            if (r4) r4.textContent = ratingCounts[4];
+            if (r5) r5.textContent = ratingCounts[5];
 
             const galleryCountChip = document.getElementById('gallery-count-chip');
             const gallerySelectedChip = document.getElementById('gallery-selected-chip');
@@ -3726,6 +3856,7 @@
                 currentFilter.selectionName = selectionName;
             }
             currentFilter.flag = null;
+            currentFilter.ratingValue = null;
             applyFilter();
             updateFilterUI();
         }
@@ -4269,9 +4400,13 @@
             
             const imageId = getFeedbackImageId(image, currentImageIndex);
             window.__wbfmDebug.lastImageId = imageId;
-            feedbackData.ratings[imageId] = rating;
+            if (Number(rating) > 0) {
+                feedbackData.ratings[imageId] = Number(rating);
+            } else {
+                delete feedbackData.ratings[imageId];
+            }
             saveFeedbackData();
-            updateRatingStars(rating);
+            updateRatingStars(Number(rating) > 0 ? Number(rating) : 0);
             updateAllImageBadges();
             updateSidebarStats();
             void ensureDebugPanel();
