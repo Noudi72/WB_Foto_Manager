@@ -997,13 +997,13 @@
             backdrop-filter: none;
             border: 0;
             border-radius: 7px;
-            color: var(--text-secondary);
+            color: rgba(255,255,255,0.88);
             cursor: pointer;
             font-size: 11px;
             font-weight: 700;
             transition: color 0.15s ease;
             white-space: nowrap;
-            text-shadow: none;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.7);
         }
         
         .gallery-item-btn:hover {
@@ -1016,11 +1016,13 @@
             font-size: 9px;
             letter-spacing: 0.04em;
             text-transform: uppercase;
+            opacity: 0.95;
         }
 
         .gallery-item-btn .btn-count {
             font-size: 10px;
             font-variant-numeric: tabular-nums;
+            opacity: 0.95;
         }
         
         .gallery-item-like.active {
@@ -1116,6 +1118,64 @@
             background: rgba(255, 59, 48, 0.10);
             color: var(--text-primary);
             font-size: 0.9rem;
+        }
+
+        .debug-panel {
+            position: fixed;
+            right: 12px;
+            bottom: 12px;
+            width: min(420px, calc(100vw - 24px));
+            max-height: 50vh;
+            overflow: auto;
+            z-index: 2000;
+            background: rgba(0,0,0,0.78);
+            border: 1px solid rgba(255,255,255,0.18);
+            border-radius: 12px;
+            padding: 10px 12px;
+            color: rgba(255,255,255,0.9);
+            font-size: 12px;
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+        }
+
+        .debug-panel h4 {
+            margin: 0 0 8px 0;
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.86);
+        }
+
+        .debug-panel .row {
+            display: flex;
+            gap: 10px;
+            justify-content: space-between;
+            padding: 4px 0;
+            border-top: 1px dashed rgba(255,255,255,0.12);
+        }
+
+        .debug-panel .row:first-of-type { border-top: 0; }
+
+        .debug-panel code {
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+            font-size: 11px;
+            color: rgba(255,255,255,0.9);
+        }
+
+        .debug-panel button {
+            margin-top: 8px;
+            padding: 6px 8px;
+            border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.08);
+            color: rgba(255,255,255,0.9);
+            cursor: pointer;
+        }
+
+        .debug-panel button:hover {
+            border-color: var(--accent);
+            color: var(--accent);
         }
         
         .lightbox {
@@ -2248,6 +2308,10 @@
         // Konfiguration
         let galleryConfig = null;
         let currentGallery = null;
+
+        const FEEDBACK_STORAGE_KEY = 'gallery_feedback';
+        const FEEDBACK_META_KEY = 'gallery_feedback_meta';
+        window.__wbfmDebug = { lastSave: null, lastLoad: null, lastImageId: null };
         let currentImages = [];
         let currentImageIndex = 0;
         let searchQuery = '';
@@ -2477,6 +2541,120 @@
             el.textContent = message;
         }
 
+        function formatTs(ts) {
+            const n = Number(ts);
+            if (!Number.isFinite(n) || n <= 0) return '—';
+            try {
+                return new Date(n).toLocaleString();
+            } catch {
+                return String(ts);
+            }
+        }
+
+        function isDebugEnabled() {
+            try {
+                const params = new URLSearchParams(window.location.search);
+                return params.get('debug') === '1';
+            } catch {
+                return false;
+            }
+        }
+
+        async function runStorageDiagnostics() {
+            const diagnostics = {
+                origin: window.location.origin,
+                path: window.location.pathname,
+                localOk: false,
+                sessionOk: false,
+                idbAvailable: isIndexedDbAvailable(),
+                localBytes: 0,
+                sessionBytes: 0,
+                idbBytes: 0,
+                metaLocal: null,
+                metaSession: null,
+                metaIdb: null
+            };
+
+            try {
+                const probeKey = '__wbfm_probe__';
+                localStorage.setItem(probeKey, '1');
+                diagnostics.localOk = localStorage.getItem(probeKey) === '1';
+                localStorage.removeItem(probeKey);
+            } catch {
+                diagnostics.localOk = false;
+            }
+
+            try {
+                const probeKey = '__wbfm_probe__';
+                sessionStorage.setItem(probeKey, '1');
+                diagnostics.sessionOk = sessionStorage.getItem(probeKey) === '1';
+                sessionStorage.removeItem(probeKey);
+            } catch {
+                diagnostics.sessionOk = false;
+            }
+
+            const localPayload = safeStorageGet(FEEDBACK_STORAGE_KEY);
+            const sessionPayload = (() => {
+                try { return sessionStorage.getItem(FEEDBACK_STORAGE_KEY); } catch { return null; }
+            })();
+            diagnostics.localBytes = localPayload ? localPayload.length : 0;
+            diagnostics.sessionBytes = sessionPayload ? sessionPayload.length : 0;
+
+            diagnostics.metaLocal = safeStorageGet(FEEDBACK_META_KEY);
+            diagnostics.metaSession = (() => {
+                try { return sessionStorage.getItem(FEEDBACK_META_KEY); } catch { return null; }
+            })();
+            diagnostics.metaIdb = await idbGet(FEEDBACK_META_KEY);
+
+            const idbPayload = await idbGet(FEEDBACK_STORAGE_KEY);
+            diagnostics.idbBytes = typeof idbPayload === 'string' ? idbPayload.length : 0;
+            return diagnostics;
+        }
+
+        async function ensureDebugPanel() {
+            if (!isDebugEnabled()) return;
+            let panel = document.getElementById('debug-panel');
+            if (!panel) {
+                panel = document.createElement('div');
+                panel.id = 'debug-panel';
+                panel.className = 'debug-panel';
+                panel.innerHTML = '<h4>Debug: Storage</h4><div id="debug-panel-content"></div><button id="debug-panel-refresh" type="button">Refresh</button>';
+                document.body.appendChild(panel);
+                const btn = panel.querySelector('#debug-panel-refresh');
+                if (btn) btn.addEventListener('click', () => void renderDebugPanel());
+            }
+            await renderDebugPanel();
+        }
+
+        async function renderDebugPanel() {
+            const panel = document.getElementById('debug-panel');
+            if (!panel) return;
+            const content = document.getElementById('debug-panel-content');
+            if (!content) return;
+
+            const d = await runStorageDiagnostics();
+            const lastSave = window.__wbfmDebug?.lastSave;
+            const lastLoad = window.__wbfmDebug?.lastLoad;
+
+            content.innerHTML = [
+                `<div class="row"><span>Origin</span><code>${d.origin}</code></div>`,
+                `<div class="row"><span>Path</span><code>${d.path}</code></div>`,
+                `<div class="row"><span>Gallery</span><code>${currentGallery?.id || '—'}</code></div>`,
+                `<div class="row"><span>Last ImageId</span><code>${window.__wbfmDebug?.lastImageId || '—'}</code></div>`,
+                `<div class="row"><span>Last Save</span><code>${lastSave ? formatTs(lastSave) : '—'}</code></div>`,
+                `<div class="row"><span>Last Load</span><code>${lastLoad ? formatTs(lastLoad) : '—'}</code></div>`,
+                `<div class="row"><span>localStorage OK</span><code>${d.localOk}</code></div>`,
+                `<div class="row"><span>sessionStorage OK</span><code>${d.sessionOk}</code></div>`,
+                `<div class="row"><span>IndexedDB</span><code>${d.idbAvailable}</code></div>`,
+                `<div class="row"><span>Bytes local</span><code>${d.localBytes}</code></div>`,
+                `<div class="row"><span>Bytes session</span><code>${d.sessionBytes}</code></div>`,
+                `<div class="row"><span>Bytes idb</span><code>${d.idbBytes}</code></div>`,
+                `<div class="row"><span>Meta local</span><code>${formatTs(d.metaLocal)}</code></div>`,
+                `<div class="row"><span>Meta session</span><code>${formatTs(d.metaSession)}</code></div>`,
+                `<div class="row"><span>Meta idb</span><code>${formatTs(d.metaIdb)}</code></div>`
+            ].join('');
+        }
+
         function getSelectionToneClass(selectionName) {
             const text = String(selectionName || '');
             let hash = 0;
@@ -2648,20 +2826,22 @@
         
         // Lade Feedback-Daten
         async function loadFeedbackData() {
-            const saved = safeStorageGet('gallery_feedback');
+            const saved = safeStorageGet(FEEDBACK_STORAGE_KEY);
             if (saved) {
                 try {
                     feedbackData = normalizeFeedbackData(JSON.parse(saved));
+                    window.__wbfmDebug.lastLoad = Date.now();
                     return;
                 } catch (e) {
                     console.error('Fehler beim Laden der Feedback-Daten:', e);
                 }
             }
 
-            const idbSaved = await idbGet('gallery_feedback');
+            const idbSaved = await idbGet(FEEDBACK_STORAGE_KEY);
             if (typeof idbSaved === 'string' && idbSaved) {
                 try {
                     feedbackData = normalizeFeedbackData(JSON.parse(idbSaved));
+                    window.__wbfmDebug.lastLoad = Date.now();
                 } catch (e) {
                     console.error('Fehler beim Laden der IndexedDB Feedback-Daten:', e);
                 }
@@ -2671,13 +2851,21 @@
         // Speichere Feedback-Daten
         function saveFeedbackData() {
             const payload = JSON.stringify(normalizeFeedbackData(feedbackData));
-            const ok = safeStorageSet('gallery_feedback', payload);
+            const ok = safeStorageSet(FEEDBACK_STORAGE_KEY, payload);
             // Zusätzlich nach IndexedDB spiegeln (robuster in restriktiven Browsern)
-            void idbSet('gallery_feedback', payload);
+            void idbSet(FEEDBACK_STORAGE_KEY, payload);
+
+            const ts = Date.now();
+            window.__wbfmDebug.lastSave = ts;
+            safeStorageSet(FEEDBACK_META_KEY, String(ts));
+            void idbSet(FEEDBACK_META_KEY, String(ts));
 
             if (!ok) {
                 ensureStorageWarningVisible('Hinweis: Der Browser blockiert Speicher. Bewertungen/Feedback können nach einem Neustart verloren gehen.');
             }
+
+            // Optional: Debug Panel aktualisieren
+            void ensureDebugPanel();
         }
         
         // Lade Konfiguration von gallery.json
@@ -4080,11 +4268,13 @@
             if (!image) return;
             
             const imageId = getFeedbackImageId(image, currentImageIndex);
+            window.__wbfmDebug.lastImageId = imageId;
             feedbackData.ratings[imageId] = rating;
             saveFeedbackData();
             updateRatingStars(rating);
             updateAllImageBadges();
             updateSidebarStats();
+            void ensureDebugPanel();
         }
         
         // Set Flag
@@ -4211,6 +4401,9 @@
 
             // Feedback initialisieren (inkl. IndexedDB Fallback)
             await loadFeedbackData();
+
+            // Debug Panel (optional via ?debug=1)
+            await ensureDebugPanel();
             
             // Suche initialisieren
             initSearch();
