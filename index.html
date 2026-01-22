@@ -31,6 +31,10 @@
             --gallery-topbar-gap: 10px;
             --gallery-topbar-h: calc(var(--gallery-header-h) + var(--gallery-topbar-gap) + var(--gallery-filters-h));
             --gallery-fixed-width: min(1400px, calc(100% - 40px));
+
+            --gallery-layout-gap: 20px;
+            --gallery-sidebar-w: 200px;
+            --gallery-sidebar-collapsed-w: 40px;
         }
         
         body {
@@ -2402,6 +2406,27 @@
         .gallery-main { flex: 1; display: flex; flex-direction: column; }
         .gallery-flex { flex: 1; }
 
+        /* Desktop: keep gallery sidebar always visible (fixed), like Picdrop */
+        @media (min-width: 769px) {
+            .gallery-layout-row {
+                display: block;
+            }
+
+            .gallery-sidebar {
+                position: fixed;
+                left: calc(50% - (var(--gallery-fixed-width) * 0.5));
+                z-index: 260;
+            }
+
+            .gallery-main {
+                margin-left: calc(var(--gallery-sidebar-w) + var(--gallery-layout-gap));
+            }
+
+            .gallery-sidebar.collapsed ~ .gallery-main {
+                margin-left: calc(var(--gallery-sidebar-collapsed-w) + var(--gallery-layout-gap));
+            }
+        }
+
         .sidebar-section--flush { margin-top: 0; padding-top: 0; border-top: none; }
         .sidebar-input { width: 100%; padding: 6px 8px; background: var(--bg-primary); border: 1px solid var(--border); border-radius: 4px; color: var(--text-primary); font-size: 12px; }
         .sidebar-input--mb { margin-bottom: 12px; }
@@ -2490,8 +2515,8 @@
             position: sticky;
             top: calc(var(--gallery-fixed-top) + var(--gallery-topbar-h) + 18px);
             align-self: flex-start;
-            width: 200px;
-            min-width: 200px;
+            width: var(--gallery-sidebar-w);
+            min-width: var(--gallery-sidebar-w);
             background: linear-gradient(180deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
             border-right: 1px solid var(--border);
             padding: 12px;
@@ -2503,8 +2528,8 @@
         }
         
         .gallery-sidebar.collapsed {
-            width: 40px;
-            min-width: 40px;
+            width: var(--gallery-sidebar-collapsed-w);
+            min-width: var(--gallery-sidebar-collapsed-w);
             padding: 12px 8px;
         }
         
