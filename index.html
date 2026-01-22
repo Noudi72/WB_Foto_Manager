@@ -28,7 +28,7 @@
             --gallery-fixed-top: calc(var(--sticky-sidebar-top) + env(safe-area-inset-top, 0px));
             --gallery-header-h: 0px;
             --gallery-filters-h: 0px;
-            --gallery-topbar-gap: 10px;
+            --gallery-topbar-gap: 6px;
             --gallery-topbar-h: calc(var(--gallery-header-h) + var(--gallery-topbar-gap) + var(--gallery-filters-h));
             --gallery-fixed-width: min(1400px, calc(100% - 40px));
             --gallery-fixed-left: 20px;
@@ -47,12 +47,20 @@
             overflow-x: hidden;
         }
 
+        body.is-gallery-view .container {
+            padding-top: 0;
+        }
+
+        body.is-gallery-view header.site-header {
+            display: none;
+        }
+
         html {
             overflow-x: hidden;
         }
 
         html {
-            scroll-padding-top: calc(var(--gallery-fixed-top) + var(--gallery-topbar-h) + 18px);
+            scroll-padding-top: calc(var(--gallery-fixed-top) + var(--gallery-topbar-h) + 2px);
         }
 
         body.dark-mode {
@@ -277,8 +285,8 @@
             display: flex;
             align-items: center;
             gap: 8px;
-            padding: 15px 0;
-            margin-bottom: 20px;
+            padding: 0;
+            margin-bottom: 0;
             font-size: 0.9em;
             flex-wrap: wrap;
         }
@@ -815,7 +823,7 @@
             align-items: center;
             justify-content: space-between;
             gap: 16px;
-            padding: 16px 18px;
+            padding: 12px 16px;
             border-radius: 16px;
             border: 1px solid var(--border);
             background: rgba(255,255,255,0.78);
@@ -862,7 +870,7 @@
             display: flex;
             gap: 8px;
             align-items: center;
-            padding: 10px 6px 14px;
+            padding: 6px 6px 8px;
             overflow-x: auto;
             position: fixed;
             top: calc(var(--gallery-fixed-top) + var(--gallery-header-h) + var(--gallery-topbar-gap));
@@ -882,7 +890,7 @@
         }
 
         #gallery-container {
-            padding-top: calc(var(--gallery-fixed-top) + var(--gallery-topbar-h) + 18px);
+            padding-top: calc(var(--gallery-fixed-top) + var(--gallery-topbar-h) + 2px);
         }
 
         .quick-filter-chip {
@@ -1018,7 +1026,7 @@
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
             gap: 14px;
-            padding: 16px 0;
+            padding: 0 0 16px;
         }
         
         .gallery-item {
@@ -2514,7 +2522,7 @@
         /* Gallery Sidebar (für Übersicht) */
         .gallery-sidebar {
             position: sticky;
-            top: calc(var(--gallery-fixed-top) + var(--gallery-topbar-h) + 18px);
+            top: calc(var(--gallery-fixed-top) + var(--gallery-topbar-h) + 2px);
             align-self: flex-start;
             width: var(--gallery-sidebar-w);
             min-width: var(--gallery-sidebar-w);
@@ -2522,7 +2530,7 @@
             border-right: 1px solid var(--border);
             padding: 12px;
             overflow-y: auto;
-            max-height: calc(100vh - (var(--gallery-fixed-top) + var(--gallery-topbar-h) + 18px) - 18px - env(safe-area-inset-bottom, 0px));
+            max-height: calc(100vh - (var(--gallery-fixed-top) + var(--gallery-topbar-h) + 2px) - 18px - env(safe-area-inset-bottom, 0px));
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             box-shadow: 4px 0 24px rgba(0,0,0,0.3);
             z-index: 60;
@@ -4483,6 +4491,7 @@
         
         // Zeige Galerie-Auswahl
         function showGallerySelector() {
+            document.body.classList.remove('is-gallery-view');
             document.getElementById('gallery-selector').style.display = 'block';
             document.getElementById('password-form').style.display = 'none';
             document.getElementById('gallery-container').style.display = 'none';
@@ -4611,6 +4620,7 @@
             
             // Prüfe ob Passwort erforderlich ist
             if (gallery.password) {
+                document.body.classList.remove('is-gallery-view');
                 document.getElementById('gallery-selector').style.display = 'none';
                 document.getElementById('password-form').style.display = 'block';
                 document.getElementById('gallery-name-display').textContent = gallery.name || 'Galerie';
@@ -4661,6 +4671,7 @@
         
         // Zeige Galerie
         function showGallery(gallery) {
+            document.body.classList.add('is-gallery-view');
             document.getElementById('gallery-selector').style.display = 'none';
             document.getElementById('password-form').style.display = 'none';
             document.getElementById('gallery-container').style.display = 'block';
