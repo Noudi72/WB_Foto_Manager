@@ -1564,6 +1564,8 @@
         .muted-small { color: #888; font-size: 0.75em; margin: 0; }
 
         .bulk-actions-buttons { display: flex; flex-direction: column; gap: 6px; }
+        .bulk-flag-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+        .bulk-flag-hint { margin: 8px 0 6px; }
         .btn-full { width: 100%; }
         .btn-compact { padding: 6px 12px; font-size: 12px; }
         .btn-compact-mt { margin-top: 6px; }
@@ -2275,9 +2277,47 @@
                                 </div>
                             </div>
 
-                            <button id="clear-flags-btn" class="btn-secondary btn-full btn-compact" onclick="bulkClearFlag()" disabled title="Entfernt Markierungen von allen ausgewählten Bildern">
-                                Markierungen entfernen (Auswahl)
-                            </button>
+                            <div class="bulk-flag-controls">
+                                <p class="muted-small bulk-flag-hint">Für Auswahl:</p>
+                                <div class="flag-buttons" aria-label="Markierung für Auswahl setzen">
+                                    <button class="flag-btn red" type="button" data-bulk-flag="reject" title="Auswahl ablehnen">Ablehnen</button>
+                                    <button class="flag-btn yellow" type="button" data-bulk-flag="review" title="Auswahl prüfen">Prüfen</button>
+                                    <button class="flag-btn green" type="button" data-bulk-flag="approve" title="Auswahl genehmigen">Genehmigen</button>
+                                    <button class="flag-btn black" type="button" data-bulk-flag="final" title="Auswahl final">Final</button>
+                                </div>
+
+                                <button id="clear-flags-btn" class="btn-secondary btn-full btn-compact" type="button" data-bulk-action="clear-flag" data-bulk-scope="selected" disabled title="Entfernt Markierungen von allen ausgewählten Bildern">
+                                    Markierungen entfernen (Auswahl)
+                                </button>
+                                <button class="btn-secondary btn-full btn-compact btn-compact-mt" type="button" data-bulk-action="clear-flag" data-bulk-scope="visible" title="Entfernt Markierungen von allen aktuell sichtbaren Bildern (Filter/Suche)">
+                                    Markierungen entfernen (sichtbar)
+                                </button>
+                                <button class="btn-secondary btn-full btn-compact btn-compact-mt" type="button" data-bulk-action="clear-flag" data-bulk-scope="gallery" title="Entfernt Markierungen von allen Bildern in dieser Galerie (irreversibel)">
+                                    Markierungen entfernen (gesamte Galerie)
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="sidebar-section">
+                            <h4>Zurücksetzen</h4>
+                            <p class="muted-small bulk-flag-hint">Diese Aktionen betreffen die gesamte Galerie.</p>
+                            <div class="bulk-actions-buttons">
+                                <button class="btn-secondary btn-full btn-compact" type="button" data-bulk-action="clear-favorites" data-bulk-scope="gallery" title="Entfernt Favoriten-Markierungen von allen Bildern dieser Galerie">
+                                    Favoriten entfernen (gesamte Galerie)
+                                </button>
+                                <button class="btn-secondary btn-full btn-compact" type="button" data-bulk-action="clear-ratings" data-bulk-scope="gallery" title="Entfernt Bewertungen von allen Bildern dieser Galerie">
+                                    Bewertungen entfernen (gesamte Galerie)
+                                </button>
+                                <button class="btn-secondary btn-full btn-compact" type="button" data-bulk-action="clear-comments" data-bulk-scope="gallery" title="Entfernt Kommentare von allen Bildern dieser Galerie">
+                                    Kommentare entfernen (gesamte Galerie)
+                                </button>
+                                <button class="btn-secondary btn-full btn-compact" type="button" data-bulk-action="clear-selections" data-bulk-scope="gallery" title="Entfernt Auswahlen-Zuordnungen von allen Bildern dieser Galerie">
+                                    Auswahlen entfernen (gesamte Galerie)
+                                </button>
+                                <button class="btn-primary btn-full btn-compact btn-compact-mt" type="button" data-bulk-action="reset-feedback" data-bulk-scope="gallery" title="Entfernt Markierungen, Favoriten, Bewertungen, Kommentare und Auswahlen für diese Galerie">
+                                    Alles Feedback löschen (gesamte Galerie)
+                                </button>
+                            </div>
                         </div>
                         
                         <div class="sidebar-section">
@@ -2291,13 +2331,18 @@
                         <div class="sidebar-section is-hidden" id="bulk-actions-section">
                             <h4>Bulk-Aktionen</h4>
                             <div class="bulk-actions-buttons">
-                                <button class="btn-secondary btn-full btn-compact" onclick="bulkAddToFavorites()">Als Favoriten markieren</button>
-                                <button class="btn-secondary btn-full btn-compact" onclick="bulkSetFlag()">Markierung setzen</button>
-                                <button class="btn-secondary btn-full btn-compact" onclick="bulkClearFlag()">Markierung entfernen</button>
-                                <button class="btn-secondary btn-full btn-compact" onclick="bulkAddToSelection()">Zu Auswahl hinzufügen</button>
-                                <button class="btn-primary btn-full btn-compact" onclick="bulkDownload()">Als ZIP herunterladen</button>
-                                <button class="btn-secondary btn-full btn-compact btn-compact-mt" onclick="exportAsPDF()">Als PDF exportieren</button>
-                                <button class="btn-secondary btn-full btn-compact btn-clear" onclick="clearSelection()">✗ Auswahl aufheben</button>
+                                <button class="btn-secondary btn-full btn-compact" type="button" data-bulk-action="favorites">Als Favoriten markieren</button>
+                                <div class="bulk-flag-grid" aria-label="Markierungen für Auswahl">
+                                    <button class="flag-btn red" type="button" data-bulk-flag="reject" title="Auswahl ablehnen">Ablehnen</button>
+                                    <button class="flag-btn yellow" type="button" data-bulk-flag="review" title="Auswahl prüfen">Prüfen</button>
+                                    <button class="flag-btn green" type="button" data-bulk-flag="approve" title="Auswahl genehmigen">Genehmigen</button>
+                                    <button class="flag-btn black" type="button" data-bulk-flag="final" title="Auswahl final">Final</button>
+                                </div>
+                                <button class="btn-secondary btn-full btn-compact" type="button" data-bulk-action="clear-flag" data-bulk-scope="selected">Markierungen entfernen (Auswahl)</button>
+                                <button class="btn-secondary btn-full btn-compact" type="button" data-bulk-action="add-selection">Zu Auswahl hinzufügen</button>
+                                <button class="btn-primary btn-full btn-compact" type="button" data-bulk-action="download">Als ZIP herunterladen</button>
+                                <button class="btn-secondary btn-full btn-compact btn-compact-mt" type="button" data-bulk-action="export-pdf">Als PDF exportieren</button>
+                                <button class="btn-secondary btn-full btn-compact btn-clear" type="button" data-bulk-action="clear-selection">✗ Auswahl aufheben</button>
                             </div>
                         </div>
                     </div>
@@ -3998,16 +4043,167 @@
             const selectedCount = document.querySelectorAll('.gallery-item.selected').length;
             const bulkSection = document.getElementById('bulk-actions-section');
             if (bulkSection) {
-                bulkSection.style.display = selectedCount > 0 ? 'block' : 'none';
+                // Falls ältere Versionen inline display gesetzt haben, neutralisieren
+                bulkSection.style.display = '';
+                bulkSection.classList.toggle('is-hidden', selectedCount === 0);
+                bulkSection.setAttribute('aria-hidden', selectedCount === 0 ? 'true' : 'false');
             }
 
             const clearFlagsBtn = document.getElementById('clear-flags-btn');
             if (clearFlagsBtn) {
                 clearFlagsBtn.disabled = selectedCount === 0;
+                clearFlagsBtn.setAttribute('aria-disabled', selectedCount === 0 ? 'true' : 'false');
             }
+
+            // Bulk-Flag Buttons (für Auswahl) deaktivieren/aktivieren
+            document.querySelectorAll('[data-bulk-flag]').forEach(btn => {
+                btn.disabled = selectedCount === 0;
+                btn.setAttribute('aria-disabled', selectedCount === 0 ? 'true' : 'false');
+            });
         }
         
         // Bulk-Aktionen
+        function initBulkActionButtons() {
+            document.querySelectorAll('[data-bulk-action]').forEach(button => {
+                button.addEventListener('click', (event) => {
+                    event.preventDefault();
+                    const action = button.dataset.bulkAction;
+                    const scope = button.dataset.bulkScope || 'selected';
+
+                    switch (action) {
+                        case 'favorites':
+                            bulkAddToFavorites();
+                            break;
+                        case 'clear-flag':
+                            bulkClearFlag(scope);
+                            break;
+                        case 'add-selection':
+                            bulkAddToSelection();
+                            break;
+                        case 'download':
+                            void bulkDownload();
+                            break;
+                        case 'export-pdf':
+                            void exportAsPDF();
+                            break;
+                        case 'clear-selection':
+                            clearSelection();
+                            break;
+                        case 'clear-favorites':
+                            bulkClearFavorites(scope);
+                            break;
+                        case 'clear-ratings':
+                            bulkClearRatings(scope);
+                            break;
+                        case 'clear-comments':
+                            bulkClearComments(scope);
+                            break;
+                        case 'clear-selections':
+                            bulkClearSelections(scope);
+                            break;
+                        case 'reset-feedback':
+                            bulkResetFeedback(scope);
+                            break;
+                        default:
+                            break;
+                    }
+                });
+            });
+
+            document.querySelectorAll('[data-bulk-flag]').forEach(button => {
+                button.addEventListener('click', (event) => {
+                    event.preventDefault();
+                    const flag = button.dataset.bulkFlag;
+                    if (!flag) return;
+                    bulkApplyFlag(flag, 'selected');
+                });
+            });
+        }
+
+        function getBulkTargetItems(scope = 'selected') {
+            const items = Array.from(document.querySelectorAll('.gallery-item'));
+            if (scope === 'visible') {
+                return items.filter(item => item.style.display !== 'none');
+            }
+            // Default: selected
+            return items.filter(item => item.classList.contains('selected'));
+        }
+
+        function getBulkTargetImageIds(scope = 'selected') {
+            if (scope === 'gallery') {
+                return currentImages
+                    .map((img, idx) => getFeedbackImageId(img, idx))
+                    .filter(Boolean);
+            }
+            const targets = getBulkTargetItems(scope);
+            return targets
+                .map(item => item.dataset.imageId)
+                .filter(Boolean);
+        }
+
+        function confirmBulkReset(scope, whatLabel) {
+            if (scope !== 'gallery') return true;
+            const galleryName = currentGallery?.name || 'diese Galerie';
+            if (!confirm(`ACHTUNG: ${whatLabel} in "${galleryName}" löschen?\n\nDas kann nicht rückgängig gemacht werden.`)) return false;
+            const typed = prompt('Zur Bestätigung bitte exakt "LÖSCHEN" eingeben:');
+            if (typed !== 'LÖSCHEN') {
+                alert('Abgebrochen. Bestätigung war nicht korrekt.');
+                return false;
+            }
+            return true;
+        }
+
+        function refreshGalleryAfterBulkChange(affectedImageIds = null) {
+            // Badges (Flags, Selections, Ratings)
+            updateAllImageBadges();
+
+            // Likes + Kommentarzähler in Gallery aktualisieren (falls betroffen)
+            const ids = Array.isArray(affectedImageIds)
+                ? affectedImageIds
+                : Array.from(document.querySelectorAll('.gallery-item')).map(el => el.dataset.imageId).filter(Boolean);
+
+            ids.forEach(imageId => {
+                // Favorit-Button
+                updateFavoriteUI(imageId);
+
+                // Kommentarzähler
+                const item = document.querySelector(`[data-image-id="${imageId}"]`);
+                if (!item) return;
+                const commentBtn = item.querySelector('.gallery-item-actions .gallery-item-btn:last-child');
+                if (!commentBtn) return;
+                const count = (feedbackData.comments[imageId] || []).length;
+                commentBtn.innerHTML = `<span class="btn-label">Komm.</span> <span class="btn-count">${count}</span>`;
+            });
+
+            updateSidebarStats();
+            applyFilter();
+
+            // Falls Lightbox offen: Sidebar neu rendern
+            const lightbox = document.getElementById('lightbox');
+            if (lightbox && lightbox.classList.contains('active')) {
+                updateFeedbackSidebar();
+            }
+        }
+
+        function bulkApplyFlag(flag, scope = 'selected') {
+            const imageIds = getBulkTargetImageIds(scope);
+            if (imageIds.length === 0) {
+                alert(scope === 'visible' ? 'Keine sichtbaren Bilder' : 'Keine Bilder ausgewählt');
+                return;
+            }
+
+            imageIds.forEach(imageId => {
+                feedbackData.flags[imageId] = flag;
+            });
+
+            saveFeedbackData();
+            updateAllImageBadges();
+            updateSidebarStats();
+
+            // Filter neu anwenden (Flags können Sichtbarkeit ändern)
+            applyFilter();
+        }
+
         function bulkAddToFavorites() {
             const selected = document.querySelectorAll('.gallery-item.selected');
             selected.forEach(item => {
@@ -4023,46 +4219,117 @@
         }
         
         function bulkSetFlag() {
+            // Legacy (wird nicht mehr von UI verwendet): belassen für Abwärtskompatibilität
             const flag = prompt('Markierung wählen:\n1 = Abgelehnt\n2 = Prüfen\n3 = Genehmigt\n4 = Final', '3');
             if (!flag) return;
-            
+
             const flagMap = { '1': 'reject', '2': 'review', '3': 'approve', '4': 'final' };
             const selectedFlag = flagMap[flag];
             if (!selectedFlag) return;
-            
-            const selected = document.querySelectorAll('.gallery-item.selected');
-            selected.forEach(item => {
-                const imageId = item.dataset.imageId;
-                if (imageId) {
-                    feedbackData.flags[imageId] = selectedFlag;
-                }
-            });
-            saveFeedbackData();
-            updateAllImageBadges();
-            updateSidebarStats();
+
+            bulkApplyFlag(selectedFlag, 'selected');
         }
 
-        function bulkClearFlag() {
-            const selected = document.querySelectorAll('.gallery-item.selected');
-            if (selected.length === 0) {
-                alert('Keine Bilder ausgewählt');
+        function bulkClearFlag(scope = 'selected') {
+            const imageIds = getBulkTargetImageIds(scope);
+            if (imageIds.length === 0) {
+                alert(scope === 'visible' ? 'Keine sichtbaren Bilder' : 'Keine Bilder ausgewählt');
                 return;
             }
 
-            selected.forEach(item => {
-                const imageId = item.dataset.imageId;
-                if (imageId) {
-                    delete feedbackData.flags[imageId];
-                }
+            if (scope === 'gallery') {
+                if (!confirmBulkReset(scope, 'Markierungen')) return;
+            } else {
+                const label = scope === 'visible' ? 'sichtbaren' : 'ausgewählten';
+                if (!confirm(`Markierungen von ${imageIds.length} ${label} Bild(er)n entfernen?`)) return;
+            }
+
+            imageIds.forEach(imageId => {
+                delete feedbackData.flags[imageId];
             });
 
             saveFeedbackData();
-            updateAllImageBadges();
-            updateSidebarStats();
+            refreshGalleryAfterBulkChange(imageIds);
+        }
 
-            if (currentFilter.flag) {
-                applyFilter();
+        function bulkClearFavorites(scope = 'selected') {
+            const imageIds = getBulkTargetImageIds(scope);
+            if (imageIds.length === 0) {
+                alert('Keine Bilder gefunden');
+                return;
             }
+            if (!confirmBulkReset(scope, 'Favoriten')) return;
+
+            imageIds.forEach(imageId => {
+                delete feedbackData.favorites[imageId];
+            });
+            saveFeedbackData();
+            refreshGalleryAfterBulkChange(imageIds);
+        }
+
+        function bulkClearRatings(scope = 'selected') {
+            const imageIds = getBulkTargetImageIds(scope);
+            if (imageIds.length === 0) {
+                alert('Keine Bilder gefunden');
+                return;
+            }
+            if (!confirmBulkReset(scope, 'Bewertungen')) return;
+
+            imageIds.forEach(imageId => {
+                delete feedbackData.ratings[imageId];
+            });
+            saveFeedbackData();
+            refreshGalleryAfterBulkChange(imageIds);
+        }
+
+        function bulkClearComments(scope = 'selected') {
+            const imageIds = getBulkTargetImageIds(scope);
+            if (imageIds.length === 0) {
+                alert('Keine Bilder gefunden');
+                return;
+            }
+            if (!confirmBulkReset(scope, 'Kommentare')) return;
+
+            imageIds.forEach(imageId => {
+                delete feedbackData.comments[imageId];
+            });
+            saveFeedbackData();
+            refreshGalleryAfterBulkChange(imageIds);
+        }
+
+        function bulkClearSelections(scope = 'selected') {
+            const imageIds = getBulkTargetImageIds(scope);
+            if (imageIds.length === 0) {
+                alert('Keine Bilder gefunden');
+                return;
+            }
+            if (!confirmBulkReset(scope, 'Auswahlen')) return;
+
+            imageIds.forEach(imageId => {
+                delete feedbackData.selections[imageId];
+            });
+            saveFeedbackData();
+            refreshGalleryAfterBulkChange(imageIds);
+        }
+
+        function bulkResetFeedback(scope = 'gallery') {
+            const imageIds = getBulkTargetImageIds(scope);
+            if (imageIds.length === 0) {
+                alert('Keine Bilder gefunden');
+                return;
+            }
+            if (!confirmBulkReset(scope, 'ALLES Feedback')) return;
+
+            imageIds.forEach(imageId => {
+                delete feedbackData.flags[imageId];
+                delete feedbackData.favorites[imageId];
+                delete feedbackData.ratings[imageId];
+                delete feedbackData.comments[imageId];
+                delete feedbackData.selections[imageId];
+            });
+
+            saveFeedbackData();
+            refreshGalleryAfterBulkChange(imageIds);
         }
         
         function bulkAddToSelection() {
@@ -4339,7 +4606,8 @@
         
         // Update Flag Buttons
         function updateFlagButtons(flag) {
-            const flagButtons = document.querySelectorAll('.flag-btn');
+            const sidebar = document.getElementById('feedback-sidebar');
+            const flagButtons = sidebar ? sidebar.querySelectorAll('.flag-btn[data-flag]') : [];
             flagButtons.forEach(btn => {
                 btn.classList.remove('active');
                 if (btn.dataset.flag === flag) {
@@ -4625,6 +4893,9 @@
             
             // Suche initialisieren
             initSearch();
+
+            // Bulk-Aktionen initialisieren
+            initBulkActionButtons();
             
             await loadConfig();
             
