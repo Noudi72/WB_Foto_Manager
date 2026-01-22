@@ -2274,6 +2274,10 @@
                                     <span class="rating-count" id="rating-count-1">0</span>
                                 </div>
                             </div>
+
+                            <button id="clear-flags-btn" class="btn-secondary btn-full btn-compact" onclick="bulkClearFlag()" disabled title="Entfernt Markierungen von allen ausgewählten Bildern">
+                                Markierungen entfernen (Auswahl)
+                            </button>
                         </div>
                         
                         <div class="sidebar-section">
@@ -2289,6 +2293,7 @@
                             <div class="bulk-actions-buttons">
                                 <button class="btn-secondary btn-full btn-compact" onclick="bulkAddToFavorites()">Als Favoriten markieren</button>
                                 <button class="btn-secondary btn-full btn-compact" onclick="bulkSetFlag()">Markierung setzen</button>
+                                <button class="btn-secondary btn-full btn-compact" onclick="bulkClearFlag()">Markierung entfernen</button>
                                 <button class="btn-secondary btn-full btn-compact" onclick="bulkAddToSelection()">Zu Auswahl hinzufügen</button>
                                 <button class="btn-primary btn-full btn-compact" onclick="bulkDownload()">Als ZIP herunterladen</button>
                                 <button class="btn-secondary btn-full btn-compact btn-compact-mt" onclick="exportAsPDF()">Als PDF exportieren</button>
@@ -3995,6 +4000,11 @@
             if (bulkSection) {
                 bulkSection.style.display = selectedCount > 0 ? 'block' : 'none';
             }
+
+            const clearFlagsBtn = document.getElementById('clear-flags-btn');
+            if (clearFlagsBtn) {
+                clearFlagsBtn.disabled = selectedCount === 0;
+            }
         }
         
         // Bulk-Aktionen
@@ -4030,6 +4040,29 @@
             saveFeedbackData();
             updateAllImageBadges();
             updateSidebarStats();
+        }
+
+        function bulkClearFlag() {
+            const selected = document.querySelectorAll('.gallery-item.selected');
+            if (selected.length === 0) {
+                alert('Keine Bilder ausgewählt');
+                return;
+            }
+
+            selected.forEach(item => {
+                const imageId = item.dataset.imageId;
+                if (imageId) {
+                    delete feedbackData.flags[imageId];
+                }
+            });
+
+            saveFeedbackData();
+            updateAllImageBadges();
+            updateSidebarStats();
+
+            if (currentFilter.flag) {
+                applyFilter();
+            }
         }
         
         function bulkAddToSelection() {
