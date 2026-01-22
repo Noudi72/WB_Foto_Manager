@@ -23,6 +23,14 @@
             --shadow: 0 20px 50px rgba(0,0,0,0.08);
             --lightbox-sidebar-width: 200px;
             --sticky-sidebar-top: 18px;
+
+            /* Gallery topbar/sidebar metrics (computed in JS when gallery is visible) */
+            --gallery-fixed-top: calc(var(--sticky-sidebar-top) + env(safe-area-inset-top, 0px));
+            --gallery-header-h: 0px;
+            --gallery-filters-h: 0px;
+            --gallery-topbar-gap: 10px;
+            --gallery-topbar-h: calc(var(--gallery-header-h) + var(--gallery-topbar-gap) + var(--gallery-filters-h));
+            --gallery-fixed-width: min(1400px, calc(100% - 40px));
         }
         
         body {
@@ -36,6 +44,10 @@
 
         html {
             overflow-x: hidden;
+        }
+
+        html {
+            scroll-padding-top: calc(var(--gallery-fixed-top) + var(--gallery-topbar-h) + 18px);
         }
 
         body.dark-mode {
@@ -803,11 +815,13 @@
             border: 1px solid var(--border);
             background: rgba(255,255,255,0.78);
             box-shadow: var(--shadow);
-            margin-bottom: 18px;
             flex-wrap: wrap;
-            position: sticky;
-            top: calc(var(--sticky-sidebar-top) + env(safe-area-inset-top, 0px));
-            z-index: 80;
+            position: fixed;
+            top: var(--gallery-fixed-top);
+            left: 50%;
+            transform: translateX(-50%);
+            width: var(--gallery-fixed-width);
+            z-index: 300;
             -webkit-backdrop-filter: blur(12px);
             backdrop-filter: blur(12px);
         }
@@ -845,6 +859,25 @@
             align-items: center;
             padding: 10px 6px 14px;
             overflow-x: auto;
+            position: fixed;
+            top: calc(var(--gallery-fixed-top) + var(--gallery-header-h) + var(--gallery-topbar-gap));
+            left: 50%;
+            transform: translateX(-50%);
+            width: var(--gallery-fixed-width);
+            z-index: 290;
+            border-radius: 16px;
+            border: 1px solid rgba(0,0,0,0);
+            background: rgba(250, 246, 241, 0.45);
+            -webkit-backdrop-filter: blur(12px);
+            backdrop-filter: blur(12px);
+        }
+
+        body.dark-mode .quick-filters {
+            background: rgba(20, 19, 18, 0.55);
+        }
+
+        #gallery-container {
+            padding-top: calc(var(--gallery-fixed-top) + var(--gallery-topbar-h) + 18px);
         }
 
         .quick-filter-chip {
@@ -2455,7 +2488,7 @@
         /* Gallery Sidebar (für Übersicht) */
         .gallery-sidebar {
             position: sticky;
-            top: calc(var(--sticky-sidebar-top) + env(safe-area-inset-top, 0px));
+            top: calc(var(--gallery-fixed-top) + var(--gallery-topbar-h) + 18px);
             align-self: flex-start;
             width: 200px;
             min-width: 200px;
@@ -2463,7 +2496,7 @@
             border-right: 1px solid var(--border);
             padding: 12px;
             overflow-y: auto;
-            max-height: calc(100vh - (var(--sticky-sidebar-top) + env(safe-area-inset-top, 0px)) - 18px - env(safe-area-inset-bottom, 0px));
+            max-height: calc(100vh - (var(--gallery-fixed-top) + var(--gallery-topbar-h) + 18px) - 18px - env(safe-area-inset-bottom, 0px));
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             box-shadow: 4px 0 24px rgba(0,0,0,0.3);
             z-index: 60;
@@ -4586,6 +4619,19 @@
                 checkPassword();
             }
         });
+
+        // Keep fixed gallery topbar offsets correct on resize/orientation changes.
+        let galleryMetricsRaf = 0;
+        function scheduleGalleryTopbarMetricsUpdate() {
+            if (galleryMetricsRaf) cancelAnimationFrame(galleryMetricsRaf);
+            galleryMetricsRaf = requestAnimationFrame(() => {
+                galleryMetricsRaf = 0;
+                updateGalleryTopbarMetrics();
+            });
+        }
+
+        window.addEventListener('resize', scheduleGalleryTopbarMetricsUpdate, { passive: true });
+        window.addEventListener('orientationchange', scheduleGalleryTopbarMetricsUpdate, { passive: true });
         
         // Zeige Galerie
         function showGallery(gallery) {
@@ -4625,6 +4671,28 @@
             updateBreadcrumb();
             displayGallery(currentImages);
             document.getElementById('loading').style.display = 'none';
+
+            // Update fixed topbar metrics (header + quick filters) so content/sidebar offsets are correct.
+            requestAnimationFrame(() => {
+                updateGalleryTopbarMetrics();
+                requestAnimationFrame(updateGalleryTopbarMetrics);
+            });
+        }
+
+        function updateGalleryTopbarMetrics() {
+            const galleryContainer = document.getElementById('gallery-container');
+            if (!galleryContainer) return;
+            // Only compute when visible; avoids polluting CSS vars on start screen.
+            if (getComputedStyle(galleryContainer).display === 'none') return;
+
+            const header = galleryContainer.querySelector('.gallery-header');
+            const filters = galleryContainer.querySelector('#quick-filters');
+
+            const headerHeight = header ? Math.ceil(header.getBoundingClientRect().height) : 0;
+            const filtersHeight = filters ? Math.ceil(filters.getBoundingClientRect().height) : 0;
+
+            document.documentElement.style.setProperty('--gallery-header-h', `${headerHeight}px`);
+            document.documentElement.style.setProperty('--gallery-filters-h', `${filtersHeight}px`);
         }
         
         // Skeleton Screen für Ladeanimation
