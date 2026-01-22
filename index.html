@@ -21,6 +21,7 @@
             --accent-hover: #c9945e;
             --border: #e8ddd1;
             --shadow: 0 20px 50px rgba(0,0,0,0.08);
+            --lightbox-sidebar-width: 200px;
         }
         
         body {
@@ -1248,11 +1249,11 @@
         }
         
         .lightbox-prev {
-            left: -60px;
+            left: 16px;
         }
         
         .lightbox-next {
-            right: -60px;
+            right: 16px;
         }
         
         .loading {
@@ -1300,10 +1301,10 @@
         /* Lightbox Sidebar */
         .lightbox-sidebar {
             position: fixed;
-            left: -200px;
+            left: calc(-1 * var(--lightbox-sidebar-width));
             top: 0;
-            width: 200px;
-            min-width: 200px;
+            width: var(--lightbox-sidebar-width);
+            min-width: var(--lightbox-sidebar-width);
             height: 100vh;
             background: linear-gradient(180deg, #1a1a1a 0%, #2a2a2a 100%);
             border-right: 1px solid #333;
@@ -1471,6 +1472,156 @@
         /* Comment List */
         .comment-list {
             margin-top: 8px;
+        }
+
+        /* Lightbox Detail-Ansicht: Desktop ohne Sidebar-Aufklappen & ohne Seiten-Scroll */
+        @media (min-width: 1100px) {
+            :root {
+                --lightbox-sidebar-width: 340px;
+            }
+
+            .lightbox.active {
+                padding-left: var(--lightbox-sidebar-width);
+            }
+
+            #feedback-toggle-btn {
+                display: none;
+            }
+
+            .lightbox-sidebar {
+                left: 0 !important;
+                overflow: hidden;
+                padding: 8px;
+            }
+
+            .lightbox-sidebar .sidebar-close-btn {
+                display: none;
+            }
+
+            .lightbox-sidebar h3 {
+                margin-bottom: 10px;
+                font-size: 0.95em;
+            }
+
+            .lightbox-sidebar-body {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 8px;
+                align-content: start;
+            }
+
+            .feedback-section {
+                margin-top: 0;
+                padding-top: 0;
+                border-top: none;
+            }
+
+            .feedback-section + .feedback-section {
+                margin-top: 0;
+                padding-top: 0;
+                border-top: none;
+            }
+
+            .feedback-section--wide {
+                grid-column: 1 / -1;
+            }
+
+            .lightbox-sidebar h4 {
+                margin-top: 0;
+                margin-bottom: 6px;
+                font-size: 0.78em;
+            }
+
+            .rating-stars {
+                margin-bottom: 4px;
+            }
+
+            .star {
+                font-size: 15px;
+            }
+
+            .flag-buttons {
+                gap: 5px;
+            }
+
+            .lightbox-sidebar .btn-primary,
+            .lightbox-sidebar .btn-secondary,
+            .lightbox-sidebar .gallery-item-btn {
+                padding: 5px 10px;
+                font-size: 11px;
+            }
+
+            .lightbox-sidebar .flag-btn {
+                padding: 5px 6px;
+                font-size: 10px;
+            }
+
+            .comment-input {
+                min-height: 34px;
+                resize: none;
+            }
+
+            .comment-list {
+                margin-top: 6px;
+                max-height: 110px;
+                overflow: auto;
+            }
+
+            .selection-row {
+                display: flex;
+                gap: 8px;
+                align-items: center;
+            }
+
+            .selection-row .sidebar-input--mb {
+                margin-bottom: 0;
+                flex: 1;
+                min-width: 0;
+            }
+
+            .selection-row button {
+                white-space: nowrap;
+                padding: 6px 10px;
+                font-size: 12px;
+            }
+
+            #image-info {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 4px 10px;
+                font-size: 0.78em;
+                line-height: 1.4;
+            }
+
+            #image-info > div {
+                display: flex;
+                gap: 6px;
+                align-items: baseline;
+                min-width: 0;
+                white-space: nowrap;
+            }
+
+            #image-info strong {
+                flex: 0 0 auto;
+                color: rgba(255,255,255,0.75);
+                font-weight: 600;
+            }
+
+            #image-info span {
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+        }
+
+        /* Extra-kompakt bei weniger Höhe (Browser-Chrome, kleinere Fenster) */
+        @media (min-width: 1100px) and (max-height: 900px) {
+            :root {
+                --lightbox-sidebar-width: 320px;
+            }
+
+            .comment-list { max-height: 90px; }
+            .lightbox-sidebar-body { gap: 6px; }
+            .lightbox-sidebar h3 { margin-bottom: 8px; }
         }
         
         .comment-item {
@@ -2380,66 +2531,70 @@
         <div class="lightbox-sidebar" id="feedback-sidebar">
             <button onclick="toggleSidebar()" class="sidebar-close-btn">&times;</button>
             <h3 id="feedback-image-name">Bild Feedback</h3>
-            
-            <!-- Bewertung -->
-            <div class="feedback-section">
-                <h4>Bewertung</h4>
-                <div class="rating-stars" id="rating-stars">
-                    <span class="star" data-rating="1" onclick="setRating(1)">★</span>
-                    <span class="star" data-rating="2" onclick="setRating(2)">★</span>
-                    <span class="star" data-rating="3" onclick="setRating(3)">★</span>
-                    <span class="star" data-rating="4" onclick="setRating(4)">★</span>
-                    <span class="star" data-rating="5" onclick="setRating(5)">★</span>
+
+            <div class="lightbox-sidebar-body">
+                <!-- Bewertung -->
+                <div class="feedback-section">
+                    <h4>Bewertung</h4>
+                    <div class="rating-stars" id="rating-stars">
+                        <span class="star" data-rating="1" onclick="setRating(1)">★</span>
+                        <span class="star" data-rating="2" onclick="setRating(2)">★</span>
+                        <span class="star" data-rating="3" onclick="setRating(3)">★</span>
+                        <span class="star" data-rating="4" onclick="setRating(4)">★</span>
+                        <span class="star" data-rating="5" onclick="setRating(5)">★</span>
+                    </div>
+                    <p id="rating-text" class="rating-muted">Keine Bewertung</p>
+                    <button class="btn-secondary btn-full btn-compact" onclick="setRating(0)">Bewertung entfernen</button>
                 </div>
-                <p id="rating-text" class="rating-muted">Keine Bewertung</p>
-                <button class="btn-secondary btn-full btn-compact" onclick="setRating(0)">Bewertung entfernen</button>
-            </div>
-            
-            <!-- Markierungen (Flags) -->
-            <div class="feedback-section">
-                <h4>Markierung</h4>
-                <div class="flag-buttons">
-                    <button class="flag-btn red" data-flag="reject" title="Ablehnen" onclick="setFlag('reject')">Ablehnen</button>
-                    <button class="flag-btn yellow" data-flag="review" title="Prüfen" onclick="setFlag('review')">Prüfen</button>
-                    <button class="flag-btn green" data-flag="approve" title="Genehmigen" onclick="setFlag('approve')">Genehmigen</button>
-                    <button class="flag-btn black" data-flag="final" title="Final" onclick="setFlag('final')">Final</button>
+
+                <!-- Markierungen (Flags) -->
+                <div class="feedback-section">
+                    <h4>Markierung</h4>
+                    <div class="flag-buttons">
+                        <button class="flag-btn red" data-flag="reject" title="Ablehnen" onclick="setFlag('reject')">Ablehnen</button>
+                        <button class="flag-btn yellow" data-flag="review" title="Prüfen" onclick="setFlag('review')">Prüfen</button>
+                        <button class="flag-btn green" data-flag="approve" title="Genehmigen" onclick="setFlag('approve')">Genehmigen</button>
+                        <button class="flag-btn black" data-flag="final" title="Final" onclick="setFlag('final')">Final</button>
+                    </div>
+                    <button class="btn-secondary btn-full btn-compact" onclick="clearFlag()">Markierung entfernen</button>
                 </div>
-                <button class="btn-secondary btn-full btn-compact" onclick="clearFlag()">Markierung entfernen</button>
-            </div>
-            
-            <!-- Favorit -->
-            <div class="feedback-section">
-                <h4>Favorit</h4>
-                <button class="gallery-item-btn gallery-item-like btn-full btn-center" id="favorite-btn" onclick="toggleFavorite()">
-                    <span id="favorite-text">Als Favorit markieren</span>
-                </button>
-            </div>
-            
-            <!-- Kommentare -->
-            <div class="feedback-section">
-                <h4>Kommentare</h4>
-                <textarea class="comment-input" id="comment-input" placeholder="Ihr Kommentar..."></textarea>
-                <button class="btn-primary btn-full" onclick="addComment()">Kommentar hinzufügen</button>
-                <div class="comment-list" id="comment-list"></div>
-            </div>
-            
-            <!-- Auswahl -->
-            <div class="feedback-section">
-                <h4>Auswahl</h4>
-                <input type="text" id="selection-name" placeholder="Auswahl-Name" class="sidebar-input sidebar-input--mb">
-                <button class="btn-secondary btn-full" onclick="addToSelection()">Zu Auswahl hinzufügen</button>
-                <div id="current-selections"></div>
-            </div>
-            
-            <!-- Bild-Info -->
-            <div class="feedback-section">
-                <h4>Bild-Informationen</h4>
-                <div id="image-info" class="image-info">
-                    <div><strong>Name:</strong> <span id="info-name">-</span></div>
-                    <div><strong>Größe:</strong> <span id="info-size">-</span></div>
-                    <div><strong>Auflösung:</strong> <span id="info-resolution">-</span></div>
-                    <div><strong>Upload:</strong> <span id="info-upload">-</span></div>
-                    <div><strong>Quelle:</strong> <span id="info-source">-</span></div>
+
+                <!-- Favorit -->
+                <div class="feedback-section">
+                    <h4>Favorit</h4>
+                    <button class="gallery-item-btn gallery-item-like btn-full btn-center" id="favorite-btn" onclick="toggleFavorite()">
+                        <span id="favorite-text">Als Favorit markieren</span>
+                    </button>
+                </div>
+
+                <!-- Kommentare -->
+                <div class="feedback-section feedback-section--wide">
+                    <h4>Kommentare</h4>
+                    <textarea class="comment-input" id="comment-input" placeholder="Ihr Kommentar..."></textarea>
+                    <button class="btn-primary btn-full" onclick="addComment()">Kommentar hinzufügen</button>
+                    <div class="comment-list" id="comment-list"></div>
+                </div>
+
+                <!-- Auswahl -->
+                <div class="feedback-section feedback-section--wide">
+                    <h4>Auswahl</h4>
+                    <div class="selection-row">
+                        <input type="text" id="selection-name" placeholder="Auswahl-Name" class="sidebar-input sidebar-input--mb">
+                        <button class="btn-secondary" onclick="addToSelection()">Hinzufügen</button>
+                    </div>
+                    <div id="current-selections"></div>
+                </div>
+
+                <!-- Bild-Info -->
+                <div class="feedback-section feedback-section--wide">
+                    <h4>Bild-Informationen</h4>
+                    <div id="image-info" class="image-info">
+                        <div><strong>Name:</strong> <span id="info-name">-</span></div>
+                        <div><strong>Größe:</strong> <span id="info-size">-</span></div>
+                        <div><strong>Auflösung:</strong> <span id="info-resolution">-</span></div>
+                        <div><strong>Upload:</strong> <span id="info-upload">-</span></div>
+                        <div><strong>Quelle:</strong> <span id="info-source">-</span></div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -3998,6 +4153,7 @@
             currentImageIndex = index;
             const lightbox = document.getElementById('lightbox');
             const img = document.getElementById('lightbox-image');
+            const sidebar = document.getElementById('feedback-sidebar');
             
             const image = currentImages[index];
             const imageUrl = fullImageUrl || image.url || `./images/${image.name}`;
@@ -4005,6 +4161,10 @@
             img.src = imageUrl;
             img.alt = image.name || 'Bild';
             lightbox.classList.add('active');
+
+            if (sidebar && window.matchMedia && window.matchMedia('(min-width: 1100px)').matches) {
+                sidebar.classList.add('open');
+            }
             
             // Update Feedback-Sidebar für aktuelles Bild
             updateFeedbackSidebar();
