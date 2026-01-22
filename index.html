@@ -15,8 +15,8 @@
             --bg-primary: #faf6f1;
             --bg-secondary: #ffffff;
             --bg-tertiary: #f5ede5;
-            --text-primary: #4a3f38;
-            --text-secondary: #8b7d75;
+            --text-primary: #3f352f;
+            --text-secondary: #6f615a;
             --accent: #d4a574;
             --accent-hover: #c9945e;
             --border: #e8ddd1;
@@ -807,7 +807,7 @@
             flex-wrap: wrap;
             position: sticky;
             top: calc(var(--sticky-sidebar-top) + env(safe-area-inset-top, 0px));
-            z-index: 50;
+            z-index: 80;
             -webkit-backdrop-filter: blur(12px);
             backdrop-filter: blur(12px);
         }
@@ -873,6 +873,23 @@
             color: var(--accent);
         }
 
+        /* Light mode: more contrast for chips/buttons */
+        body:not(.dark-mode) .quick-filter-chip {
+            background: rgba(255,255,255,0.78);
+        }
+
+        body:not(.dark-mode) .quick-filter-chip.active {
+            background: var(--accent);
+            border-color: var(--accent-hover);
+            color: #1f1610;
+        }
+
+        body:not(.dark-mode) .gallery-chip,
+        body:not(.dark-mode) .gallery-chip-button,
+        body:not(.dark-mode) .gallery-sort-select {
+            background: rgba(255,255,255,0.78);
+        }
+
         .quick-filter-sep {
             width: 1px;
             height: 18px;
@@ -906,6 +923,33 @@
         .gallery-chip-button:hover {
             border-color: var(--accent);
             color: var(--accent);
+        }
+
+        .gallery-sort-select {
+            -webkit-appearance: none;
+            appearance: none;
+            border: 1px solid var(--border);
+            background: rgba(255,255,255,0.04);
+            color: var(--text-primary);
+            padding: 8px 34px 8px 12px;
+            border-radius: 999px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            line-height: 1;
+            background-image: linear-gradient(45deg, transparent 50%, var(--text-secondary) 50%),
+                linear-gradient(135deg, var(--text-secondary) 50%, transparent 50%);
+            background-position: calc(100% - 16px) calc(50% - 1px), calc(100% - 11px) calc(50% - 1px);
+            background-size: 5px 5px, 5px 5px;
+            background-repeat: no-repeat;
+        }
+
+        .gallery-sort-select:hover {
+            border-color: var(--accent);
+        }
+
+        .gallery-sort-select:focus-visible {
+            outline: 3px solid rgba(212, 165, 116, 0.35);
+            outline-offset: 2px;
         }
 
         .gallery-chip-button:focus-visible {
@@ -1612,6 +1656,224 @@
             max-height: 90vh;
             object-fit: contain;
         }
+
+        .lightbox-filmstrip {
+            margin-top: 10px;
+            max-width: 90vw;
+            overflow-x: auto;
+            overflow-y: hidden;
+            padding: 6px 0;
+        }
+
+        .lightbox-filmstrip-inner {
+            display: flex;
+            gap: 8px;
+            padding: 0 2px;
+            align-items: center;
+        }
+
+        .lightbox-thumb {
+            width: 64px;
+            height: 64px;
+            flex: 0 0 auto;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.16);
+            background: rgba(255,255,255,0.06);
+            cursor: pointer;
+            position: relative;
+            transition: transform 0.12s ease, border-color 0.12s ease, box-shadow 0.12s ease;
+        }
+
+        .lightbox-thumb:hover {
+            transform: translateY(-1px);
+            border-color: rgba(212, 165, 116, 0.6);
+        }
+
+        .lightbox-thumb.active {
+            border-color: var(--accent);
+            box-shadow: 0 8px 18px rgba(212, 165, 116, 0.22);
+        }
+
+        .lightbox-thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .culling-overlay,
+        .compare-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.95);
+            z-index: 1100;
+            color: rgba(255,255,255,0.92);
+        }
+
+        .culling-overlay.active,
+        .compare-overlay.active {
+            display: flex;
+        }
+
+        .culling-overlay {
+            flex-direction: column;
+            padding: 18px 16px 14px;
+            gap: 10px;
+        }
+
+        .culling-topbar {
+            width: 100%;
+            max-width: 1440px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .culling-title {
+            font-weight: 800;
+            letter-spacing: 0.02em;
+        }
+
+        .culling-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .culling-actions .gallery-chip-button {
+            background: rgba(255,255,255,0.08);
+            border-color: rgba(255,255,255,0.18);
+            color: rgba(255,255,255,0.92);
+        }
+
+        .culling-actions .gallery-chip-button:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .culling-grid {
+            width: 100%;
+            max-width: 1440px;
+            margin: 0 auto;
+            display: grid;
+            gap: 12px;
+            align-items: center;
+            flex: 1;
+        }
+
+        .culling-grid--one {
+            grid-template-columns: 1fr;
+        }
+
+        .culling-grid--two {
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .culling-frame {
+            position: relative;
+            border-radius: 18px;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.14);
+            background: rgba(255,255,255,0.04);
+            padding: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 220px;
+        }
+
+        .culling-frame.is-selected {
+            border-color: var(--accent);
+            box-shadow: 0 14px 26px rgba(212, 165, 116, 0.18);
+        }
+
+        .culling-frame img {
+            max-width: 100%;
+            max-height: calc(100vh - 280px);
+            object-fit: contain;
+            display: block;
+        }
+
+        .compare-overlay {
+            flex-direction: column;
+            padding: 18px 16px;
+            gap: 12px;
+        }
+
+        .compare-topbar {
+            width: 100%;
+            max-width: 1440px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .compare-grid {
+            width: 100%;
+            max-width: 1440px;
+            margin: 0 auto;
+            flex: 1;
+            display: grid;
+            gap: 12px;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            align-items: stretch;
+        }
+
+        .compare-grid.compare-grid--3,
+        .compare-grid.compare-grid--4 {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .compare-card {
+            border-radius: 18px;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.14);
+            background: rgba(255,255,255,0.04);
+            display: flex;
+            flex-direction: column;
+            min-height: 240px;
+        }
+
+        .compare-card img {
+            width: 100%;
+            height: 100%;
+            max-height: calc(100vh - 280px);
+            object-fit: contain;
+            background: rgba(0,0,0,0.18);
+        }
+
+        .compare-meta {
+            padding: 10px 12px;
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            align-items: center;
+            border-top: 1px solid rgba(255,255,255,0.10);
+            font-size: 12px;
+        }
+
+        .compare-meta .name {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            opacity: 0.95;
+        }
+
+        @media (max-width: 920px) {
+            .culling-grid--two {
+                grid-template-columns: 1fr;
+            }
+            .compare-grid {
+                grid-template-columns: 1fr;
+            }
+        }
         
         .lightbox-close {
             position: absolute;
@@ -2045,7 +2307,7 @@
         }
         
         .comment-date {
-            color: #888;
+            color: var(--text-secondary);
             font-size: 0.7em;
         }
         
@@ -2100,7 +2362,7 @@
         .is-hidden { display: none; }
         .empty-center { text-align: center; color: var(--text-secondary); padding: 28px 0; }
         .empty-center-grid { text-align: center; color: var(--text-secondary); grid-column: 1 / -1; }
-        .center-muted { text-align: center; color: #888; margin-bottom: 20px; }
+        .center-muted { text-align: center; color: var(--text-secondary); margin-bottom: 20px; }
         .error-text { color: #ff6b6b; margin-top: 10px; }
 
         .gallery-layout-row { display: flex; gap: 20px; }
@@ -2110,7 +2372,7 @@
         .sidebar-section--flush { margin-top: 0; padding-top: 0; border-top: none; }
         .sidebar-input { width: 100%; padding: 6px 8px; background: var(--bg-primary); border: 1px solid var(--border); border-radius: 4px; color: var(--text-primary); font-size: 12px; }
         .sidebar-input--mb { margin-bottom: 12px; }
-        .muted-small { color: #888; font-size: 0.75em; margin: 0; }
+        .muted-small { color: var(--text-secondary); font-size: 0.75em; margin: 0; }
 
         .bulk-actions-buttons { display: flex; flex-direction: column; gap: 6px; }
         .bulk-flag-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
@@ -2123,7 +2385,7 @@
 
         .viewer-actions { position: absolute; bottom: 10px; left: 10px; display: flex; gap: 10px; z-index: 10; }
         .sidebar-close-btn { position: absolute; top: 12px; left: 8px; background: rgba(212, 165, 116, 0.2); border: 1px solid var(--accent); border-radius: 4px; color: var(--accent); font-size: 12px; cursor: pointer; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
-        .rating-muted { color: #888; font-size: 0.75em; margin-top: 4px; }
+        .rating-muted { color: var(--text-secondary); font-size: 0.75em; margin-top: 4px; }
         .image-info { font-size: 0.8em; color: var(--text-secondary); line-height: 1.6; }
 
         .gallery-card-preview--centered { display: flex; align-items: center; justify-content: center; background: var(--bg-tertiary); color: var(--text-secondary); }
@@ -2201,9 +2463,10 @@
             border-right: 1px solid var(--border);
             padding: 12px;
             overflow-y: auto;
-            max-height: calc(100vh - 150px);
+            max-height: calc(100vh - (var(--sticky-sidebar-top) + env(safe-area-inset-top, 0px)) - 18px - env(safe-area-inset-bottom, 0px));
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             box-shadow: 4px 0 24px rgba(0,0,0,0.3);
+            z-index: 60;
         }
         
         .gallery-sidebar.collapsed {
@@ -2418,6 +2681,43 @@
             display: flex;
             flex-direction: column;
             gap: 4px;
+        }
+
+        .selection-row-item {
+            display: flex;
+            align-items: stretch;
+            gap: 6px;
+        }
+
+        .selection-row-item .selection-item {
+            flex: 1;
+            margin-bottom: 0;
+        }
+
+        .selection-row-actions {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+
+        .selection-mini-btn {
+            -webkit-appearance: none;
+            appearance: none;
+            border: 1px solid var(--border);
+            background: rgba(255,255,255,0.06);
+            color: var(--text-primary);
+            border-radius: 10px;
+            padding: 6px 8px;
+            font-size: 11px;
+            font-weight: 800;
+            cursor: pointer;
+            line-height: 1;
+            white-space: nowrap;
+        }
+
+        .selection-mini-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
         }
         
         .selection-item {
@@ -2760,6 +3060,18 @@
                     <span class="gallery-chip" id="gallery-visible-chip">– sichtbar</span>
                     <span class="gallery-chip" id="gallery-filter-chip">Alle</span>
                     <span class="gallery-chip" id="gallery-selected-chip">0 ausgewählt</span>
+                    <select id="sort-select" class="gallery-sort-select" title="Sortierung">
+                        <option value="default">Sort: Standard</option>
+                        <option value="date_desc">Sort: Datum ↓</option>
+                        <option value="date_asc">Sort: Datum ↑</option>
+                        <option value="name_asc">Sort: Name A→Z</option>
+                        <option value="name_desc">Sort: Name Z→A</option>
+                        <option value="rating_desc">Sort: Rating ↓</option>
+                        <option value="rating_asc">Sort: Rating ↑</option>
+                        <option value="flag_desc">Sort: Flag (Final→…)</option>
+                        <option value="flag_asc">Sort: Flag (…→Final)</option>
+                    </select>
+                    <button type="button" class="gallery-chip-button" id="culling-toggle-btn" title="Culling Mode (C)">Culling</button>
                     <button type="button" class="gallery-chip-button" id="shortcuts-help-btn" title="Shortcuts anzeigen (?)">? Hilfe</button>
                 </div>
             </div>
@@ -2952,6 +3264,7 @@
                         <button class="btn-secondary btn-compact" type="button" id="selection-bar-favorite">Favorit</button>
                         <button class="btn-secondary btn-compact" type="button" id="selection-bar-add-selection">Zu Auswahl</button>
                         <button class="btn-secondary btn-compact" type="button" id="selection-bar-export">Export</button>
+                        <button class="btn-secondary btn-compact" type="button" id="selection-bar-compare">Compare</button>
                         <button class="btn-primary btn-compact" type="button" id="selection-bar-download">Download</button>
                     </div>
                 </div>
@@ -2975,6 +3288,10 @@
             <div class="viewer-actions">
                 <button class="download-btn" id="lightbox-download-btn" onclick="downloadImage()">Download</button>
                 <button class="download-btn" onclick="toggleSidebar()" id="feedback-toggle-btn">Feedback</button>
+            </div>
+
+            <div class="lightbox-filmstrip" id="lightbox-filmstrip" aria-label="Filmstrip">
+                <div class="lightbox-filmstrip-inner" id="lightbox-filmstrip-inner"></div>
             </div>
         </div>
         <button class="lightbox-nav lightbox-next" onclick="nextImage()">›</button>
@@ -3054,6 +3371,37 @@
         </div>
     </div>
 
+    <!-- Culling Mode (Picdrop-inspiriert) -->
+    <div class="culling-overlay" id="culling-overlay" role="dialog" aria-modal="true" aria-label="Culling Mode">
+        <button class="lightbox-close" type="button" id="culling-close" aria-label="Schließen">&times;</button>
+        <div class="culling-topbar">
+            <div class="culling-title" id="culling-title">Culling</div>
+            <div class="culling-actions">
+                <button type="button" class="gallery-chip-button" id="culling-layout-btn" title="Layout wechseln">2-up</button>
+                <button type="button" class="gallery-chip-button" id="culling-open-lightbox-btn" title="Im Lightbox öffnen">Lightbox</button>
+            </div>
+        </div>
+        <div class="culling-grid culling-grid--two" id="culling-grid">
+            <div class="culling-frame" data-slot="0"><img id="culling-image-0" alt=""></div>
+            <div class="culling-frame" data-slot="1"><img id="culling-image-1" alt=""></div>
+        </div>
+        <div class="lightbox-filmstrip" id="culling-filmstrip" aria-label="Filmstrip">
+            <div class="lightbox-filmstrip-inner" id="culling-filmstrip-inner"></div>
+        </div>
+    </div>
+
+    <!-- Compare View (2–4 Bilder) -->
+    <div class="compare-overlay" id="compare-overlay" role="dialog" aria-modal="true" aria-label="Vergleich">
+        <button class="lightbox-close" type="button" id="compare-close" aria-label="Schließen">&times;</button>
+        <div class="compare-topbar">
+            <div class="culling-title" id="compare-title">Vergleich</div>
+            <div class="culling-actions">
+                <button type="button" class="gallery-chip-button" id="compare-open-lightbox-btn" title="Erstes Bild im Lightbox öffnen">Lightbox</button>
+            </div>
+        </div>
+        <div class="compare-grid" id="compare-grid"></div>
+    </div>
+
     <!-- Toasts (Micro-Feedback) -->
     <div class="toast-container" id="toast-container" aria-live="polite" aria-atomic="true"></div>
 
@@ -3090,6 +3438,8 @@
                         <div class="shortcut-row"><kbd>Esc</kbd><span>Lightbox schließen / Auswahl aufheben</span></div>
                         <div class="shortcut-row"><kbd>←</kbd><span>Vorheriges Bild (Lightbox)</span></div>
                         <div class="shortcut-row"><kbd>→</kbd><span>Nächstes Bild (Lightbox)</span></div>
+                        <div class="shortcut-row"><kbd>C</kbd><span>Culling Mode (Galerie)</span></div>
+                        <div class="shortcut-row"><kbd>V</kbd><span>Compare View (2–4 ausgewählt)</span></div>
                     </div>
 
                     <div class="shortcuts-section">
@@ -3106,6 +3456,8 @@
                         <div class="shortcut-row"><kbd>E</kbd><span>Export (JSON Liste)</span></div>
                         <div class="shortcut-row"><kbd>F</kbd><span>Favorit togglen (Lightbox) / Favorit setzen (Bulk)</span></div>
                         <div class="shortcut-row"><kbd>S</kbd><span>Zu Auswahl hinzufügen (Bulk)</span></div>
+                        <div class="shortcut-row"><kbd>1</kbd>.. <kbd>5</kbd><span>Rating setzen (Lightbox/Culling)</span></div>
+                        <div class="shortcut-row"><kbd>R</kbd> / <kbd>X</kbd><span>Reject togglen (Lightbox/Culling)</span></div>
                     </div>
 
                     <div class="shortcuts-section">
@@ -3165,7 +3517,10 @@
         const FEEDBACK_STORAGE_KEY = 'gallery_feedback';
         const FEEDBACK_META_KEY = 'gallery_feedback_meta';
         window.__wbfmDebug = { lastSave: null, lastLoad: null, lastImageId: null };
+        let currentImagesOriginal = [];
         let currentImages = [];
+        let currentSortKey = 'default';
+        let selectedImageIds = new Set();
         let currentImageIndex = 0;
         let searchQuery = '';
         let selectedCategory = 'all';
@@ -3242,13 +3597,16 @@
         }
 
         function getFeedbackImageId(image, index) {
+            const stableIndex = Number.isFinite(Number(image?.__wbfmOriginalIndex))
+                ? Number(image.__wbfmOriginalIndex)
+                : Number(index);
             const normalizedUrl = normalizeUrlForId(image?.url);
             const base =
                 image?.publicId ||
                 image?.id ||
                 image?.name ||
                 normalizedUrl ||
-                `img_${index}`;
+                `img_${stableIndex}`;
             const galleryPrefix = currentGallery?.id ? `${currentGallery.id}::` : '';
             return `${galleryPrefix}${base}`;
         }
@@ -3301,6 +3659,24 @@
             if (didChange) {
                 saveFeedbackData();
             }
+        }
+
+        function ensureOriginalIndices(images) {
+            if (!Array.isArray(images)) return;
+            images.forEach((img, idx) => {
+                if (!img || typeof img !== 'object') return;
+                if (Number.isFinite(Number(img.__wbfmOriginalIndex))) return;
+                try {
+                    Object.defineProperty(img, '__wbfmOriginalIndex', {
+                        value: idx,
+                        writable: false,
+                        enumerable: false,
+                        configurable: true
+                    });
+                } catch {
+                    img.__wbfmOriginalIndex = idx;
+                }
+            });
         }
 
         function safeStorageGet(key) {
@@ -4218,6 +4594,14 @@
             document.getElementById('gallery-container').style.display = 'block';
             document.getElementById('loading').style.display = 'block';
             document.getElementById('error').style.display = 'none';
+
+            // Reset transient UI state (selection is per-view)
+            selectedImageIds = new Set();
+            lastSelectionIndex = null;
+            clearSelectionUndo();
+            currentSortKey = 'default';
+            const sortEl = document.getElementById('sort-select');
+            if (sortEl) sortEl.value = 'default';
             
             // Zeige Zurück-Button nur wenn mehrere Galerien vorhanden
             if (galleryConfig && galleryConfig.galleries && galleryConfig.galleries.length > 1) {
@@ -4226,8 +4610,11 @@
                 document.getElementById('back-button').style.display = 'none';
             }
             
-            currentImages = gallery.images || [];
-            migrateLegacyFeedbackIds(currentImages);
+            currentImagesOriginal = Array.isArray(gallery.images) ? gallery.images : [];
+            ensureOriginalIndices(currentImagesOriginal);
+            // Working set (can be sorted/filtered without mutating original list)
+            currentImages = Array.from(currentImagesOriginal);
+            migrateLegacyFeedbackIds(currentImagesOriginal);
             console.log('Lade', currentImages.length, 'Bilder - "' + (gallery.name || 'Unbekannt') + '"');
             const galleryTitle = document.getElementById('gallery-title');
             const gallerySubtitle = document.getElementById('gallery-subtitle');
@@ -4415,6 +4802,11 @@
                 
                 item.appendChild(img);
                 item.appendChild(overlay);
+
+                // Persist selection across rerenders (sorting etc.)
+                if (selectedImageIds && selectedImageIds.has(imageId)) {
+                    setGalleryItemSelected(item, true);
+                }
                 item.onclick = () => openLightbox(index, fullSrc);
                 
                 items.push(item);
@@ -4456,6 +4848,152 @@
             selectionName: null,  // Name der Auswahl, wenn type === 'selection'
             ratingValue: null     // 1..5 wenn type === 'rated'
         };
+
+        function parseImageDateMs(image) {
+            if (!image) return 0;
+            const candidates = [
+                image.date,
+                image.uploadDate,
+                image.createdAt,
+                image.timestamp,
+                image.exifDate
+            ].filter(v => v !== undefined && v !== null && v !== '');
+
+            for (const c of candidates) {
+                if (typeof c === 'number' && Number.isFinite(c)) {
+                    // Heuristic: seconds vs ms
+                    const ms = c < 2_000_000_000 ? c * 1000 : c;
+                    if (Number.isFinite(ms)) return ms;
+                }
+                if (typeof c === 'string') {
+                    const t = Date.parse(c);
+                    if (Number.isFinite(t)) return t;
+                }
+            }
+            return 0;
+        }
+
+        function getImageNameForSort(image) {
+            const raw = (image?.name || image?.id || image?.publicId || image?.url || '').toString();
+            return raw.toLowerCase();
+        }
+
+        function getFlagRank(flag) {
+            // Higher rank = "better" (Final first)
+            const ranks = { final: 4, approve: 3, review: 2, reject: 1 };
+            return ranks[String(flag || '').toLowerCase()] || 0;
+        }
+
+        function sortImagesByKey(images, sortKey) {
+            const key = String(sortKey || 'default');
+            const base = Array.isArray(images) ? Array.from(images) : [];
+            if (key === 'default') return base;
+
+            const compareNumber = (a, b) => (a === b ? 0 : a < b ? -1 : 1);
+
+            return base.sort((imgA, imgB) => {
+                const idxA = Number.isFinite(Number(imgA?.__wbfmOriginalIndex)) ? Number(imgA.__wbfmOriginalIndex) : 0;
+                const idxB = Number.isFinite(Number(imgB?.__wbfmOriginalIndex)) ? Number(imgB.__wbfmOriginalIndex) : 0;
+                const idA = getFeedbackImageId(imgA, idxA);
+                const idB = getFeedbackImageId(imgB, idxB);
+
+                if (key.startsWith('name_')) {
+                    const dir = key.endsWith('_desc') ? -1 : 1;
+                    const a = getImageNameForSort(imgA);
+                    const b = getImageNameForSort(imgB);
+                    const cmp = a.localeCompare(b);
+                    return cmp !== 0 ? cmp * dir : compareNumber(idxA, idxB);
+                }
+
+                if (key.startsWith('date_')) {
+                    const dir = key.endsWith('_desc') ? -1 : 1;
+                    const a = parseImageDateMs(imgA);
+                    const b = parseImageDateMs(imgB);
+                    const cmp = compareNumber(a, b);
+                    return cmp !== 0 ? cmp * dir : compareNumber(idxA, idxB);
+                }
+
+                if (key.startsWith('rating_')) {
+                    const dir = key.endsWith('_desc') ? -1 : 1;
+                    const a = Number(feedbackData.ratings[idA] || 0);
+                    const b = Number(feedbackData.ratings[idB] || 0);
+                    const cmp = compareNumber(a, b);
+                    return cmp !== 0 ? cmp * dir : compareNumber(idxA, idxB);
+                }
+
+                if (key.startsWith('flag_')) {
+                    const dir = key.endsWith('_desc') ? -1 : 1;
+                    const a = getFlagRank(feedbackData.flags[idA]);
+                    const b = getFlagRank(feedbackData.flags[idB]);
+                    const cmp = compareNumber(a, b);
+                    return cmp !== 0 ? cmp * dir : compareNumber(idxA, idxB);
+                }
+
+                return compareNumber(idxA, idxB);
+            });
+        }
+
+        function applySort(sortKey, { silent = false } = {}) {
+            const next = String(sortKey || 'default');
+            currentSortKey = next;
+
+            const selectEl = document.getElementById('sort-select');
+            if (selectEl && selectEl.value !== next) selectEl.value = next;
+
+            const activeImage = currentImages?.[currentImageIndex];
+            const activeId = activeImage ? getFeedbackImageId(activeImage, currentImageIndex) : null;
+
+            currentImages = sortImagesByKey(currentImagesOriginal, next);
+
+            if (activeId) {
+                const idx = currentImages.findIndex((img, i) => getFeedbackImageId(img, i) === activeId);
+                if (idx >= 0) currentImageIndex = idx;
+            }
+
+            displayGallery(currentImages);
+
+            // If overlays are open, refresh their content
+            if (isLightboxActive()) {
+                const image = currentImages?.[currentImageIndex];
+                if (image) {
+                    const imgEl = document.getElementById('lightbox-image');
+                    if (imgEl) imgEl.src = getFullImageUrl(image);
+                    updateFeedbackSidebar();
+                    renderLightboxFilmstrip();
+                    updateLightboxFilmstripActive();
+                }
+            }
+            if (isCullingActive()) {
+                renderCulling();
+            }
+            if (isCompareActive()) {
+                openCompareView();
+            }
+
+            if (!silent) {
+                const labels = {
+                    default: 'Standard',
+                    date_desc: 'Datum ↓',
+                    date_asc: 'Datum ↑',
+                    name_asc: 'Name A→Z',
+                    name_desc: 'Name Z→A',
+                    rating_desc: 'Rating ↓',
+                    rating_asc: 'Rating ↑',
+                    flag_desc: 'Flag (Final→…)',
+                    flag_asc: 'Flag (…→Final)'
+                };
+                showToast('Sortierung', labels[next] || next, 'info');
+            }
+        }
+
+        function initSortControls() {
+            const selectEl = document.getElementById('sort-select');
+            if (!selectEl) return;
+            selectEl.value = currentSortKey || 'default';
+            selectEl.addEventListener('change', () => {
+                applySort(selectEl.value);
+            });
+        }
         
         // Toggle Gallery Sidebar
         function toggleGallerySidebar() {
@@ -4712,7 +5250,15 @@
                         const imageId = getFeedbackImageId(img, index);
                         return (feedbackData.selections[imageId] || []).includes(s);
                     }).length;
-                    return `<div class="selection-item clickable" onclick="filterBySelection('${s.replace(/'/g, "\\'")}')" title="Nur Bilder in dieser Auswahl">${s} <span class="selection-count">${count}</span></div>`;
+                    const esc = s.replace(/'/g, "\\'");
+                    return `
+                        <div class="selection-row-item">
+                            <div class="selection-item clickable" onclick="filterBySelection('${esc}')" title="Nur Bilder in dieser Auswahl">${s} <span class="selection-count">${count}</span></div>
+                            <div class="selection-row-actions">
+                                <button class="selection-mini-btn" type="button" onclick="exportSelectionByName('${esc}')" title="JSON Export nur dieser Auswahl">JSON</button>
+                                <button class="selection-mini-btn" type="button" onclick="downloadSelectionZipByName('${esc}')" title="ZIP Download nur dieser Auswahl">ZIP</button>
+                            </div>
+                        </div>`;
                 }).join('');
             }
         }
@@ -4793,6 +5339,369 @@
         }
         
         // Lightbox
+        let lightboxFilmstripCacheKey = null;
+
+        function buildCloudinaryThumb(url, w = 80, h = 80) {
+            if (!url || typeof url !== 'string') return url;
+            if (!url.includes('res.cloudinary.com') || !url.includes('/upload/')) return url;
+            // If URL already has transformations, replace them; else insert.
+            if (url.match(/\/upload\/[^\/]+\//)) {
+                return url.replace(
+                    /\/upload\/[^\/]+\//,
+                    `/upload/c_fill,h_${h},w_${w},q_auto:good,f_auto/`
+                );
+            }
+            return url.replace(
+                /\/upload\//,
+                `/upload/c_fill,h_${h},w_${w},q_auto:good,f_auto/`
+            );
+        }
+
+        function getFilmstripThumbUrl(image) {
+            const raw = image?.thumbnailUrl || image?.url || (image?.name ? `./images/${image.name}` : '');
+            if (!raw) return '';
+            return buildCloudinaryThumb(raw, 80, 80);
+        }
+
+        function renderLightboxFilmstrip() {
+            const inner = document.getElementById('lightbox-filmstrip-inner');
+            if (!inner) return;
+
+            const galleryId = currentGallery?.id || currentGallery?.name || 'gallery';
+            const key = `${galleryId}|${currentImages?.length || 0}`;
+            if (lightboxFilmstripCacheKey === key && inner.childElementCount === (currentImages?.length || 0)) {
+                updateLightboxFilmstripActive();
+                return;
+            }
+
+            lightboxFilmstripCacheKey = key;
+            inner.innerHTML = '';
+
+            const frag = document.createDocumentFragment();
+            (currentImages || []).forEach((img, idx) => {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'lightbox-thumb';
+                btn.dataset.index = String(idx);
+                btn.title = img?.name || `Bild ${idx + 1}`;
+                btn.setAttribute('aria-label', img?.name || `Bild ${idx + 1}`);
+
+                const imageEl = document.createElement('img');
+                imageEl.loading = 'lazy';
+                imageEl.decoding = 'async';
+                imageEl.alt = img?.name || 'Bild';
+                imageEl.src = getFilmstripThumbUrl(img);
+                btn.appendChild(imageEl);
+
+                btn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    openLightbox(idx);
+                });
+
+                frag.appendChild(btn);
+            });
+            inner.appendChild(frag);
+
+            updateLightboxFilmstripActive();
+        }
+
+        function updateLightboxFilmstripActive() {
+            const inner = document.getElementById('lightbox-filmstrip-inner');
+            if (!inner) return;
+            const thumbs = Array.from(inner.querySelectorAll('.lightbox-thumb'));
+            thumbs.forEach(t => t.classList.toggle('active', Number(t.dataset.index) === Number(currentImageIndex)));
+
+            const active = thumbs.find(t => t.classList.contains('active'));
+            if (active && typeof active.scrollIntoView === 'function') {
+                active.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' });
+            }
+        }
+
+        function isLightboxActive() {
+            const el = document.getElementById('lightbox');
+            return Boolean(el && el.classList.contains('active'));
+        }
+
+        function isCullingActive() {
+            const el = document.getElementById('culling-overlay');
+            return Boolean(el && el.classList.contains('active'));
+        }
+
+        function isCompareActive() {
+            const el = document.getElementById('compare-overlay');
+            return Boolean(el && el.classList.contains('active'));
+        }
+
+        function updateBodyOverlayState() {
+            const any = isLightboxActive() || isCullingActive() || isCompareActive();
+            document.body.classList.toggle('lightbox-open', any);
+        }
+
+        let cullingLayout = 2; // 1 or 2
+        let cullingFilmstripCacheKey = null;
+
+        function getFullImageUrl(image) {
+            return image?.url || (image?.name ? `./images/${image.name}` : '');
+        }
+
+        function renderCulling() {
+            const overlay = document.getElementById('culling-overlay');
+            if (!overlay || !overlay.classList.contains('active')) return;
+
+            const grid = document.getElementById('culling-grid');
+            const title = document.getElementById('culling-title');
+            const layoutBtn = document.getElementById('culling-layout-btn');
+            if (layoutBtn) layoutBtn.textContent = cullingLayout === 2 ? '2-up' : '1-up';
+
+            const total = currentImages?.length || 0;
+            const idx = Number(currentImageIndex) || 0;
+            if (title) title.textContent = `Culling · ${total ? (idx + 1) : 0}/${total}`;
+
+            if (grid) {
+                grid.classList.toggle('culling-grid--one', cullingLayout === 1);
+                grid.classList.toggle('culling-grid--two', cullingLayout === 2);
+            }
+
+            const slots = [0, 1];
+            slots.forEach((slot) => {
+                const frame = overlay.querySelector(`.culling-frame[data-slot="${slot}"]`);
+                const imgEl = document.getElementById(`culling-image-${slot}`);
+                const imageIndex = slot === 0 ? idx : idx + 1;
+                const image = currentImages?.[imageIndex];
+
+                if (!imgEl || !frame) return;
+                if (cullingLayout === 1 && slot === 1) {
+                    frame.style.display = 'none';
+                    return;
+                }
+                frame.style.display = '';
+
+                if (!image) {
+                    imgEl.src = '';
+                    imgEl.alt = '';
+                    frame.classList.remove('is-selected');
+                    return;
+                }
+
+                const imageUrl = getFullImageUrl(image);
+                imgEl.src = imageUrl;
+                imgEl.alt = image?.name || 'Bild';
+
+                const imageId = getFeedbackImageId(image, imageIndex);
+                frame.classList.toggle('is-selected', Boolean(imageId && selectedImageIds && selectedImageIds.has(imageId)));
+
+                frame.onclick = (e) => {
+                    e.preventDefault();
+                    if (!imageId) return;
+                    toggleImageSelection(imageId, { shiftKey: false });
+                };
+            });
+
+            renderCullingFilmstrip();
+            updateCullingFilmstripActive();
+        }
+
+        function renderCullingFilmstrip() {
+            const inner = document.getElementById('culling-filmstrip-inner');
+            if (!inner) return;
+
+            const galleryId = currentGallery?.id || currentGallery?.name || 'gallery';
+            const key = `${galleryId}|${currentImages?.length || 0}`;
+            if (cullingFilmstripCacheKey === key && inner.childElementCount === (currentImages?.length || 0)) {
+                return;
+            }
+            cullingFilmstripCacheKey = key;
+            inner.innerHTML = '';
+
+            const frag = document.createDocumentFragment();
+            (currentImages || []).forEach((img, idx) => {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'lightbox-thumb';
+                btn.dataset.index = String(idx);
+                btn.title = img?.name || `Bild ${idx + 1}`;
+                btn.setAttribute('aria-label', img?.name || `Bild ${idx + 1}`);
+
+                const imageEl = document.createElement('img');
+                imageEl.loading = 'lazy';
+                imageEl.decoding = 'async';
+                imageEl.alt = img?.name || 'Bild';
+                imageEl.src = getFilmstripThumbUrl(img);
+                btn.appendChild(imageEl);
+
+                btn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    currentImageIndex = idx;
+                    renderCulling();
+                });
+
+                frag.appendChild(btn);
+            });
+            inner.appendChild(frag);
+        }
+
+        function updateCullingFilmstripActive() {
+            const inner = document.getElementById('culling-filmstrip-inner');
+            if (!inner) return;
+
+            const idx = Number(currentImageIndex) || 0;
+            const second = idx + 1;
+            const thumbs = Array.from(inner.querySelectorAll('.lightbox-thumb'));
+            thumbs.forEach(t => {
+                const i = Number(t.dataset.index);
+                const active = cullingLayout === 2 ? (i === idx || i === second) : (i === idx);
+                t.classList.toggle('active', active);
+            });
+
+            const focusIdx = idx;
+            const active = thumbs.find(t => Number(t.dataset.index) === focusIdx);
+            if (active && typeof active.scrollIntoView === 'function') {
+                active.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' });
+            }
+        }
+
+        function openCullingMode(startIndex = 0) {
+            const overlay = document.getElementById('culling-overlay');
+            if (!overlay) return;
+
+            // If lightbox is open, close it (culling is a separate mode)
+            const lightbox = document.getElementById('lightbox');
+            if (lightbox && lightbox.classList.contains('active')) {
+                lightbox.classList.remove('active');
+            }
+
+            currentImageIndex = Math.max(0, Math.min(Number(startIndex) || 0, (currentImages?.length || 1) - 1));
+            overlay.classList.add('active');
+            updateBodyOverlayState();
+
+            renderCulling();
+        }
+
+        function closeCullingMode() {
+            const overlay = document.getElementById('culling-overlay');
+            if (!overlay) return;
+            overlay.classList.remove('active');
+            updateBodyOverlayState();
+        }
+
+        function toggleCullingMode() {
+            if (isCullingActive()) {
+                closeCullingMode();
+                return;
+            }
+            openCullingMode(currentImageIndex || 0);
+        }
+
+        function toggleCullingLayout() {
+            cullingLayout = cullingLayout === 2 ? 1 : 2;
+            renderCulling();
+        }
+
+        function openCompareView() {
+            const overlay = document.getElementById('compare-overlay');
+            const grid = document.getElementById('compare-grid');
+            if (!overlay || !grid) return;
+
+            const selectedItems = getSelectedItems();
+            const ids = selectedItems.map(el => el.dataset.imageId).filter(Boolean);
+            if (ids.length < 2) {
+                showToast('Vergleich', 'Bitte 2–4 Bilder auswählen.', 'warning');
+                return;
+            }
+            if (ids.length > 4) {
+                showToast('Vergleich', 'Maximal 4 Bilder für Compare.', 'warning');
+                return;
+            }
+
+            overlay.classList.add('active');
+            updateBodyOverlayState();
+
+            const title = document.getElementById('compare-title');
+            if (title) title.textContent = `Vergleich · ${ids.length} Bild(er)`;
+
+            grid.className = 'compare-grid';
+            grid.classList.add(`compare-grid--${ids.length}`);
+            grid.innerHTML = '';
+
+            const frag = document.createDocumentFragment();
+            ids.forEach((imageId) => {
+                const imageIndex = findImageIndexByFeedbackId(imageId);
+                const image = currentImages?.[imageIndex];
+                if (!image) return;
+
+                const card = document.createElement('div');
+                card.className = 'compare-card';
+
+                const imgEl = document.createElement('img');
+                imgEl.loading = 'lazy';
+                imgEl.decoding = 'async';
+                imgEl.alt = image?.name || 'Bild';
+                imgEl.src = getFullImageUrl(image);
+                imgEl.addEventListener('click', () => {
+                    closeCompareView();
+                    openLightbox(imageIndex);
+                });
+
+                const meta = document.createElement('div');
+                meta.className = 'compare-meta';
+
+                const left = document.createElement('div');
+                left.className = 'name';
+                left.textContent = image?.name || imageId;
+
+                const right = document.createElement('div');
+                const rating = Number(feedbackData.ratings[imageId] || 0);
+                const flag = feedbackData.flags[imageId] || '';
+                const fav = feedbackData.favorites[imageId] ? '♥' : '';
+                const ratingText = rating > 0 ? `★${rating}` : '';
+                right.textContent = [fav, ratingText, flag].filter(Boolean).join(' ');
+
+                meta.appendChild(left);
+                meta.appendChild(right);
+
+                card.appendChild(imgEl);
+                card.appendChild(meta);
+                frag.appendChild(card);
+            });
+
+            grid.appendChild(frag);
+        }
+
+        function closeCompareView() {
+            const overlay = document.getElementById('compare-overlay');
+            if (!overlay) return;
+            overlay.classList.remove('active');
+            updateBodyOverlayState();
+        }
+
+        function initViewModeControls() {
+            const cullingToggleBtn = document.getElementById('culling-toggle-btn');
+            if (cullingToggleBtn) cullingToggleBtn.addEventListener('click', () => toggleCullingMode());
+
+            const cullingClose = document.getElementById('culling-close');
+            if (cullingClose) cullingClose.addEventListener('click', () => closeCullingMode());
+            const cullingLayoutBtn = document.getElementById('culling-layout-btn');
+            if (cullingLayoutBtn) cullingLayoutBtn.addEventListener('click', () => toggleCullingLayout());
+            const cullingOpenLightboxBtn = document.getElementById('culling-open-lightbox-btn');
+            if (cullingOpenLightboxBtn) cullingOpenLightboxBtn.addEventListener('click', () => {
+                const idx = Number(currentImageIndex) || 0;
+                closeCullingMode();
+                openLightbox(idx);
+            });
+
+            const compareClose = document.getElementById('compare-close');
+            if (compareClose) compareClose.addEventListener('click', () => closeCompareView());
+            const compareOpenLightboxBtn = document.getElementById('compare-open-lightbox-btn');
+            if (compareOpenLightboxBtn) compareOpenLightboxBtn.addEventListener('click', () => {
+                const first = getSelectedItems()?.[0];
+                const id = first?.dataset?.imageId;
+                if (!id) return;
+                const idx = findImageIndexByFeedbackId(id);
+                closeCompareView();
+                openLightbox(idx);
+            });
+        }
+
         function openLightbox(index, fullImageUrl = null) {
             currentImageIndex = index;
             const lightbox = document.getElementById('lightbox');
@@ -4805,7 +5714,7 @@
             img.src = imageUrl;
             img.alt = image.name || 'Bild';
             lightbox.classList.add('active');
-            document.body.classList.add('lightbox-open');
+            updateBodyOverlayState();
 
             if (sidebar && window.matchMedia && window.matchMedia('(min-width: 1100px)').matches) {
                 sidebar.classList.add('open');
@@ -4813,6 +5722,9 @@
             
             // Update Feedback-Sidebar für aktuelles Bild
             updateFeedbackSidebar();
+
+            // Filmstrip
+            renderLightboxFilmstrip();
         }
         
         // Toggle Bild-Auswahl (inkl. Shift-Range)
@@ -5377,6 +6289,11 @@
         function setGalleryItemSelected(item, selected) {
             if (!item) return;
             item.classList.toggle('selected', Boolean(selected));
+            const imageId = item.dataset.imageId;
+            if (imageId) {
+                if (selected) selectedImageIds.add(imageId);
+                else selectedImageIds.delete(imageId);
+            }
             const checkbox = item.querySelector('.gallery-item-checkbox');
             if (checkbox) {
                 checkbox.classList.toggle('checked', Boolean(selected));
@@ -5432,12 +6349,7 @@
                 ids.forEach(imageId => {
                     const item = document.querySelector(`[data-image-id="${imageId}"]`);
                     if (!item) return;
-                    item.classList.add('selected');
-                    const checkbox = item.querySelector('.gallery-item-checkbox');
-                    if (checkbox) {
-                        checkbox.classList.add('checked');
-                        checkbox.textContent = '✓';
-                    }
+                    setGalleryItemSelected(item, true);
                 });
             } finally {
                 window.__selectionUndoRestoring = false;
@@ -5464,6 +6376,7 @@
 
             const resetBtn = document.getElementById('selection-bar-reset');
             const exportBtn = document.getElementById('selection-bar-export');
+            const compareBtn = document.getElementById('selection-bar-compare');
             const downloadBtn = document.getElementById('selection-bar-download');
             const favoriteBtn = document.getElementById('selection-bar-favorite');
             const addSelectionBtn = document.getElementById('selection-bar-add-selection');
@@ -5474,6 +6387,12 @@
                 btn.disabled = disableActions;
                 btn.setAttribute('aria-disabled', disableActions ? 'true' : 'false');
             });
+
+            if (compareBtn) {
+                const ok = count >= 2 && count <= 4;
+                compareBtn.disabled = !ok;
+                compareBtn.setAttribute('aria-disabled', ok ? 'false' : 'true');
+            }
 
             const galleryContainer = document.getElementById('gallery-container');
             const galleryVisible = galleryContainer && galleryContainer.style.display !== 'none';
@@ -5526,6 +6445,111 @@
             return items.length;
         }
 
+        function getImageIdsForSelectionName(selectionName) {
+            const name = String(selectionName || '').trim();
+            if (!name) return [];
+            const result = [];
+            (currentImagesOriginal || []).forEach((img, index) => {
+                const imageId = getFeedbackImageId(img, index);
+                if (!imageId) return;
+                const selections = feedbackData.selections[imageId] || [];
+                if (Array.isArray(selections) && selections.includes(name)) {
+                    result.push(imageId);
+                }
+            });
+            return result;
+        }
+
+        function exportSelectionByName(selectionName) {
+            const name = String(selectionName || '').trim();
+            if (!name) {
+                showToast('Export', 'Ungültiger Auswahl-Name.', 'warning');
+                return 0;
+            }
+
+            const imageIds = getImageIdsForSelectionName(name);
+            if (imageIds.length === 0) {
+                showToast('Export', `Keine Bilder in „${name}“.`, 'warning');
+                return 0;
+            }
+
+            const items = imageIds
+                .map((imageId) => {
+                    const imageIndex = findImageIndexByFeedbackId(imageId);
+                    const image = currentImages?.[imageIndex];
+                    if (!image) return null;
+
+                    const imageUrl = image.url || `./images/${image.name}`;
+                    let downloadUrl = imageUrl;
+                    if (imageUrl.includes('res.cloudinary.com') && imageUrl.includes('/upload/')) {
+                        downloadUrl = imageUrl.replace(/\/upload\/[^\/]+\//, '/upload/');
+                    }
+
+                    return {
+                        id: imageId,
+                        name: image.name || `image_${imageIndex}`,
+                        url: downloadUrl
+                    };
+                })
+                .filter(Boolean);
+
+            const payload = {
+                exportedAt: new Date().toISOString(),
+                gallery: currentGallery?.name || null,
+                selection: name,
+                count: items.length,
+                items
+            };
+
+            const date = new Date().toISOString().split('T')[0];
+            downloadJsonFile(`selection-${name.replace(/[^a-z0-9_-]+/gi, '_')}-${date}.json`, payload);
+            showToast('Export erstellt', `„${name}“: ${items.length} Bild(er) als JSON.`, 'success');
+            return items.length;
+        }
+
+        async function downloadSelectionZipByName(selectionName) {
+            const name = String(selectionName || '').trim();
+            if (!name) {
+                showToast('Download', 'Ungültiger Auswahl-Name.', 'warning');
+                return;
+            }
+
+            const imageIds = getImageIdsForSelectionName(name);
+            if (imageIds.length === 0) {
+                showToast('Download', `Keine Bilder in „${name}“.`, 'warning');
+                return;
+            }
+
+            // Temporär Auswahl setzen, Download starten, danach Auswahl wiederherstellen
+            const prevSelected = new Set(selectedImageIds || []);
+            const idSet = new Set(imageIds);
+
+            try {
+                document.querySelectorAll('.gallery-item').forEach(item => {
+                    const id = item.dataset.imageId;
+                    if (!id) return;
+                    setGalleryItemSelected(item, idSet.has(id));
+                });
+                updateBulkActionsVisibility();
+                updateSidebarStats();
+
+                await bulkDownload({
+                    confirmTitle: 'Download',
+                    confirmMessage: `Auswahl „${name}“ (${imageIds.length} Bild(er)) als ZIP herunterladen?`,
+                    confirmText: 'Download'
+                });
+            } finally {
+                selectedImageIds = new Set(prevSelected);
+                document.querySelectorAll('.gallery-item').forEach(item => {
+                    const id = item.dataset.imageId;
+                    if (!id) return;
+                    setGalleryItemSelected(item, prevSelected.has(id));
+                });
+                updateBulkActionsVisibility();
+                updateSidebarStats();
+            }
+        }
+
         function downloadJsonFile(fileName, payload) {
             try {
                 const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
@@ -5547,6 +6571,7 @@
         function initSelectionBar() {
             const resetBtn = document.getElementById('selection-bar-reset');
             const exportBtn = document.getElementById('selection-bar-export');
+            const compareBtn = document.getElementById('selection-bar-compare');
             const downloadBtn = document.getElementById('selection-bar-download');
             const favoriteBtn = document.getElementById('selection-bar-favorite');
             const addSelectionBtn = document.getElementById('selection-bar-add-selection');
@@ -5565,6 +6590,7 @@
                 showToast('Auswahl aufgehoben', 'Undo ist kurz verfügbar.', 'warning', 3200);
             });
             if (exportBtn) exportBtn.addEventListener('click', () => exportSelectedList());
+            if (compareBtn) compareBtn.addEventListener('click', () => openCompareView());
             if (downloadBtn) downloadBtn.addEventListener('click', () => {
                 const count = document.querySelectorAll('.gallery-item.selected').length;
                 if (count === 0) {
@@ -5925,6 +6951,8 @@
         }
         
         function clearSelection() {
+            // Fast path: clear Set first, then update DOM
+            selectedImageIds = new Set();
             document.querySelectorAll('.gallery-item.selected').forEach(item => {
                 setGalleryItemSelected(item, false);
             });
@@ -5934,17 +6962,22 @@
         }
         
         // Export als ZIP (mit JSZip)
-        async function bulkDownload() {
+        async function bulkDownload(options = {}) {
             const selected = document.querySelectorAll('.gallery-item.selected');
             if (selected.length === 0) {
                 showToast('Keine Auswahl', 'Bitte erst Bilder auswählen.', 'warning');
                 return;
             }
 
+            const opts = options && typeof options === 'object' ? options : {};
+            const confirmTitle = String(opts.confirmTitle || 'Download');
+            const confirmMessage = String(opts.confirmMessage || `${selected.length} Bild(er) als ZIP herunterladen?`);
+            const confirmText = String(opts.confirmText || 'Download');
+
             const ok = await confirmAction({
-                title: 'Download',
-                message: `${selected.length} Bild(er) als ZIP herunterladen?`,
-                confirmText: 'Download',
+                title: confirmTitle,
+                message: confirmMessage,
+                confirmText,
                 cancelText: 'Abbrechen'
             });
             if (!ok) return;
@@ -6536,7 +7569,7 @@
         
         function closeLightbox() {
             document.getElementById('lightbox').classList.remove('active');
-            document.body.classList.remove('lightbox-open');
+            updateBodyOverlayState();
         }
         
         function nextImage() {
@@ -6545,6 +7578,7 @@
             const imageUrl = image.url || `./images/${image.name}`;
             document.getElementById('lightbox-image').src = imageUrl;
             updateFeedbackSidebar();
+            updateLightboxFilmstripActive();
         }
         
         function previousImage() {
@@ -6553,6 +7587,7 @@
             const imageUrl = image.url || `./images/${image.name}`;
             document.getElementById('lightbox-image').src = imageUrl;
             updateFeedbackSidebar();
+            updateLightboxFilmstripActive();
         }
         
         async function downloadImage() {
@@ -6644,6 +7679,84 @@
                 return;
             }
 
+            // Overlays (non-modal): Culling / Compare
+            const cullingActive = isCullingActive();
+            const compareActive = isCompareActive();
+
+            if (cullingActive) {
+                const total = currentImages?.length || 0;
+                if (e.key === 'Escape' || key === 'c') {
+                    e.preventDefault();
+                    closeCullingMode();
+                    return;
+                }
+                if (e.key === 'ArrowRight') {
+                    e.preventDefault();
+                    if (!total) return;
+                    currentImageIndex = (Number(currentImageIndex) + 1) % total;
+                    renderCulling();
+                    return;
+                }
+                if (e.key === 'ArrowLeft') {
+                    e.preventDefault();
+                    if (!total) return;
+                    currentImageIndex = (Number(currentImageIndex) - 1 + total) % total;
+                    renderCulling();
+                    return;
+                }
+                if (e.key === ' ') {
+                    e.preventDefault();
+                    const image = currentImages?.[currentImageIndex];
+                    if (!image) return;
+                    const imageId = getFeedbackImageId(image, currentImageIndex);
+                    if (!imageId) return;
+                    toggleImageSelection(imageId, { shiftKey: false });
+                    renderCulling();
+                    return;
+                }
+                if (key === 'f') {
+                    e.preventDefault();
+                    toggleFavorite();
+                    renderCulling();
+                    return;
+                }
+                if (['1', '2', '3', '4', '5'].includes(e.key)) {
+                    e.preventDefault();
+                    setRating(Number(e.key));
+                    renderCulling();
+                    return;
+                }
+                if (e.key === '0') {
+                    e.preventDefault();
+                    setRating(0);
+                    renderCulling();
+                    return;
+                }
+                if (key === 'r' || key === 'x') {
+                    e.preventDefault();
+                    setFlag('reject');
+                    renderCulling();
+                    return;
+                }
+                if (key === 'l') {
+                    e.preventDefault();
+                    const idx = Number(currentImageIndex) || 0;
+                    closeCullingMode();
+                    openLightbox(idx);
+                    return;
+                }
+                return;
+            }
+
+            if (compareActive) {
+                if (e.key === 'Escape') {
+                    e.preventDefault();
+                    closeCompareView();
+                    return;
+                }
+                return;
+            }
+
             const lightbox = document.getElementById('lightbox');
             const lightboxActive = lightbox && lightbox.classList.contains('active');
             const key = (e.key || '').toLowerCase();
@@ -6678,6 +7791,26 @@
                     e.preventDefault();
                     toggleFavorite();
                     showToast('Favorit', 'Für aktuelles Bild umgeschaltet.', 'success');
+                    return;
+                }
+
+                // Culling-style shortcuts in Lightbox
+                if (['1', '2', '3', '4', '5'].includes(e.key)) {
+                    e.preventDefault();
+                    setRating(Number(e.key));
+                    showToast('Rating', `${e.key}★`, 'success');
+                    return;
+                }
+                if (e.key === '0') {
+                    e.preventDefault();
+                    setRating(0);
+                    showToast('Rating', 'Entfernt', 'info');
+                    return;
+                }
+                if (key === 'r' || key === 'x') {
+                    e.preventDefault();
+                    setFlag('reject');
+                    showToast('Markierung', 'Reject toggled', 'warning');
                     return;
                 }
                 return;
@@ -6729,6 +7862,29 @@
             }
 
             const selectedCount = document.querySelectorAll('.gallery-item.selected').length;
+
+            // C: Culling Mode
+            if (key === 'c') {
+                e.preventDefault();
+                let start = 0;
+                const firstSelected = getSelectedItems()?.[0];
+                const firstVisible = Array.from(document.querySelectorAll('.gallery-item')).find(el => el.style.display !== 'none');
+                const candidate = firstSelected || firstVisible;
+                const imageId = candidate?.dataset?.imageId;
+                if (imageId) {
+                    const idx = findImageIndexByFeedbackId(imageId);
+                    if (idx >= 0) start = idx;
+                }
+                openCullingMode(start);
+                return;
+            }
+
+            // V: Compare View (2–4)
+            if (key === 'v') {
+                e.preventDefault();
+                openCompareView();
+                return;
+            }
 
             if (e.key === 'Escape') {
                 if (selectedCount > 0) {
@@ -6817,6 +7973,12 @@
             // Quick Filters initialisieren
             initQuickFilters();
 
+            // Sortierung initialisieren
+            initSortControls();
+
+            // Culling / Compare Controls
+            initViewModeControls();
+
             // Overlays (Confirm + Help)
             initOverlays();
 
@@ -6843,7 +8005,10 @@
                 // Fallback: Alte Struktur (nur images Array)
                 if (galleryConfig.images && galleryConfig.images.length > 0) {
                     // Konvertiere alte Struktur zu neuer
-                    currentImages = galleryConfig.images;
+                    currentImagesOriginal = Array.isArray(galleryConfig.images) ? galleryConfig.images : [];
+                    ensureOriginalIndices(currentImagesOriginal);
+                    currentImages = Array.from(currentImagesOriginal);
+                    migrateLegacyFeedbackIds(currentImagesOriginal);
                     document.getElementById('gallery-container').style.display = 'block';
                     displayGallery(currentImages);
                 } else {
