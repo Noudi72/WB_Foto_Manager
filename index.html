@@ -1488,6 +1488,14 @@
                 display: none;
             }
 
+            #lightbox-download-btn {
+                display: none;
+            }
+
+            #sidebar-download-btn {
+                margin-bottom: 10px;
+            }
+
             .lightbox-sidebar {
                 left: 0 !important;
                 overflow: hidden;
@@ -2521,7 +2529,7 @@
         <div class="lightbox-content">
             <img id="lightbox-image" src="" alt="">
             <div class="viewer-actions">
-                <button class="download-btn" onclick="downloadImage()">Download</button>
+                <button class="download-btn" id="lightbox-download-btn" onclick="downloadImage()">Download</button>
                 <button class="download-btn" onclick="toggleSidebar()" id="feedback-toggle-btn">Feedback</button>
             </div>
         </div>
@@ -2531,6 +2539,8 @@
         <div class="lightbox-sidebar" id="feedback-sidebar">
             <button onclick="toggleSidebar()" class="sidebar-close-btn">&times;</button>
             <h3 id="feedback-image-name">Bild Feedback</h3>
+
+            <button class="btn-primary btn-full" id="sidebar-download-btn" type="button" onclick="downloadImage()">Download</button>
 
             <div class="lightbox-sidebar-body">
                 <!-- Bewertung -->
