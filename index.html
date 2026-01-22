@@ -2712,6 +2712,7 @@
 
         function migrateLegacyFeedbackIds(images) {
             const buckets = ['ratings', 'flags', 'favorites', 'comments', 'selections'];
+            let didChange = false;
 
             images.forEach((img, index) => {
                 const newId = getFeedbackImageId(img, index);
@@ -2742,11 +2743,17 @@
                     for (const legacyId of legacyIds) {
                         if (bag[legacyId] !== undefined) {
                             bag[newId] = bag[legacyId];
+                            delete bag[legacyId];
+                            didChange = true;
                             break;
                         }
                     }
                 });
             });
+
+            if (didChange) {
+                saveFeedbackData();
+            }
         }
 
         function safeStorageGet(key) {
@@ -4315,11 +4322,6 @@
             if (scope !== 'gallery') return true;
             const galleryName = currentGallery?.name || 'diese Galerie';
             if (!confirm(`ACHTUNG: ${whatLabel} in "${galleryName}" löschen?\n\nDas kann nicht rückgängig gemacht werden.`)) return false;
-            const typed = prompt('Zur Bestätigung bitte exakt "LÖSCHEN" eingeben:');
-            if (typed !== 'LÖSCHEN') {
-                alert('Abgebrochen. Bestätigung war nicht korrekt.');
-                return false;
-            }
             return true;
         }
 
