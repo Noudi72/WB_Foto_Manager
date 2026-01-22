@@ -31,6 +31,7 @@
             --gallery-topbar-gap: 10px;
             --gallery-topbar-h: calc(var(--gallery-header-h) + var(--gallery-topbar-gap) + var(--gallery-filters-h));
             --gallery-fixed-width: min(1400px, calc(100% - 40px));
+            --gallery-fixed-left: 20px;
 
             --gallery-layout-gap: 20px;
             --gallery-sidebar-w: 200px;
@@ -2414,7 +2415,7 @@
 
             .gallery-sidebar {
                 position: fixed;
-                left: calc(50% - (var(--gallery-fixed-width) * 0.5));
+                left: var(--gallery-fixed-left);
                 z-index: 260;
             }
 
@@ -4716,8 +4717,14 @@
             const headerHeight = header ? Math.ceil(header.getBoundingClientRect().height) : 0;
             const filtersHeight = filters ? Math.ceil(filters.getBoundingClientRect().height) : 0;
 
+            const headerRect = header ? header.getBoundingClientRect() : null;
+            const fixedLeft = headerRect ? Math.round(headerRect.left) : null;
+
             document.documentElement.style.setProperty('--gallery-header-h', `${headerHeight}px`);
             document.documentElement.style.setProperty('--gallery-filters-h', `${filtersHeight}px`);
+            if (typeof fixedLeft === 'number' && Number.isFinite(fixedLeft)) {
+                document.documentElement.style.setProperty('--gallery-fixed-left', `${fixedLeft}px`);
+            }
         }
         
         // Skeleton Screen für Ladeanimation
