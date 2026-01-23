@@ -116,3 +116,7 @@ Temporary Items
 
 # Xcode Projekt-Ordner (nicht für GitHub Pages benötigt)
 WB Foto Manager/
+
+# Local dev helpers (not tracked)
+.vscode/tasks.json
+scripts/serve_local.sh
