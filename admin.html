@@ -52,6 +52,48 @@
             backdrop-filter: blur(10px);
         }
 
+        .admin-back-btn {
+            position: fixed;
+            top: 16px;
+            right: 16px;
+            z-index: 9000;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            border-radius: 10px;
+            border: 1px solid #333;
+            background: rgba(42, 42, 42, 0.92);
+            color: #e0e0e0;
+            text-decoration: none;
+            font-weight: 800;
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+        }
+
+        .admin-back-btn:hover {
+            border-color: rgba(212, 165, 116, 0.7);
+            color: rgba(212, 165, 116, 0.95);
+        }
+
+        .admin-back-hint {
+            color: #aaa;
+            font-weight: 700;
+            font-size: 0.9em;
+            white-space: nowrap;
+        }
+
+        .admin-back-hint kbd {
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+            font-size: 0.85em;
+            padding: 2px 7px;
+            border-radius: 8px;
+            border: 1px solid #444;
+            background: rgba(255,255,255,0.06);
+            color: #e0e0e0;
+            white-space: nowrap;
+        }
+
         .admin-nav-toggle-lines {
             width: 16px;
             height: 12px;
@@ -168,6 +210,12 @@
             .admin-nav-toggle {
                 top: calc(env(safe-area-inset-top, 0px) + 12px);
                 left: 12px;
+                padding: 9px 11px;
+            }
+
+            .admin-back-btn {
+                top: calc(env(safe-area-inset-top, 0px) + 12px);
+                right: 12px;
                 padding: 9px 11px;
             }
 
@@ -965,6 +1013,11 @@
         <span class="admin-nav-toggle-lines"><span></span></span>
         Menü
     </button>
+
+    <a class="admin-back-btn" href="index.html" title="Zurück zur Galerie">
+        ← Zurück
+        <span class="admin-back-hint">Tipp: <kbd>Esc</kbd></span>
+    </a>
     <div class="admin-nav-overlay" id="admin-nav-overlay" aria-hidden="true"></div>
 
     <nav class="admin-sidebar" id="admin-sidebar" aria-label="Admin Navigation">
@@ -3772,6 +3825,28 @@
                 }
             });
         }
+
+        // Global ESC: zurück zur Galerie (wenn kein Drawer offen ist)
+        document.addEventListener('keydown', (event) => {
+            if (event.key !== 'Escape') return;
+            if (document.body.classList.contains('nav-open')) return;
+
+            const activeEl = document.activeElement;
+            const isTyping = !!activeEl && (
+                activeEl.tagName === 'INPUT' ||
+                activeEl.tagName === 'TEXTAREA' ||
+                activeEl.tagName === 'SELECT' ||
+                activeEl.isContentEditable
+            );
+            if (isTyping) return;
+
+            event.preventDefault();
+            if (window.history.length > 1) {
+                window.history.back();
+            } else {
+                window.location.href = 'index.html';
+            }
+        });
         
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', () => {

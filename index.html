@@ -12,6 +12,11 @@
         }
         
         :root {
+            color-scheme: light;
+            --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Helvetica Neue", Arial, sans-serif;
+            --page-grad: radial-gradient(circle at top, rgba(212, 165, 116, 0.10), transparent 55%);
+            --header-bg: rgba(255, 255, 255, 0.78);
+
             --bg-primary: #faf6f1;
             --bg-secondary: #ffffff;
             --bg-tertiary: #f5ede5;
@@ -30,6 +35,9 @@
             --gallery-filters-h: 0px;
             --gallery-topbar-gap: 6px;
             --gallery-topbar-h: calc(var(--gallery-header-h) + var(--gallery-topbar-gap) + var(--gallery-filters-h));
+            --gallery-overview-gap: 0px;
+            --gallery-overview-h: 0px;
+            --gallery-topstack-h: calc(var(--gallery-topbar-h) + var(--gallery-overview-gap) + var(--gallery-overview-h));
             --gallery-fixed-width: min(1400px, calc(100% - 40px));
             --gallery-fixed-left: 20px;
 
@@ -37,59 +45,63 @@
             --gallery-sidebar-w: 200px;
             --gallery-sidebar-collapsed-w: 40px;
         }
-        
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background: radial-gradient(circle at top, rgba(212, 165, 116, 0.06), transparent 55%), var(--bg-primary);
-            color: var(--text-primary);
-            min-height: 100vh;
-            transition: background 0.3s, color 0.3s;
-            overflow-x: hidden;
-        }
-
-        body.is-gallery-view .container {
-            padding-top: 0;
-        }
-
-        body.is-gallery-view header.site-header {
-            display: none;
-        }
-
-        html {
-            overflow-x: hidden;
-        }
-
-        html {
-            scroll-padding-top: calc(var(--gallery-fixed-top) + var(--gallery-topbar-h) + 2px);
-        }
 
         body.dark-mode {
+            color-scheme: dark;
+            --page-grad: radial-gradient(circle at top, rgba(212, 165, 116, 0.14), transparent 55%);
+            --header-bg: rgba(20, 19, 18, 0.82);
+
             --bg-primary: #141312;
             --bg-secondary: #1c1a18;
             --bg-tertiary: #23201d;
             --text-primary: #f1ece6;
             --text-secondary: #b7a89c;
-            --accent: #d4a574;
-            --accent-hover: #e0b07f;
             --border: #2e2a26;
             --shadow: 0 18px 45px rgba(0,0,0,0.55);
-            background: radial-gradient(circle at top, rgba(212, 165, 116, 0.10), transparent 55%), var(--bg-primary);
         }
-        
+
+        html {
+            overflow-x: hidden;
+        }
+
+        body {
+            font-family: var(--font-sans);
+            background: var(--bg-primary);
+            background-image: var(--page-grad);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            text-rendering: optimizeLegibility;
+        }
+
+        img {
+            display: block;
+            max-width: 100%;
+        }
+
+        a {
+            color: var(--accent-hover);
+        }
+
+        a:hover {
+            color: var(--accent);
+        }
+
         .container {
             max-width: 1400px;
             margin: 0 auto;
-            padding: 22px 20px 56px;
+            padding: 16px 20px 28px;
         }
 
-        header.site-header {
-            position: relative;
-            padding: 20px;
-            border-radius: 16px;
-            border: 1px solid var(--border);
-            background: var(--bg-secondary);
-            box-shadow: var(--shadow);
-            margin-bottom: 22px;
+        .site-header {
+            position: sticky;
+            top: 0;
+            z-index: 200;
+            -webkit-backdrop-filter: blur(16px);
+            backdrop-filter: blur(16px);
+            background: var(--header-bg);
+            border-bottom: 1px solid var(--border);
         }
 
         .header-inner {
@@ -97,13 +109,18 @@
             align-items: center;
             justify-content: space-between;
             gap: 20px;
-            flex-wrap: wrap;
+            padding: 16px 0;
         }
 
         .brand {
             display: flex;
             align-items: center;
-            gap: 16px;
+            gap: 14px;
+            min-width: 0;
+        }
+
+        .brand-text {
+            min-width: 0;
         }
 
         .brand-text p {
@@ -113,23 +130,40 @@
         .header-actions {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
         }
 
         .admin-link {
-            color: var(--text-primary);
-            text-decoration: none;
-            font-size: 0.9em;
-            padding: 8px 14px;
+            display: inline-flex;
+            align-items: center;
+            padding: 8px 12px;
             border-radius: 999px;
             border: 1px solid var(--border);
-            background: rgba(255,255,255,0.06);
-            transition: all 0.2s;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            transition: border-color 0.2s ease, color 0.2s ease, background 0.2s ease;
         }
 
         .admin-link:hover {
             border-color: var(--accent);
             color: var(--accent);
+            background: rgba(212, 165, 116, 0.10);
+        }
+
+        body.is-gallery-view {
+            /* Avoid first-paint overlap: use a reasonable minimum until JS measures the header */
+            scroll-padding-top: calc(var(--gallery-fixed-top) + max(var(--gallery-topstack-h), 140px) + 10px);
+        }
+
+        body.is-gallery-view .container {
+            padding-top: 0;
+        }
+
+        body.is-gallery-view .site-header {
+            display: none;
         }
 
         .hero-strip {
@@ -784,6 +818,20 @@
             border-radius: 12px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.3);
         }
+
+        .password-form-topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .password-form-hint {
+            color: var(--text-secondary);
+            font-size: 0.85em;
+            white-space: nowrap;
+        }
         
         .password-form h2 {
             margin-bottom: 20px;
@@ -819,16 +867,19 @@
         }
         
         .gallery-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 16px;
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) auto;
+            grid-template-areas:
+                "left actions"
+                "filters filters"
+                "overview overview";
+            align-items: start;
+            gap: 8px 16px;
             padding: 12px 16px;
             border-radius: 16px;
             border: 1px solid var(--border);
             background: rgba(255,255,255,0.78);
             box-shadow: var(--shadow);
-            flex-wrap: wrap;
             position: fixed;
             top: var(--gallery-fixed-top);
             left: 50%;
@@ -844,9 +895,11 @@
         }
 
         .gallery-header-left {
+            grid-area: left;
             display: flex;
             align-items: center;
             gap: 14px;
+            min-width: 0;
         }
 
         .gallery-title h2 {
@@ -860,37 +913,59 @@
         }
 
         .gallery-header-actions {
+            grid-area: actions;
             display: flex;
             align-items: center;
             gap: 10px;
             flex-wrap: wrap;
         }
 
+        .gallery-header-overview {
+            grid-area: overview;
+            min-width: 0;
+        }
+
+        @media (max-width: 980px) {
+            .gallery-header {
+                grid-template-columns: 1fr;
+                grid-template-areas:
+                    "left"
+                    "actions"
+                    "filters"
+                    "overview";
+            }
+
+            .gallery-header-actions {
+                justify-content: flex-start;
+            }
+        }
+
         .quick-filters {
             display: flex;
+            flex-direction: column;
+            gap: 10px;
+            align-items: stretch;
+            padding: 8px 0 0;
+            grid-area: filters;
+            min-width: 0;
+            border-top: 1px solid rgba(0,0,0,0.06);
+        }
+
+        .quick-filter-row {
+            display: flex;
+            flex-wrap: wrap;
             gap: 8px;
             align-items: center;
-            padding: 6px 6px 8px;
-            overflow-x: auto;
-            position: fixed;
-            top: calc(var(--gallery-fixed-top) + var(--gallery-header-h) + var(--gallery-topbar-gap));
-            left: 50%;
-            transform: translateX(-50%);
-            width: var(--gallery-fixed-width);
-            z-index: 290;
-            border-radius: 16px;
-            border: 1px solid rgba(0,0,0,0);
-            background: rgba(250, 246, 241, 0.45);
-            -webkit-backdrop-filter: blur(12px);
-            backdrop-filter: blur(12px);
+            min-width: 0;
         }
 
         body.dark-mode .quick-filters {
-            background: rgba(20, 19, 18, 0.55);
+            border-top-color: rgba(255,255,255,0.08);
         }
 
         #gallery-container {
-            padding-top: calc(var(--gallery-fixed-top) + var(--gallery-topbar-h) + 2px);
+            /* Avoid first-paint overlap: use a reasonable minimum until JS measures the header */
+            padding-top: calc(var(--gallery-fixed-top) + max(var(--gallery-topstack-h), 140px) + 2px);
         }
 
         .quick-filter-chip {
@@ -969,6 +1044,86 @@
         .gallery-chip-button:hover {
             border-color: var(--accent);
             color: var(--accent);
+        }
+
+        .gallery-chip-button.active {
+            border-color: var(--accent);
+            background: rgba(212, 165, 116, 0.16);
+            color: var(--accent);
+        }
+
+        body:not(.dark-mode) .gallery-chip-button.active {
+            background: var(--accent);
+            border-color: var(--accent-hover);
+            color: #1f1610;
+        }
+
+        .quick-filter-chip--icon {
+            width: 36px;
+            padding-left: 0;
+            padding-right: 0;
+            justify-content: center;
+        }
+
+        body.hide-gallery-numbers .gallery-item-number {
+            display: none;
+        }
+
+        /* Gallery header: make actions more compact (Picdrop-ish) */
+        .gallery-header-actions {
+            gap: 8px;
+        }
+
+        .gallery-header-actions .gallery-chip,
+        .gallery-header-actions .gallery-chip-button,
+        .gallery-header-actions .gallery-sort-select {
+            font-size: 0.82rem;
+        }
+
+        .gallery-header-actions .gallery-chip {
+            padding: 6px 10px;
+        }
+
+        .gallery-header-actions .gallery-chip-button {
+            padding: 6px 10px;
+        }
+
+        /* Übersicht toggle: icon-only, compact, clear open/close */
+        .overview-toggle-btn {
+            width: 34px;
+            height: 34px;
+            padding: 0;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0;
+            border-radius: 999px;
+        }
+
+        .overview-toggle-btn .overview-toggle-label {
+            display: none;
+        }
+
+        .overview-toggle-btn .overview-toggle-icon {
+            width: 18px;
+            height: 18px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            line-height: 1;
+        }
+
+        .overview-toggle-btn[aria-expanded="true"] {
+            border-color: var(--accent);
+            background: rgba(212, 165, 116, 0.16);
+            color: var(--accent);
+        }
+
+        body:not(.dark-mode) .overview-toggle-btn[aria-expanded="true"] {
+            background: var(--accent);
+            border-color: var(--accent-hover);
+            color: #1f1610;
         }
 
         .gallery-sort-select {
@@ -1291,6 +1446,69 @@
             color: var(--text-secondary);
         }
 
+        /* Lightbox Details Modal (Topbar-Style, keine Sidebar-Optik) */
+        #feedback-sidebar .modal {
+            width: min(980px, 100%);
+            padding: 14px;
+        }
+
+        #feedback-sidebar .modal-header {
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        #feedback-sidebar .modal-body {
+            margin-top: 12px;
+            color: var(--text-secondary);
+        }
+
+        #feedback-sidebar #sidebar-download-btn {
+            margin-bottom: 12px;
+        }
+
+        #feedback-sidebar .lightbox-sidebar-body {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+            align-content: start;
+        }
+
+        @media (min-width: 900px) {
+            #feedback-sidebar .lightbox-sidebar-body {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            #feedback-sidebar .feedback-section--wide {
+                grid-column: 1 / -1;
+            }
+        }
+
+        #feedback-sidebar .feedback-section {
+            margin: 0;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            background: rgba(255,255,255,0.04);
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+        }
+
+        #feedback-sidebar .feedback-section:first-of-type {
+            border-top: 1px solid var(--border);
+        }
+
+        #feedback-sidebar h4 {
+            margin-top: 0;
+            margin-bottom: 8px;
+            font-size: 0.9em;
+            color: var(--text-primary);
+        }
+
+        #feedback-sidebar .rating-muted,
+        #feedback-sidebar .muted-small {
+            color: var(--text-secondary);
+        }
+
         .modal-message {
             margin: 0;
             white-space: pre-line;
@@ -1387,6 +1605,24 @@
             transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             pointer-events: none;
         }
+
+        .gallery-item-number {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 4px 8px;
+            border-radius: 999px;
+            border: 1px solid rgba(255,255,255,0.28);
+            background: rgba(0,0,0,0.46);
+            color: rgba(255,255,255,0.95);
+            font-size: 0.78rem;
+            font-weight: 800;
+            letter-spacing: 0.01em;
+            line-height: 1;
+            pointer-events: none;
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+        }
         
         .gallery-item-overlay .gallery-item-checkbox,
         .gallery-item-overlay .gallery-item-actions {
@@ -1473,10 +1709,10 @@
             align-items: center;
             gap: 5px;
             padding: 3px 6px;
-            background: transparent;
-            -webkit-backdrop-filter: none;
-            backdrop-filter: none;
-            border: 0;
+            background: rgba(0,0,0,0.38);
+            border: 1px solid rgba(255,255,255,0.18);
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
             border-radius: 7px;
             color: rgba(255,255,255,0.88);
             cursor: pointer;
@@ -1505,16 +1741,36 @@
             font-variant-numeric: tabular-nums;
             opacity: 0.95;
         }
-        
-        .gallery-item-like.active {
-            background: transparent;
-            border-color: transparent;
-            color: #ff6b6b;
+
+        /* Favorit als Herz (nur in Thumbnail-Overlay Actions) */
+        .gallery-item-actions .gallery-item-like {
+            width: 28px;
+            height: 28px;
+            padding: 0;
+            justify-content: center;
+            border-radius: 999px;
+            border: 1px solid rgba(255,255,255,0.22);
+            background: rgba(0,0,0,0.18);
+            color: rgba(255,255,255,0.9);
+            font-size: 18px;
+            line-height: 1;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.55);
         }
-        
-        .gallery-item-like.active:hover {
-            background: transparent;
-            color: #ff6b6b;
+
+        .gallery-item-actions .gallery-item-like:hover {
+            border-color: rgba(255,255,255,0.35);
+            color: rgba(255,255,255,0.98);
+        }
+
+        .gallery-item-actions .gallery-item-like.active {
+            color: #e24a4a;
+            border-color: rgba(226, 74, 74, 0.60);
+            background: rgba(226, 74, 74, 0.12);
+        }
+
+        .gallery-item-actions .gallery-item-like.active:hover {
+            color: #e24a4a;
+            background: rgba(226, 74, 74, 0.16);
         }
 
         .gallery-item-badge-stack-left,
@@ -1546,9 +1802,10 @@
             font-size: 10px;
             font-weight: 700;
             color: var(--text-secondary);
-            background: transparent;
-            -webkit-backdrop-filter: none;
-            backdrop-filter: none;
+            background: rgba(0,0,0,0.34);
+            border: 1px solid rgba(255,255,255,0.14);
+            -webkit-backdrop-filter: blur(8px);
+            backdrop-filter: blur(8px);
             box-shadow: none;
             text-shadow: 0 1px 2px rgba(0,0,0,0.65);
             filter: drop-shadow(0 1px 2px rgba(0,0,0,0.55));
@@ -1563,9 +1820,10 @@
         .selection-badge {
             position: static;
             padding: 2px 6px;
-            background: transparent;
-            -webkit-backdrop-filter: none;
-            backdrop-filter: none;
+            background: rgba(0,0,0,0.34);
+            border: 1px solid rgba(255,255,255,0.14);
+            -webkit-backdrop-filter: blur(8px);
+            backdrop-filter: blur(8px);
             border-radius: 6px;
             font-size: 10px;
             font-weight: 700;
@@ -1595,9 +1853,10 @@
             font-size: 10px;
             font-weight: 700;
             color: #ffd60a;
-            background: transparent;
-            -webkit-backdrop-filter: none;
-            backdrop-filter: none;
+            background: rgba(0,0,0,0.34);
+            border: 1px solid rgba(255,255,255,0.14);
+            -webkit-backdrop-filter: blur(8px);
+            backdrop-filter: blur(8px);
             box-shadow: none;
             text-shadow: 0 1px 2px rgba(0,0,0,0.65);
             filter: drop-shadow(0 1px 2px rgba(0,0,0,0.55));
@@ -1614,6 +1873,101 @@
             background: rgba(255, 59, 48, 0.10);
             color: var(--text-primary);
             font-size: 0.9rem;
+        }
+
+        /* Thumbnail context menu */
+        .context-menu {
+            position: fixed;
+            z-index: 1300;
+            min-width: 240px;
+            max-width: min(360px, calc(100vw - 24px));
+            background: rgba(20,20,22,0.92);
+            border: 1px solid rgba(255,255,255,0.14);
+            border-radius: 14px;
+            padding: 10px;
+            color: rgba(255,255,255,0.92);
+            box-shadow: 0 18px 38px rgba(0,0,0,0.55);
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+        }
+
+        .context-menu.is-hidden { display: none; }
+
+        .context-menu-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            padding: 2px 2px 8px;
+            border-bottom: 1px solid rgba(255,255,255,0.10);
+            margin-bottom: 8px;
+        }
+
+        .context-menu-title {
+            font-weight: 800;
+            font-size: 12px;
+            letter-spacing: 0.02em;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .context-menu-item {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            padding: 9px 10px;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.10);
+            background: rgba(255,255,255,0.06);
+            color: rgba(255,255,255,0.92);
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .context-menu-item:hover {
+            border-color: rgba(212, 165, 116, 0.55);
+            color: var(--accent);
+        }
+
+        .context-menu-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .context-menu-mini {
+            padding: 6px 9px;
+            border-radius: 999px;
+            border: 1px solid rgba(255,255,255,0.12);
+            background: rgba(255,255,255,0.06);
+            color: rgba(255,255,255,0.92);
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 800;
+            line-height: 1;
+        }
+
+        .context-menu-mini.active {
+            border-color: var(--accent);
+            background: rgba(212, 165, 116, 0.18);
+        }
+
+        .context-menu-group {
+            margin-top: 10px;
+        }
+
+        .context-menu-group-title {
+            font-size: 11px;
+            opacity: 0.75;
+            margin: 8px 2px 0;
+            letter-spacing: 0.03em;
+            text-transform: uppercase;
+            font-weight: 800;
         }
 
         .debug-panel {
@@ -1692,20 +2046,113 @@
         }
         
         .lightbox-content {
-            max-width: 90%;
-            max-height: 90%;
+            max-width: 92vw;
+            max-height: 92vh;
+            width: 92vw;
+            height: 92vh;
             position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-sizing: border-box;
+            padding-top: 78px;
+            padding-bottom: 110px;
         }
+
+        .lightbox-topbar {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            z-index: 12;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 10px 12px;
+            border-radius: 16px;
+            border: 1px solid rgba(255,255,255,0.14);
+            background: rgba(0,0,0,0.55);
+            -webkit-backdrop-filter: blur(8px);
+            backdrop-filter: blur(8px);
+        }
+
+        .lightbox-topbar-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            min-width: 0;
+        }
+
+        .lightbox-title {
+            font-weight: 800;
+            letter-spacing: 0.02em;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 52vw;
+        }
+
+        .lightbox-topbar-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+        }
+
+        .lightbox-topbar-actions .gallery-chip-button {
+            background: rgba(255,255,255,0.08);
+            border-color: rgba(255,255,255,0.18);
+            color: rgba(255,255,255,0.92);
+        }
+
+        .lightbox-topbar-actions .gallery-chip-button:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .lightbox-topbar-actions .gallery-chip-button.active {
+            border-color: var(--accent);
+            background: rgba(212, 165, 116, 0.18);
+            color: rgba(255,255,255,0.92);
+        }
+
+        .lightbox-topbar-group {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .lightbox-fav-btn {
+            width: 36px;
+            padding-left: 0 !important;
+            padding-right: 0 !important;
+            justify-content: center;
+        }
+
+        .lightbox-flag-btn[data-lightbox-flag="reject"].active { border-color: rgba(255,92,92,0.85); }
+        .lightbox-flag-btn[data-lightbox-flag="review"].active { border-color: rgba(255,213,74,0.85); }
+        .lightbox-flag-btn[data-lightbox-flag="approve"].active { border-color: rgba(70,220,140,0.85); }
+        .lightbox-flag-btn[data-lightbox-flag="final"].active { border-color: rgba(255,255,255,0.60); }
         
         .lightbox-content img {
             max-width: 100%;
-            max-height: 90vh;
+            max-height: calc(92vh - 78px - 110px);
             object-fit: contain;
         }
 
-        .lightbox-filmstrip {
-            margin-top: 10px;
-            max-width: 90vw;
+        /* Lightbox filmstrip should always be visible (anchored inside the lightbox content) */
+        #lightbox #lightbox-filmstrip {
+            position: absolute;
+            left: 10px;
+            right: 10px;
+            bottom: 10px;
+            margin-top: 0;
+            max-width: none;
             overflow-x: auto;
             overflow-y: hidden;
             padding: 6px 0;
@@ -1779,6 +2226,24 @@
             gap: 12px;
         }
 
+        .culling-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .culling-esc-hint {
+            color: rgba(255,255,255,0.72);
+            font-size: 12px;
+            -webkit-user-select: none;
+            user-select: none;
+            pointer-events: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
         .culling-title {
             font-weight: 800;
             letter-spacing: 0.02em;
@@ -1801,6 +2266,41 @@
             border-color: var(--accent);
             color: var(--accent);
         }
+
+        .culling-actions .gallery-chip-button.active {
+            border-color: var(--accent);
+            background: rgba(212, 165, 116, 0.18);
+            color: rgba(255,255,255,0.92);
+        }
+
+        .culling-action-group {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .culling-action-group .gallery-chip-button {
+            padding: 6px 10px;
+            font-size: 0.82rem;
+        }
+
+        .culling-fav-btn {
+            width: 36px;
+            padding-left: 0 !important;
+            padding-right: 0 !important;
+            justify-content: center;
+        }
+
+        .culling-flag-btn {
+            padding-left: 10px;
+            padding-right: 10px;
+        }
+
+        .culling-flag-btn[data-culling-flag="reject"].active { border-color: rgba(255,92,92,0.85); }
+        .culling-flag-btn[data-culling-flag="review"].active { border-color: rgba(255,213,74,0.85); }
+        .culling-flag-btn[data-culling-flag="approve"].active { border-color: rgba(70,220,140,0.85); }
+        .culling-flag-btn[data-culling-flag="final"].active { border-color: rgba(255,255,255,0.60); }
 
         .culling-grid {
             width: 100%;
@@ -2174,124 +2674,81 @@
 
         /* Lightbox Detail-Ansicht: Desktop ohne Sidebar-Aufklappen & ohne Seiten-Scroll */
         @media (min-width: 1100px) {
-            :root {
-                --lightbox-sidebar-width: 340px;
-            }
-
-            .lightbox.active {
-                padding-left: var(--lightbox-sidebar-width);
-            }
-
-            #feedback-toggle-btn {
-                display: none;
-            }
-
-            #lightbox-download-btn {
-                display: none;
-            }
-
             #sidebar-download-btn {
                 margin-bottom: 10px;
             }
 
-            .lightbox-sidebar {
-                left: 0 !important;
-                overflow: hidden;
-                padding: 8px;
-            }
-
-            .lightbox-sidebar .sidebar-close-btn {
-                display: none;
-            }
-
-            .lightbox-sidebar h3 {
-                margin-bottom: 10px;
-                font-size: 0.95em;
-            }
-
-            .lightbox-sidebar-body {
+            #feedback-sidebar .lightbox-sidebar-body {
                 display: grid;
                 grid-template-columns: 1fr 1fr;
-                gap: 8px;
+                gap: 10px;
                 align-content: start;
             }
 
-            .feedback-section {
-                margin-top: 0;
-                padding-top: 0;
-                border-top: none;
-            }
-
-            .feedback-section + .feedback-section {
-                margin-top: 0;
-                padding-top: 0;
-                border-top: none;
-            }
-
-            .feedback-section--wide {
+            #feedback-sidebar .feedback-section--wide {
                 grid-column: 1 / -1;
             }
 
-            .lightbox-sidebar h4 {
+            #feedback-sidebar h4 {
                 margin-top: 0;
                 margin-bottom: 6px;
-                font-size: 0.78em;
+                font-size: 0.86em;
             }
 
-            .rating-stars {
+            #feedback-sidebar .rating-stars {
                 margin-bottom: 4px;
             }
 
-            .star {
-                font-size: 15px;
+            #feedback-sidebar .star {
+                font-size: 16px;
             }
 
-            .flag-buttons {
-                gap: 5px;
+            #feedback-sidebar .flag-buttons {
+                gap: 6px;
             }
 
-            .lightbox-sidebar .btn-primary,
-            .lightbox-sidebar .btn-secondary,
-            .lightbox-sidebar .gallery-item-btn {
+            #feedback-sidebar .btn-primary,
+            #feedback-sidebar .btn-secondary,
+            #feedback-sidebar .gallery-item-btn {
                 padding: 5px 10px;
                 font-size: 11px;
             }
 
-            .lightbox-sidebar .flag-btn {
+            #feedback-sidebar .flag-btn {
                 padding: 5px 6px;
                 font-size: 10px;
             }
 
-            .comment-input {
+            #feedback-sidebar .comment-input {
                 min-height: 34px;
                 resize: none;
             }
 
-            .comment-list {
+            #feedback-sidebar .comment-list {
                 margin-top: 6px;
                 max-height: 110px;
                 overflow: auto;
             }
 
-            .selection-row {
+            #feedback-sidebar .selection-row {
                 display: flex;
                 gap: 8px;
                 align-items: center;
             }
 
-            .selection-row .sidebar-input--mb {
+            #feedback-sidebar .selection-row .sidebar-input--mb {
                 margin-bottom: 0;
                 flex: 1;
                 min-width: 0;
             }
 
-            .selection-row button {
+            #feedback-sidebar .selection-row button {
                 white-space: nowrap;
                 padding: 6px 10px;
                 font-size: 12px;
             }
 
-            #image-info {
+            #feedback-sidebar #image-info {
                 display: grid;
                 grid-template-columns: 1fr 1fr;
                 gap: 4px 10px;
@@ -2299,7 +2756,7 @@
                 line-height: 1.4;
             }
 
-            #image-info > div {
+            #feedback-sidebar #image-info > div {
                 display: flex;
                 gap: 6px;
                 align-items: baseline;
@@ -2307,13 +2764,13 @@
                 white-space: nowrap;
             }
 
-            #image-info strong {
+            #feedback-sidebar #image-info strong {
                 flex: 0 0 auto;
-                color: rgba(255,255,255,0.75);
+                color: var(--text-secondary);
                 font-weight: 600;
             }
 
-            #image-info span {
+            #feedback-sidebar #image-info span {
                 overflow: hidden;
                 text-overflow: ellipsis;
             }
@@ -2321,13 +2778,9 @@
 
         /* Extra-kompakt bei weniger Höhe (Browser-Chrome, kleinere Fenster) */
         @media (min-width: 1100px) and (max-height: 900px) {
-            :root {
-                --lightbox-sidebar-width: 320px;
-            }
-
-            .comment-list { max-height: 90px; }
-            .lightbox-sidebar-body { gap: 6px; }
-            .lightbox-sidebar h3 { margin-bottom: 8px; }
+            #feedback-sidebar .comment-list { max-height: 90px; }
+            #feedback-sidebar .lightbox-sidebar-body { gap: 8px; }
+            #feedback-sidebar .modal-title { font-size: 0.98rem; }
         }
         
         .comment-item {
@@ -2411,29 +2864,12 @@
         .center-muted { text-align: center; color: var(--text-secondary); margin-bottom: 20px; }
         .error-text { color: #ff6b6b; margin-top: 10px; }
 
-        .gallery-layout-row { display: flex; gap: 20px; }
+        .gallery-layout-row { display: block; }
         .gallery-main { flex: 1; display: flex; flex-direction: column; }
         .gallery-flex { flex: 1; }
 
-        /* Desktop: keep gallery sidebar always visible (fixed), like Picdrop */
-        @media (min-width: 769px) {
-            .gallery-layout-row {
-                display: block;
-            }
-
-            .gallery-sidebar {
-                position: fixed;
-                left: var(--gallery-fixed-left);
-                z-index: 260;
-            }
-
-            .gallery-main {
-                margin-left: calc(var(--gallery-sidebar-w) + var(--gallery-layout-gap));
-            }
-
-            .gallery-sidebar.collapsed ~ .gallery-main {
-                margin-left: calc(var(--gallery-sidebar-collapsed-w) + var(--gallery-layout-gap));
-            }
+        .gallery-main {
+            margin-left: 0;
         }
 
         .sidebar-section--flush { margin-top: 0; padding-top: 0; border-top: none; }
@@ -2451,6 +2887,21 @@
         .btn-center { justify-content: center; }
 
         .viewer-actions { position: absolute; bottom: 10px; left: 10px; display: flex; gap: 10px; z-index: 10; }
+
+        .viewer-hint {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            z-index: 10;
+            color: rgba(255,255,255,0.8);
+            font-size: 12px;
+            -webkit-user-select: none;
+            user-select: none;
+            pointer-events: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
         .sidebar-close-btn { position: absolute; top: 12px; left: 8px; background: rgba(212, 165, 116, 0.2); border: 1px solid var(--accent); border-radius: 4px; color: var(--accent); font-size: 12px; cursor: pointer; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
         .rating-muted { color: var(--text-secondary); font-size: 0.75em; margin-top: 4px; }
         .image-info { font-size: 0.8em; color: var(--text-secondary); line-height: 1.6; }
@@ -2519,59 +2970,270 @@
             border: 1px solid rgba(212, 165, 116, 0.5) !important;
         }
         
-        /* Gallery Sidebar (für Übersicht) */
+        /* Overview (Topbar compact, 3-row layout) */
         .gallery-sidebar {
-            position: sticky;
-            top: calc(var(--gallery-fixed-top) + var(--gallery-topbar-h) + 2px);
-            align-self: flex-start;
-            width: var(--gallery-sidebar-w);
-            min-width: var(--gallery-sidebar-w);
-            background: linear-gradient(180deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
-            border-right: 1px solid var(--border);
-            padding: 12px;
-            overflow-y: auto;
-            max-height: calc(100vh - (var(--gallery-fixed-top) + var(--gallery-topbar-h) + 2px) - 18px - env(safe-area-inset-bottom, 0px));
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 4px 0 24px rgba(0,0,0,0.3);
-            z-index: 60;
+            position: fixed;
+            top: calc(var(--gallery-fixed-top) + var(--gallery-topbar-h) + var(--gallery-overview-gap));
+            left: 50%;
+            transform: translateX(-50%);
+            width: var(--gallery-fixed-width);
+            z-index: 295;
+            padding: 0;
+            border: 0;
+            background: transparent;
+            box-shadow: none;
+            overflow: visible;
+            pointer-events: none;
         }
-        
-        .gallery-sidebar.collapsed {
-            width: var(--gallery-sidebar-collapsed-w);
-            min-width: var(--gallery-sidebar-collapsed-w);
-            padding: 12px 8px;
+
+        .gallery-sidebar.is-open {
+            pointer-events: auto;
         }
-        
-        .gallery-sidebar.collapsed .sidebar-content {
+
+        .overview-topbar {
+            background: rgba(255,255,255,0.06);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            -webkit-backdrop-filter: blur(12px);
+            backdrop-filter: blur(12px);
+        }
+
+        body.dark-mode .overview-topbar {
+            background: rgba(255,255,255,0.04);
+        }
+
+        /* Legacy mini bar hidden (Übersicht controls are now in topbar) */
+        .overview-bar { display: none; }
+
+        .overview-topbar {
+            position: relative;
+            width: 100%;
+            padding: 8px;
             display: none;
+            max-height: min(42vh, 420px);
+            overflow: hidden;
         }
-        
+
+        .gallery-sidebar.is-open .overview-topbar {
+            display: block;
+        }
+
+        .overview-topbar .sidebar-content {
+            padding-right: 0;
+        }
+
+        .overview-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: nowrap;
+            overflow-x: auto;
+        }
+
+        .overview-row + .overview-row {
+            margin-top: 6px;
+            padding-top: 6px;
+            border-top: 1px solid var(--border);
+        }
+
+        .overview-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex: 1 1 320px;
+            min-width: 0;
+        }
+
+        .overview-group-label {
+            font-size: 0.68em;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--text-secondary);
+            white-space: nowrap;
+        }
+
+        .overview-group-content,
+        .overview-actions {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-wrap: wrap;
+            min-width: 0;
+        }
+
+        .overview-actions {
+            flex: 1 1 auto;
+        }
+
+        .overview-actions--scroll {
+            flex-wrap: nowrap;
+            overflow-x: auto;
+            padding-bottom: 2px;
+        }
+
+        /* Compact overview topbar content (inline in header) */
+        .overview-topbar .flag-summary,
+        .overview-topbar .rating-summary {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin: 0;
+        }
+
+        .overview-topbar .flag-summary-item,
+        .overview-topbar .rating-summary-item {
+            padding: 4px 8px;
+            border-radius: 999px;
+            min-width: 0;
+            border-left-width: 0;
+        }
+
+        .overview-topbar .flag-badge {
+            width: 18px;
+            height: 18px;
+            font-size: 11px;
+            border-radius: 6px;
+        }
+
+        .overview-topbar .flag-count,
+        .overview-topbar .rating-count {
+            font-size: 0.78em;
+        }
+
+        .overview-topbar .rating-pill {
+            padding: 2px 5px;
+            font-size: 10px;
+        }
+
+        .overview-topbar .flag-btn {
+            padding: 4px 8px;
+            font-size: 10px;
+            border-width: 1px;
+            border-radius: 999px;
+        }
+
+        .overview-topbar .btn-primary,
+        .overview-topbar .btn-secondary {
+            padding: 4px 8px;
+            font-size: 10px;
+            border-radius: 999px;
+            white-space: nowrap;
+        }
+
+        .overview-topbar .selections-list {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-wrap: nowrap;
+            overflow-x: auto;
+            padding-bottom: 2px;
+        }
+
+        .overview-topbar .selection-row-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 6px;
+            border-radius: 999px;
+            border: 1px solid var(--border);
+            background: rgba(255,255,255,0.06);
+        }
+
+        .overview-topbar .selection-item {
+            padding: 0;
+            margin: 0;
+            border: 0;
+            background: transparent;
+            font-size: 0.78em;
+            white-space: nowrap;
+        }
+
+        .overview-topbar .selection-item.clickable:hover,
+        .overview-topbar .selection-item.clickable.active {
+            transform: none;
+            border-left-width: 0 !important;
+        }
+
+        .overview-topbar .selection-row-actions {
+            gap: 4px;
+        }
+
+        .overview-topbar .selection-mini-btn {
+            padding: 3px 6px;
+            font-size: 9px;
+            border-radius: 999px;
+        }
+
+        .quick-filter-count {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 22px;
+            height: 18px;
+            padding: 0 6px;
+            margin-left: 8px;
+            border-radius: 999px;
+            border: 1px solid var(--border);
+            background: rgba(255,255,255,0.10);
+            font-size: 0.74rem;
+            font-weight: 800;
+            line-height: 1;
+        }
+
+        body:not(.dark-mode) .quick-filter-count {
+            background: rgba(255,255,255,0.88);
+        }
+
+        .gallery-topbar-search {
+            display: inline-flex;
+            align-items: center;
+            border: 1px solid var(--border);
+            background: rgba(255,255,255,0.04);
+            border-radius: 999px;
+            padding: 8px 12px;
+            min-width: 160px;
+            max-width: 280px;
+            flex: 1 1 200px;
+        }
+
+        body:not(.dark-mode) .gallery-topbar-search {
+            background: rgba(255,255,255,0.78);
+        }
+
+        .gallery-topbar-search input {
+            width: 100%;
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            font-size: 0.85rem;
+            outline: none;
+        }
+
+        .gallery-topbar-search input::placeholder {
+            color: var(--text-secondary);
+        }
+
         .sidebar-toggle {
-            position: absolute;
-            top: 12px;
-            left: 8px;
             background: rgba(212, 165, 116, 0.2);
             border: 1px solid var(--accent);
             color: var(--accent);
-            width: 24px;
-            height: 24px;
-            border-radius: 4px;
+            width: 28px;
+            height: 28px;
+            border-radius: 8px;
             cursor: pointer;
-            display: flex;
+            display: inline-flex;
             align-items: center;
             justify-content: center;
             font-size: 12px;
             transition: all 0.2s;
-            z-index: 10;
+            flex: 0 0 auto;
         }
         
         .sidebar-toggle:hover {
             background: rgba(212, 165, 116, 0.4);
             transform: scale(1.1);
-        }
-        
-        .gallery-sidebar.collapsed .sidebar-toggle {
-            left: 8px;
         }
         
         /* Clickable items */
@@ -2597,7 +3259,6 @@
             color: var(--text-primary);
             border-bottom: 1px solid var(--accent);
             padding-bottom: 6px;
-            padding-left: 42px;
             font-weight: 600;
         }
         
@@ -2640,6 +3301,75 @@
             margin-top: 12px;
             padding-top: 12px;
             border-top: 1px solid var(--border);
+        }
+
+        /* Sidebar accordions (Picdrop-like dropdown sections) */
+        .sidebar-accordion {
+            border: 0;
+            margin: 0;
+        }
+
+        .sidebar-accordion > summary {
+            list-style: none;
+            cursor: pointer;
+            -webkit-user-select: none;
+            user-select: none;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            font-size: 0.85em;
+            color: var(--text-secondary);
+            font-weight: 700;
+            padding: 6px 6px;
+            border-radius: 8px;
+            transition: background 0.15s ease, color 0.15s ease;
+        }
+
+        .sidebar-accordion > summary::-webkit-details-marker {
+            display: none;
+        }
+
+        .sidebar-accordion > summary:hover {
+            background: rgba(212, 165, 116, 0.16);
+            color: var(--text-primary);
+        }
+
+        .sidebar-accordion-title {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            min-width: 0;
+        }
+
+        .sidebar-accordion-chevron {
+            width: 18px;
+            height: 18px;
+            border-radius: 6px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid var(--border);
+            background: rgba(255,255,255,0.22);
+            color: var(--text-secondary);
+            flex: 0 0 auto;
+            transform: rotate(-90deg);
+            transition: transform 0.18s ease, background 0.18s ease, color 0.18s ease, border-color 0.18s ease;
+        }
+
+        body.dark-mode .sidebar-accordion-chevron {
+            background: rgba(255,255,255,0.06);
+        }
+
+        .sidebar-accordion[open] > summary .sidebar-accordion-chevron {
+            transform: rotate(0deg);
+            border-color: rgba(212, 165, 116, 0.55);
+            color: var(--accent);
+            background: rgba(212, 165, 116, 0.12);
+        }
+
+        .sidebar-accordion-body {
+            margin-top: 10px;
         }
         
         .flag-summary {
@@ -2819,9 +3549,8 @@
         }
         
         @media (max-width: 1200px) {
-            .gallery-sidebar {
-                width: 180px;
-                min-width: 180px;
+            :root {
+                --gallery-sidebar-w: 180px;
             }
         }
         
@@ -2946,19 +3675,13 @@
                 flex-direction: column;
                 align-items: flex-start;
             }
-            
+
             .gallery-sidebar {
-                position: fixed;
-                left: -200px;
-                top: 0;
-                height: 100vh;
-                z-index: 999;
-                max-height: 100vh;
-                width: 200px;
+                padding: 10px;
             }
-            
-            .gallery-sidebar.open {
-                left: 0;
+
+            .gallery-sidebar .sidebar-content {
+                max-height: min(52vh, 520px);
             }
             
             #gallery-container > div {
@@ -3103,6 +3826,12 @@
         
         <!-- Passwort-Formular -->
         <div id="password-form" class="password-form is-hidden">
+            <div class="password-form-topbar">
+                <button class="back-button" type="button" onclick="showGallerySelector()" title="Zurück">
+                    ← Zurück
+                </button>
+                <span class="password-form-hint">Tipp: <kbd>Esc</kbd> zurück</span>
+            </div>
             <h2>Passwort erforderlich</h2>
             <p class="center-muted" id="gallery-name-display"></p>
             <input type="password" id="password-input" placeholder="Passwort eingeben" autofocus>
@@ -3112,210 +3841,172 @@
         
         <!-- Galerie-Ansicht -->
         <div id="gallery-container" class="is-hidden">
-            <div class="gallery-header">
+            <div class="gallery-header" role="region" aria-label="Galerie Kopfzeile">
                 <div class="gallery-header-left">
-                    <button class="back-button is-hidden" onclick="showGallerySelector()" id="back-button">
+                    <button class="back-button" id="back-button" type="button" onclick="showGallerySelector()" title="Zurück zur Galerie-Auswahl">
                         ← Zurück
                     </button>
                     <div class="gallery-title">
                         <h2 id="gallery-title">Galerie</h2>
-                        <p id="gallery-subtitle">–</p>
+                        <p id="gallery-subtitle">Bilder auswählen, bewerten und kommentieren.</p>
                     </div>
+                    <span class="gallery-chip" id="gallery-filter-chip">Alle</span>
+                    <span class="gallery-chip" id="gallery-visible-chip">0 sichtbar</span>
                 </div>
                 <div class="gallery-header-actions">
-                    <span class="gallery-chip" id="gallery-count-chip">– Bilder</span>
-                    <span class="gallery-chip" id="gallery-visible-chip">– sichtbar</span>
-                    <span class="gallery-chip" id="gallery-filter-chip">Alle</span>
+                    <span class="gallery-chip" id="gallery-count-chip">0 Bilder</span>
                     <span class="gallery-chip" id="gallery-selected-chip">0 ausgewählt</span>
-                    <select id="sort-select" class="gallery-sort-select" title="Sortierung">
-                        <option value="default">Sort: Standard</option>
-                        <option value="date_desc">Sort: Datum ↓</option>
-                        <option value="date_asc">Sort: Datum ↑</option>
-                        <option value="name_asc">Sort: Name A→Z</option>
-                        <option value="name_desc">Sort: Name Z→A</option>
-                        <option value="rating_desc">Sort: Rating ↓</option>
-                        <option value="rating_asc">Sort: Rating ↑</option>
-                        <option value="flag_desc">Sort: Flag (Final→…)</option>
-                        <option value="flag_asc">Sort: Flag (…→Final)</option>
+                    <div class="gallery-topbar-search" role="search">
+                        <input type="search" id="search-input" placeholder="Suchen..." autocomplete="off">
+                    </div>
+                    <select class="gallery-sort-select" id="sort-select" aria-label="Sortierung">
+                        <option value="default">Standard</option>
+                        <option value="date_desc">Datum ↓</option>
+                        <option value="date_asc">Datum ↑</option>
+                        <option value="name_asc">Name A→Z</option>
+                        <option value="name_desc">Name Z→A</option>
+                        <option value="rating_desc">Rating ↓</option>
+                        <option value="rating_asc">Rating ↑</option>
+                        <option value="flag_desc">Flag (Final→…)</option>
+                        <option value="flag_asc">Flag (…→Final)</option>
                     </select>
-                    <button type="button" class="gallery-chip-button" id="culling-toggle-btn" title="Culling Mode (C)">Culling</button>
-                    <button type="button" class="gallery-chip-button" id="shortcuts-help-btn" title="Shortcuts anzeigen (?)">? Hilfe</button>
+                    <button type="button" class="gallery-chip-button" id="culling-toggle-btn" title="Culling Mode">Culling</button>
+                    <button type="button" class="gallery-chip-button" id="shortcuts-help-btn" title="Shortcuts">?</button>
+                    <button type="button" class="gallery-chip-button" id="toggle-numbers-btn" title="Nummerierung (# anzeigen)">#</button>
                 </div>
-            </div>
 
-            <!-- Quick Filters (Picdrop-inspiriert) -->
-            <div class="quick-filters" id="quick-filters" aria-label="Schnellfilter">
-                <button type="button" class="quick-filter-chip" data-filter-type="all">Alle</button>
-                <button type="button" class="quick-filter-chip" data-filter-type="selected">Ausgewählt</button>
-                <button type="button" class="quick-filter-chip" data-filter-type="favorites">Favoriten</button>
-                <button type="button" class="quick-filter-chip" data-filter-type="commented">Kommentare</button>
-                <button type="button" class="quick-filter-chip" data-filter-type="rated" data-filter-rating="5">5★</button>
-                <button type="button" class="quick-filter-chip" data-filter-rating="4">4★</button>
-                <button type="button" class="quick-filter-chip" data-filter-rating="3">3★</button>
-                <button type="button" class="quick-filter-chip" data-filter-rating="2">2★</button>
-                <button type="button" class="quick-filter-chip" data-filter-rating="1">1★</button>
-                <span class="quick-filter-sep" aria-hidden="true"></span>
-                <button type="button" class="quick-filter-chip" data-filter-flag="reject">✗ Reject</button>
-                <button type="button" class="quick-filter-chip" data-filter-flag="review">! Review</button>
-                <button type="button" class="quick-filter-chip" data-filter-flag="approve">✓ Approve</button>
-                <button type="button" class="quick-filter-chip" data-filter-flag="final">★ Final</button>
-            </div>
-            <div class="gallery-layout-row">
-                <!-- Sidebar für Galerie-Übersicht -->
-                <div class="gallery-sidebar" id="gallery-sidebar">
-                    <button class="sidebar-toggle" onclick="toggleGallerySidebar()" id="sidebar-toggle-btn">
-                        <span id="sidebar-toggle-icon">▶</span>
-                    </button>
-                    <div class="sidebar-content" id="sidebar-content">
-                        <h3>Übersicht</h3>
-                        
-                        <!-- Suche -->
-                        <div class="sidebar-section sidebar-section--flush">
-                            <input type="text" id="search-input" placeholder="Suchen..." class="sidebar-input sidebar-input--mb">
-                        </div>
-                        
-                        <div class="sidebar-stats">
-                            <div class="stat-item clickable" onclick="filterByType('all')" title="Alle Bilder anzeigen">
-                                <span class="stat-label">Gesamt:</span>
-                                <span class="stat-value" id="stat-total">0</span>
-                            </div>
-                            <div class="stat-item clickable" onclick="filterByType('selected')" title="Nur ausgewählte Bilder">
-                                <span class="stat-label">Ausgewählt:</span>
-                                <span class="stat-value" id="stat-selected">0</span>
-                            </div>
-                            <div class="stat-item clickable" onclick="filterByType('favorites')" title="Nur Favoriten">
-                                <span class="stat-label">Favoriten:</span>
-                                <span class="stat-value" id="stat-favorites">0</span>
-                            </div>
-                            <div class="stat-item clickable" onclick="filterByType('commented')" title="Nur kommentierte Bilder">
-                                <span class="stat-label">Kommentiert:</span>
-                                <span class="stat-value" id="stat-commented">0</span>
-                            </div>
-                            <div class="stat-item clickable" onclick="filterByType('rated')" title="Nur bewertete Bilder">
-                                <span class="stat-label">Bewertet:</span>
-                                <span class="stat-value" id="stat-rated">0</span>
-                            </div>
-                        </div>
-                        
-                        <div class="sidebar-section">
-                            <h4>Markierungen</h4>
-                            <div class="flag-summary" id="flag-summary">
-                                <div class="flag-summary-item clickable" onclick="filterByFlag('reject')" title="Nur abgelehnte Bilder">
-                                    <span class="flag-badge red">✗</span>
-                                    <span class="flag-count" id="flag-reject">0</span>
-                                </div>
-                                <div class="flag-summary-item clickable" onclick="filterByFlag('review')" title="Nur zu prüfende Bilder">
-                                    <span class="flag-badge yellow">!</span>
-                                    <span class="flag-count" id="flag-review">0</span>
-                                </div>
-                                <div class="flag-summary-item clickable" onclick="filterByFlag('approve')" title="Nur genehmigte Bilder">
-                                    <span class="flag-badge green">✓</span>
-                                    <span class="flag-count" id="flag-approve">0</span>
-                                </div>
-                                <div class="flag-summary-item clickable" onclick="filterByFlag('final')" title="Nur finale Bilder">
-                                    <span class="flag-badge black">★</span>
-                                    <span class="flag-count" id="flag-final">0</span>
-                                </div>
-                            </div>
+                <div class="quick-filters" id="quick-filters" role="toolbar" aria-label="Schnellfilter">
+                    <div class="quick-filter-row" aria-label="Basisfilter">
+                        <button class="quick-filter-chip" type="button" data-filter-type="all">Alle <span class="quick-filter-count" id="stat-total">0</span></button>
+                        <button class="quick-filter-chip" type="button" data-filter-type="selected">Ausgewählt <span class="quick-filter-count" id="stat-selected">0</span></button>
+                        <button class="quick-filter-chip" type="button" data-filter-type="favorites">Favoriten <span class="quick-filter-count" id="stat-favorites">0</span></button>
+                        <button class="quick-filter-chip quick-filter-chip--icon" type="button" data-filter-type="favorites" title="Nur Favoriten">♥</button>
+                        <button class="quick-filter-chip" type="button" data-filter-type="commented">Kommentare <span class="quick-filter-count" id="stat-commented">0</span></button>
+                        <button class="quick-filter-chip" type="button" data-filter-type="rated">Bewertet <span class="quick-filter-count" id="stat-rated">0</span></button>
+                    </div>
+                    <div class="quick-filter-row" aria-label="Flags">
+                        <button class="quick-filter-chip" type="button" data-filter-flag="reject" title="Nur abgelehnte Bilder">✗ Reject <span class="quick-filter-count" id="flag-chip-reject">0</span></button>
+                        <button class="quick-filter-chip" type="button" data-filter-flag="review" title="Nur zu prüfende Bilder">! Review <span class="quick-filter-count" id="flag-chip-review">0</span></button>
+                        <button class="quick-filter-chip" type="button" data-filter-flag="approve" title="Nur genehmigte Bilder">✓ Approve <span class="quick-filter-count" id="flag-chip-approve">0</span></button>
+                        <button class="quick-filter-chip" type="button" data-filter-flag="final" title="Nur finale Bilder">★ Final <span class="quick-filter-count" id="flag-chip-final">0</span></button>
+                    </div>
+                    <div class="quick-filter-row" aria-label="Bewertung">
+                        <button class="quick-filter-chip" type="button" data-filter-rating="5" title="Nur 5 Sterne">5★ <span class="quick-filter-count" id="rating-chip-5">0</span></button>
+                        <button class="quick-filter-chip" type="button" data-filter-rating="4" title="Nur 4 Sterne">4★ <span class="quick-filter-count" id="rating-chip-4">0</span></button>
+                        <button class="quick-filter-chip" type="button" data-filter-rating="3" title="Nur 3 Sterne">3★ <span class="quick-filter-count" id="rating-chip-3">0</span></button>
+                        <button class="quick-filter-chip" type="button" data-filter-rating="2" title="Nur 2 Sterne">2★ <span class="quick-filter-count" id="rating-chip-2">0</span></button>
+                        <button class="quick-filter-chip" type="button" data-filter-rating="1" title="Nur 1 Stern">1★ <span class="quick-filter-count" id="rating-chip-1">0</span></button>
+                    </div>
+                </div>
 
-                            <div class="rating-summary" id="rating-summary" aria-label="Bewertungsübersicht">
-                                <div class="rating-summary-item clickable" data-rating="5" onclick="filterByRating(5)" title="Nur 5 Sterne">
-                                    <span class="rating-pill">5★</span>
-                                    <span class="rating-count" id="rating-count-5">0</span>
+                <div class="gallery-header-overview" aria-label="Übersicht">
+                    <div class="overview-topbar" id="overview-topbar" aria-label="Übersicht">
+                        <div class="sidebar-content" id="sidebar-content">
+                            <div class="overview-row overview-row--stats">
+                                <div class="overview-group" aria-label="Markierungen">
+                                    <span class="overview-group-label">Markierungen</span>
+                                    <div class="overview-group-content flag-summary" id="flag-summary">
+                                        <div class="flag-summary-item clickable" onclick="filterByFlag('reject')" title="Nur abgelehnte Bilder">
+                                            <span class="flag-badge red">✗</span>
+                                            <span class="flag-count" id="flag-reject">0</span>
+                                        </div>
+                                        <div class="flag-summary-item clickable" onclick="filterByFlag('review')" title="Nur zu prüfende Bilder">
+                                            <span class="flag-badge yellow">!</span>
+                                            <span class="flag-count" id="flag-review">0</span>
+                                        </div>
+                                        <div class="flag-summary-item clickable" onclick="filterByFlag('approve')" title="Nur genehmigte Bilder">
+                                            <span class="flag-badge green">✓</span>
+                                            <span class="flag-count" id="flag-approve">0</span>
+                                        </div>
+                                        <div class="flag-summary-item clickable" onclick="filterByFlag('final')" title="Nur finale Bilder">
+                                            <span class="flag-badge black">★</span>
+                                            <span class="flag-count" id="flag-final">0</span>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="rating-summary-item clickable" data-rating="4" onclick="filterByRating(4)" title="Nur 4 Sterne">
-                                    <span class="rating-pill">4★</span>
-                                    <span class="rating-count" id="rating-count-4">0</span>
-                                </div>
-                                <div class="rating-summary-item clickable" data-rating="3" onclick="filterByRating(3)" title="Nur 3 Sterne">
-                                    <span class="rating-pill">3★</span>
-                                    <span class="rating-count" id="rating-count-3">0</span>
-                                </div>
-                                <div class="rating-summary-item clickable" data-rating="2" onclick="filterByRating(2)" title="Nur 2 Sterne">
-                                    <span class="rating-pill">2★</span>
-                                    <span class="rating-count" id="rating-count-2">0</span>
-                                </div>
-                                <div class="rating-summary-item clickable" data-rating="1" onclick="filterByRating(1)" title="Nur 1 Stern">
-                                    <span class="rating-pill">1★</span>
-                                    <span class="rating-count" id="rating-count-1">0</span>
+                                <div class="overview-group" aria-label="Bewertungen">
+                                    <span class="overview-group-label">Bewertung</span>
+                                    <div class="overview-group-content rating-summary" id="rating-summary" aria-label="Bewertungsübersicht">
+                                        <div class="rating-summary-item clickable" data-rating="5" onclick="filterByRating(5)" title="Nur 5 Sterne">
+                                            <span class="rating-pill">5★</span>
+                                            <span class="rating-count" id="rating-count-5">0</span>
+                                        </div>
+                                        <div class="rating-summary-item clickable" data-rating="4" onclick="filterByRating(4)" title="Nur 4 Sterne">
+                                            <span class="rating-pill">4★</span>
+                                            <span class="rating-count" id="rating-count-4">0</span>
+                                        </div>
+                                        <div class="rating-summary-item clickable" data-rating="3" onclick="filterByRating(3)" title="Nur 3 Sterne">
+                                            <span class="rating-pill">3★</span>
+                                            <span class="rating-count" id="rating-count-3">0</span>
+                                        </div>
+                                        <div class="rating-summary-item clickable" data-rating="2" onclick="filterByRating(2)" title="Nur 2 Sterne">
+                                            <span class="rating-pill">2★</span>
+                                            <span class="rating-count" id="rating-count-2">0</span>
+                                        </div>
+                                        <div class="rating-summary-item clickable" data-rating="1" onclick="filterByRating(1)" title="Nur 1 Stern">
+                                            <span class="rating-pill">1★</span>
+                                            <span class="rating-count" id="rating-count-1">0</span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
 
-                            <div class="bulk-flag-controls">
-                                <p class="muted-small bulk-flag-hint">Für Auswahl:</p>
-                                <div class="flag-buttons" aria-label="Markierung für Auswahl setzen">
+                            <div class="overview-row overview-row--selection" id="bulk-actions-section">
+                                <span class="overview-group-label">Auswahl</span>
+                                <div class="overview-actions">
                                     <button class="flag-btn red" type="button" data-bulk-flag="reject" title="Auswahl ablehnen">Ablehnen</button>
                                     <button class="flag-btn yellow" type="button" data-bulk-flag="review" title="Auswahl prüfen">Prüfen</button>
                                     <button class="flag-btn green" type="button" data-bulk-flag="approve" title="Auswahl genehmigen">Genehmigen</button>
                                     <button class="flag-btn black" type="button" data-bulk-flag="final" title="Auswahl final">Final</button>
+                                    <button id="clear-flags-btn" class="btn-secondary" type="button" data-bulk-action="clear-flag" data-bulk-scope="selected" disabled title="Entfernt Markierungen von allen ausgewählten Bildern">
+                                        Flags Auswahl
+                                    </button>
                                 </div>
+                            </div>
 
-                                <button id="clear-flags-btn" class="btn-secondary btn-full btn-compact" type="button" data-bulk-action="clear-flag" data-bulk-scope="selected" disabled title="Entfernt Markierungen von allen ausgewählten Bildern">
-                                    Markierungen entfernen (Auswahl)
-                                </button>
-                                <button class="btn-secondary btn-full btn-compact btn-compact-mt" type="button" data-bulk-action="clear-flag" data-bulk-scope="visible" title="Entfernt Markierungen von allen aktuell sichtbaren Bildern (Filter/Suche)">
-                                    Markierungen entfernen (sichtbar)
-                                </button>
-                                <button class="btn-secondary btn-full btn-compact btn-compact-mt" type="button" data-bulk-action="clear-flag" data-bulk-scope="gallery" title="Entfernt Markierungen von allen Bildern in dieser Galerie (irreversibel)">
-                                    Markierungen entfernen (gesamte Galerie)
-                                </button>
-                            </div>
-                        </div>
-
-                        <div class="sidebar-section">
-                            <h4>Zurücksetzen</h4>
-                            <p class="muted-small bulk-flag-hint">Diese Aktionen betreffen die gesamte Galerie.</p>
-                            <div class="bulk-actions-buttons">
-                                <button class="btn-secondary btn-full btn-compact" type="button" data-bulk-action="clear-favorites" data-bulk-scope="gallery" title="Entfernt Favoriten-Markierungen von allen Bildern dieser Galerie">
-                                    Favoriten entfernen (gesamte Galerie)
-                                </button>
-                                <button class="btn-secondary btn-full btn-compact" type="button" data-bulk-action="clear-ratings" data-bulk-scope="gallery" title="Entfernt Bewertungen von allen Bildern dieser Galerie">
-                                    Bewertungen entfernen (gesamte Galerie)
-                                </button>
-                                <button class="btn-secondary btn-full btn-compact" type="button" data-bulk-action="clear-comments" data-bulk-scope="gallery" title="Entfernt Kommentare von allen Bildern dieser Galerie">
-                                    Kommentare entfernen (gesamte Galerie)
-                                </button>
-                                <button class="btn-secondary btn-full btn-compact" type="button" data-bulk-action="clear-selections" data-bulk-scope="gallery" title="Entfernt Auswahlen-Zuordnungen von allen Bildern dieser Galerie">
-                                    Auswahlen entfernen (gesamte Galerie)
-                                </button>
-                                <button class="btn-primary btn-full btn-compact btn-compact-mt" type="button" data-bulk-action="reset-feedback" data-bulk-scope="gallery" title="Entfernt Markierungen, Favoriten, Bewertungen, Kommentare und Auswahlen für diese Galerie">
-                                    Alles Feedback löschen (gesamte Galerie)
-                                </button>
-                            </div>
-                        </div>
-                        
-                        <div class="sidebar-section">
-                            <h4>Auswahlen</h4>
-                            <div class="selections-list" id="selections-list">
-                                <p class="muted-small">Keine Auswahlen</p>
-                            </div>
-                        </div>
-                        
-                        <!-- Bulk-Aktionen -->
-                        <div class="sidebar-section is-hidden" id="bulk-actions-section">
-                            <h4>Bulk-Aktionen</h4>
-                            <div class="bulk-actions-buttons">
-                                <button class="btn-secondary btn-full btn-compact" type="button" data-bulk-action="favorites">Als Favoriten markieren</button>
-                                <div class="bulk-flag-grid" aria-label="Markierungen für Auswahl">
-                                    <button class="flag-btn red" type="button" data-bulk-flag="reject" title="Auswahl ablehnen">Ablehnen</button>
-                                    <button class="flag-btn yellow" type="button" data-bulk-flag="review" title="Auswahl prüfen">Prüfen</button>
-                                    <button class="flag-btn green" type="button" data-bulk-flag="approve" title="Auswahl genehmigen">Genehmigen</button>
-                                    <button class="flag-btn black" type="button" data-bulk-flag="final" title="Auswahl final">Final</button>
+                            <div class="overview-row overview-row--reset">
+                                <div class="overview-group">
+                                    <span class="overview-group-label">Zurücksetzen</span>
+                                    <div class="overview-actions overview-actions--scroll">
+                                        <button class="btn-secondary" type="button" data-bulk-action="clear-flag" data-bulk-scope="visible" title="Entfernt Markierungen von allen aktuell sichtbaren Bildern (Filter/Suche)">
+                                            Flags sichtbar
+                                        </button>
+                                        <button class="btn-secondary" type="button" data-bulk-action="clear-flag" data-bulk-scope="gallery" title="Entfernt Markierungen von allen Bildern in dieser Galerie (irreversibel)">
+                                            Flags Galerie
+                                        </button>
+                                        <button class="btn-secondary" type="button" data-bulk-action="clear-favorites" data-bulk-scope="gallery" title="Entfernt Favoriten-Markierungen von allen Bildern dieser Galerie">
+                                            Favoriten reset
+                                        </button>
+                                        <button class="btn-secondary" type="button" data-bulk-action="clear-ratings" data-bulk-scope="gallery" title="Entfernt Bewertungen von allen Bildern dieser Galerie">
+                                            Ratings reset
+                                        </button>
+                                        <button class="btn-secondary" type="button" data-bulk-action="clear-comments" data-bulk-scope="gallery" title="Entfernt Kommentare von allen Bildern dieser Galerie">
+                                            Kommentare reset
+                                        </button>
+                                        <button class="btn-secondary" type="button" data-bulk-action="clear-selections" data-bulk-scope="gallery" title="Entfernt Auswahlen-Zuordnungen von allen Bildern dieser Galerie">
+                                            Auswahlen reset
+                                        </button>
+                                        <button class="btn-primary" type="button" data-bulk-action="reset-feedback" data-bulk-scope="gallery" title="Entfernt Markierungen, Favoriten, Bewertungen, Kommentare und Auswahlen für diese Galerie">
+                                            Alles reset
+                                        </button>
+                                    </div>
                                 </div>
-                                <button class="btn-secondary btn-full btn-compact" type="button" data-bulk-action="clear-flag" data-bulk-scope="selected">Markierungen entfernen (Auswahl)</button>
-                                <button class="btn-secondary btn-full btn-compact" type="button" data-bulk-action="add-selection">Zu Auswahl hinzufügen</button>
-                                <button class="btn-primary btn-full btn-compact" type="button" data-bulk-action="download">Als ZIP herunterladen</button>
-                                <button class="btn-secondary btn-full btn-compact btn-compact-mt" type="button" data-bulk-action="export-pdf">Als PDF exportieren</button>
-                                <button class="btn-secondary btn-full btn-compact btn-clear" type="button" data-bulk-action="clear-selection">✗ Auswahl aufheben</button>
+                                <div class="overview-group overview-group--selections">
+                                    <span class="overview-group-label">Auswahlen</span>
+                                    <div class="overview-actions overview-actions--scroll selections-list" id="selections-list">
+                                        <span class="muted-small">Keine Auswahlen</span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="gallery-main">
-                    <!-- Breadcrumb -->
-                    <div class="breadcrumb is-hidden" id="breadcrumb"></div>
-                    <div class="gallery gallery-flex" id="gallery"></div>
-                </div>
+            </div>
+
+            <div class="gallery-main">
+                <!-- Breadcrumb -->
+                <div class="breadcrumb is-hidden" id="breadcrumb"></div>
+                <div class="gallery gallery-flex" id="gallery"></div>
             </div>
 
             <!-- Bottom Selection Bar (immer griffbereit) -->
@@ -3351,26 +4042,52 @@
         <button class="lightbox-close" onclick="closeLightbox()">&times;</button>
         <button class="lightbox-nav lightbox-prev" onclick="previousImage()">‹</button>
         <div class="lightbox-content">
-            <img id="lightbox-image" src="" alt="">
-            <div class="viewer-actions">
-                <button class="download-btn" id="lightbox-download-btn" onclick="downloadImage()">Download</button>
-                <button class="download-btn" onclick="toggleSidebar()" id="feedback-toggle-btn">Feedback</button>
+            <div class="lightbox-topbar" id="lightbox-topbar" aria-label="Schnellaktionen">
+                <div class="lightbox-topbar-left">
+                    <button type="button" class="gallery-chip-button" id="lightbox-back-btn" title="Zurück (Esc)">Zurück</button>
+                    <div class="lightbox-title" id="lightbox-title">–</div>
+                    <div class="culling-esc-hint" aria-hidden="true"><kbd>Esc</kbd> zurück</div>
+                </div>
+                <div class="lightbox-topbar-actions">
+                    <button type="button" class="gallery-chip-button" id="lightbox-download-btn" title="Download">Download</button>
+                    <button type="button" class="gallery-chip-button" id="feedback-toggle-btn" title="Details">Details</button>
+                    <button type="button" class="gallery-chip-button lightbox-fav-btn" id="lightbox-fav-btn" title="Favorit (F)" aria-label="Favorit">♡</button>
+                    <div class="lightbox-topbar-group" role="group" aria-label="Rating">
+                        <button type="button" class="gallery-chip-button" data-lightbox-rating="1" title="1★">1★</button>
+                        <button type="button" class="gallery-chip-button" data-lightbox-rating="2" title="2★">2★</button>
+                        <button type="button" class="gallery-chip-button" data-lightbox-rating="3" title="3★">3★</button>
+                        <button type="button" class="gallery-chip-button" data-lightbox-rating="4" title="4★">4★</button>
+                        <button type="button" class="gallery-chip-button" data-lightbox-rating="5" title="5★">5★</button>
+                        <button type="button" class="gallery-chip-button" data-lightbox-rating="0" title="Rating entfernen">0</button>
+                    </div>
+                    <div class="lightbox-topbar-group" role="group" aria-label="Markierung">
+                        <button type="button" class="gallery-chip-button lightbox-flag-btn" data-lightbox-flag="reject" title="Reject (R)">✗</button>
+                        <button type="button" class="gallery-chip-button lightbox-flag-btn" data-lightbox-flag="review" title="Review">!</button>
+                        <button type="button" class="gallery-chip-button lightbox-flag-btn" data-lightbox-flag="approve" title="Approve">✓</button>
+                        <button type="button" class="gallery-chip-button lightbox-flag-btn" data-lightbox-flag="final" title="Final">★</button>
+                        <button type="button" class="gallery-chip-button" id="lightbox-clear-flag-btn" title="Markierung entfernen">Flag ×</button>
+                    </div>
+                </div>
             </div>
+            <img id="lightbox-image" src="" alt="">
 
             <div class="lightbox-filmstrip" id="lightbox-filmstrip" aria-label="Filmstrip">
                 <div class="lightbox-filmstrip-inner" id="lightbox-filmstrip-inner"></div>
             </div>
         </div>
         <button class="lightbox-nav lightbox-next" onclick="nextImage()">›</button>
-        
-        <!-- Feedback-Sidebar -->
-        <div class="lightbox-sidebar" id="feedback-sidebar">
-            <button onclick="toggleSidebar()" class="sidebar-close-btn">&times;</button>
-            <h3 id="feedback-image-name">Bild Feedback</h3>
 
-            <button class="btn-primary btn-full" id="sidebar-download-btn" type="button" onclick="downloadImage()">Download</button>
+        <!-- Lightbox Details (Modal, keine Sidebar) -->
+        <div class="modal-backdrop is-hidden" id="feedback-sidebar" role="dialog" aria-modal="true" aria-label="Details">
+            <div class="modal" role="document">
+                <div class="modal-header">
+                    <div class="modal-title" id="feedback-image-name">Bild Feedback</div>
+                    <button type="button" class="modal-close" id="feedback-sidebar-close" aria-label="Schließen">×</button>
+                </div>
+                <div class="modal-body">
+                    <button class="btn-primary btn-full" id="sidebar-download-btn" type="button" onclick="downloadImage()">Download</button>
 
-            <div class="lightbox-sidebar-body">
+                    <div class="lightbox-sidebar-body">
                 <!-- Bewertung -->
                 <div class="feedback-section">
                     <h4>Bewertung</h4>
@@ -3434,6 +4151,8 @@
                         <div><strong>Quelle:</strong> <span id="info-source">-</span></div>
                     </div>
                 </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -3442,8 +4161,28 @@
     <div class="culling-overlay" id="culling-overlay" role="dialog" aria-modal="true" aria-label="Culling Mode">
         <button class="lightbox-close" type="button" id="culling-close" aria-label="Schließen">&times;</button>
         <div class="culling-topbar">
-            <div class="culling-title" id="culling-title">Culling</div>
+            <div class="culling-left">
+                <button type="button" class="gallery-chip-button" id="culling-back-btn" title="Zurück (Esc)">Zurück</button>
+                <div class="culling-title" id="culling-title">Culling</div>
+                <div class="culling-esc-hint" aria-hidden="true"><kbd>Esc</kbd> zurück</div>
+            </div>
             <div class="culling-actions">
+                <button type="button" class="gallery-chip-button culling-fav-btn" id="culling-fav-btn" title="Favorit (F)" aria-label="Favorit">♡</button>
+                <div class="culling-action-group" role="group" aria-label="Rating">
+                    <button type="button" class="gallery-chip-button" data-culling-rating="1" title="1★">1★</button>
+                    <button type="button" class="gallery-chip-button" data-culling-rating="2" title="2★">2★</button>
+                    <button type="button" class="gallery-chip-button" data-culling-rating="3" title="3★">3★</button>
+                    <button type="button" class="gallery-chip-button" data-culling-rating="4" title="4★">4★</button>
+                    <button type="button" class="gallery-chip-button" data-culling-rating="5" title="5★">5★</button>
+                    <button type="button" class="gallery-chip-button" data-culling-rating="0" title="Rating entfernen">0</button>
+                </div>
+                <div class="culling-action-group" role="group" aria-label="Markierung">
+                    <button type="button" class="gallery-chip-button culling-flag-btn" data-culling-flag="reject" title="Reject (R)">✗</button>
+                    <button type="button" class="gallery-chip-button culling-flag-btn" data-culling-flag="review" title="Review">!</button>
+                    <button type="button" class="gallery-chip-button culling-flag-btn" data-culling-flag="approve" title="Approve">✓</button>
+                    <button type="button" class="gallery-chip-button culling-flag-btn" data-culling-flag="final" title="Final">★</button>
+                    <button type="button" class="gallery-chip-button" id="culling-clear-flag-btn" title="Markierung entfernen">Flag ×</button>
+                </div>
                 <button type="button" class="gallery-chip-button" id="culling-layout-btn" title="Layout wechseln">2-up</button>
                 <button type="button" class="gallery-chip-button" id="culling-open-lightbox-btn" title="Im Lightbox öffnen">Lightbox</button>
             </div>
@@ -3461,12 +4200,36 @@
     <div class="compare-overlay" id="compare-overlay" role="dialog" aria-modal="true" aria-label="Vergleich">
         <button class="lightbox-close" type="button" id="compare-close" aria-label="Schließen">&times;</button>
         <div class="compare-topbar">
-            <div class="culling-title" id="compare-title">Vergleich</div>
+            <div class="culling-left">
+                <button type="button" class="gallery-chip-button" id="compare-back-btn" title="Zurück (Esc)">Zurück</button>
+                <div class="culling-title" id="compare-title">Vergleich</div>
+                <div class="culling-esc-hint" aria-hidden="true"><kbd>Esc</kbd> zurück</div>
+            </div>
             <div class="culling-actions">
                 <button type="button" class="gallery-chip-button" id="compare-open-lightbox-btn" title="Erstes Bild im Lightbox öffnen">Lightbox</button>
             </div>
         </div>
         <div class="compare-grid" id="compare-grid"></div>
+    </div>
+
+    <!-- Thumbnail Context Menu -->
+    <div class="context-menu is-hidden" id="thumb-context-menu" role="menu" aria-label="Aktionen">
+        <div class="context-menu-header">
+            <div class="context-menu-title" id="thumb-context-menu-title">Aktionen</div>
+            <div class="culling-esc-hint" aria-hidden="true"><kbd>Esc</kbd></div>
+        </div>
+
+        <button type="button" class="context-menu-item" id="thumb-menu-fav">Favorit</button>
+
+        <div class="context-menu-group" aria-label="Rating">
+            <div class="context-menu-group-title">Rating</div>
+            <div class="context-menu-row" id="thumb-menu-rating"></div>
+        </div>
+
+        <div class="context-menu-group" aria-label="Markierung">
+            <div class="context-menu-group-title">Markierung</div>
+            <div class="context-menu-row" id="thumb-menu-flag"></div>
+        </div>
     </div>
 
     <!-- Toasts (Micro-Feedback) -->
@@ -3583,6 +4346,7 @@
 
         const FEEDBACK_STORAGE_KEY = 'gallery_feedback';
         const FEEDBACK_META_KEY = 'gallery_feedback_meta';
+        const UI_PREFS_KEY = 'wbfm_gallery_ui_prefs';
         window.__wbfmDebug = { lastSave: null, lastLoad: null, lastImageId: null };
         let currentImagesOriginal = [];
         let currentImages = [];
@@ -3590,6 +4354,20 @@
         let selectedImageIds = new Set();
         let currentImageIndex = 0;
         let searchQuery = '';
+
+        // Grid interaction state (for keyboard shortcuts like "f" outside the lightbox)
+        let lastGalleryImageId = null;
+        let lastGalleryImageIndex = null;
+
+        // UI toggles
+        let showGalleryNumbers = true;
+        let lightboxTopbarMode = false;
+
+        // Context menu state
+        let contextMenuImageId = null;
+        let contextMenuImageIndex = null;
+        let contextMenuLongPressTimer = null;
+        let contextMenuSuppressClickUntil = 0;
         let selectedCategory = 'all';
         let gallerySearchQuery = '';
         let portfolioCurrentSlide = { 1: 0, 2: 0 };
@@ -3770,6 +4548,352 @@
             } catch {}
 
             return false;
+        }
+
+        function loadUiPrefs() {
+            const raw = safeStorageGet(UI_PREFS_KEY);
+            if (!raw) return;
+            try {
+                const parsed = JSON.parse(raw);
+                if (parsed && typeof parsed === 'object') {
+                    if (typeof parsed.showGalleryNumbers === 'boolean') {
+                        showGalleryNumbers = parsed.showGalleryNumbers;
+                    }
+                    if (typeof parsed.lightboxTopbarMode === 'boolean') {
+                        lightboxTopbarMode = parsed.lightboxTopbarMode;
+                    }
+                }
+            } catch {}
+        }
+
+        function saveUiPrefs() {
+            safeStorageSet(UI_PREFS_KEY, JSON.stringify({ showGalleryNumbers, lightboxTopbarMode }));
+        }
+
+        function updateNumbersToggleButton() {
+            const btn = document.getElementById('toggle-numbers-btn');
+            if (!btn) return;
+            btn.classList.toggle('active', !!showGalleryNumbers);
+            btn.setAttribute('aria-pressed', showGalleryNumbers ? 'true' : 'false');
+            btn.title = showGalleryNumbers ? 'Nummerierung ausblenden (#)' : 'Nummerierung anzeigen (#)';
+        }
+
+        function updateLightboxTopbarModeButton() {
+            const btn = document.getElementById('lightbox-topbar-mode-btn');
+            if (!btn) return;
+            btn.classList.toggle('active', !!lightboxTopbarMode);
+            btn.setAttribute('aria-pressed', lightboxTopbarMode ? 'true' : 'false');
+            btn.title = lightboxTopbarMode ? 'Topbar deaktivieren' : 'Topbar aktivieren';
+        }
+
+        function applyUiPrefs() {
+            document.body.classList.toggle('hide-gallery-numbers', !showGalleryNumbers);
+            document.body.classList.toggle('lightbox-topbar-mode', !!lightboxTopbarMode);
+            updateNumbersToggleButton();
+            updateLightboxTopbarModeButton();
+        }
+
+        function initUiToggles() {
+            const numbersBtn = document.getElementById('toggle-numbers-btn');
+            if (numbersBtn) {
+                numbersBtn.addEventListener('click', () => {
+                    showGalleryNumbers = !showGalleryNumbers;
+                    applyUiPrefs();
+                    saveUiPrefs();
+                });
+            }
+
+            const topbarBtn = document.getElementById('lightbox-topbar-mode-btn');
+            if (topbarBtn) {
+                topbarBtn.addEventListener('click', () => {
+                    lightboxTopbarMode = !lightboxTopbarMode;
+                    applyUiPrefs();
+                    saveUiPrefs();
+
+                    // keep sidebar closed when topbar is enabled
+                    const sidebar = document.getElementById('feedback-sidebar');
+                    if (sidebar && lightboxTopbarMode) sidebar.classList.remove('open');
+                });
+            }
+        }
+
+        function getLightboxPrimaryImageId() {
+            const idx = Number(currentImageIndex) || 0;
+            const image = currentImages?.[idx];
+            if (!image) return null;
+            return getFeedbackImageId(image, idx);
+        }
+
+        function updateContextMenuSelectionUI() {
+            const imageId = contextMenuImageId;
+            const menu = document.getElementById('thumb-context-menu');
+            if (!menu || menu.classList.contains('is-hidden')) return;
+
+            const favBtn = document.getElementById('thumb-menu-fav');
+            if (favBtn) {
+                const isFav = Boolean(imageId && feedbackData?.favorites?.[imageId]);
+                favBtn.textContent = isFav ? '♥ Favorit entfernen' : '♡ Als Favorit markieren';
+            }
+
+            const rating = Number(imageId ? (feedbackData?.ratings?.[imageId] || 0) : 0);
+            document.querySelectorAll('#thumb-menu-rating [data-rating]').forEach(btn => {
+                const v = Number(btn.dataset.rating);
+                btn.classList.toggle('active', Number.isFinite(v) && v === rating);
+            });
+
+            const flag = String(imageId ? (feedbackData?.flags?.[imageId] || '') : '');
+            document.querySelectorAll('#thumb-menu-flag [data-flag]').forEach(btn => {
+                const v = String(btn.dataset.flag || '');
+                btn.classList.toggle('active', Boolean(v && v === flag));
+            });
+        }
+
+        function closeThumbContextMenu() {
+            const menu = document.getElementById('thumb-context-menu');
+            if (!menu) return;
+            menu.classList.add('is-hidden');
+            contextMenuImageId = null;
+            contextMenuImageIndex = null;
+        }
+
+        function isThumbContextMenuOpen() {
+            const menu = document.getElementById('thumb-context-menu');
+            return !!menu && !menu.classList.contains('is-hidden');
+        }
+
+        let _thumbContextMenuHandlersInstalled = false;
+
+        function initThumbContextMenuGlobalHandlers() {
+            if (_thumbContextMenuHandlersInstalled) return;
+            _thumbContextMenuHandlersInstalled = true;
+
+            // Close on outside pointerdown (capturing so it runs even if stopPropagation is used elsewhere)
+            window.addEventListener('pointerdown', (e) => {
+                if (!isThumbContextMenuOpen()) return;
+                const menu = document.getElementById('thumb-context-menu');
+                if (!menu) return;
+                const target = e.target;
+                if (target instanceof Node && menu.contains(target)) return;
+                closeThumbContextMenu();
+            }, true);
+
+            // Close on scroll anywhere (capturing)
+            window.addEventListener('scroll', () => {
+                if (!isThumbContextMenuOpen()) return;
+                closeThumbContextMenu();
+            }, true);
+
+            // Close on resize
+            window.addEventListener('resize', () => {
+                if (!isThumbContextMenuOpen()) return;
+                closeThumbContextMenu();
+            }, { passive: true });
+        }
+
+        function positionContextMenu(menu, clientX, clientY) {
+            const margin = 10;
+            const vw = window.innerWidth || document.documentElement.clientWidth || 0;
+            const vh = window.innerHeight || document.documentElement.clientHeight || 0;
+
+            menu.style.left = '0px';
+            menu.style.top = '0px';
+            menu.style.transform = 'none';
+            menu.classList.remove('is-hidden');
+
+            const rect = menu.getBoundingClientRect();
+            const w = rect.width;
+            const h = rect.height;
+
+            const x = Math.max(margin, Math.min(clientX, vw - w - margin));
+            const y = Math.max(margin, Math.min(clientY, vh - h - margin));
+
+            menu.style.left = `${x}px`;
+            menu.style.top = `${y}px`;
+        }
+
+        function setRatingByImageId(imageId, rating) {
+            if (!imageId) return;
+            const r = Number(rating);
+            if (Number.isFinite(r) && r > 0) {
+                feedbackData.ratings[imageId] = Math.max(1, Math.min(5, Math.round(r)));
+            } else {
+                delete feedbackData.ratings[imageId];
+            }
+            saveFeedbackData();
+            updateAllImageBadges();
+            updateSidebarStats();
+
+            if (isLightboxActive() && getLightboxPrimaryImageId() === imageId) {
+                updateFeedbackSidebar();
+            }
+            if (isCullingActive() && getCullingPrimaryImageId() === imageId) {
+                renderCulling();
+            }
+            if (isCompareActive()) {
+                openCompareView();
+            }
+        }
+
+        function toggleFlagByImageId(imageId, flag) {
+            if (!imageId) return;
+            const next = String(flag || '');
+            if (!next) return;
+
+            if (feedbackData.flags[imageId] === next) {
+                delete feedbackData.flags[imageId];
+            } else {
+                feedbackData.flags[imageId] = next;
+            }
+
+            saveFeedbackData();
+            updateAllImageBadges();
+            updateSidebarStats();
+
+            if (isLightboxActive() && getLightboxPrimaryImageId() === imageId) {
+                updateFeedbackSidebar();
+            }
+            if (isCullingActive() && getCullingPrimaryImageId() === imageId) {
+                renderCulling();
+            }
+            if (isCompareActive()) {
+                openCompareView();
+            }
+
+            if (currentFilter.flag) {
+                applyFilter();
+            }
+        }
+
+        function clearFlagByImageId(imageId) {
+            if (!imageId) return;
+            if (!feedbackData.flags[imageId]) return;
+            delete feedbackData.flags[imageId];
+            saveFeedbackData();
+            updateAllImageBadges();
+            updateSidebarStats();
+            if (isLightboxActive() && getLightboxPrimaryImageId() === imageId) {
+                updateFeedbackSidebar();
+            }
+            if (isCullingActive() && getCullingPrimaryImageId() === imageId) {
+                renderCulling();
+            }
+            if (isCompareActive()) {
+                openCompareView();
+            }
+            if (currentFilter.flag) {
+                applyFilter();
+            }
+        }
+
+        function openThumbContextMenu({ imageId, imageIndex, title, clientX, clientY }) {
+            const menu = document.getElementById('thumb-context-menu');
+            if (!menu) return;
+
+            contextMenuImageId = imageId;
+            contextMenuImageIndex = Number(imageIndex);
+
+            const titleEl = document.getElementById('thumb-context-menu-title');
+            if (titleEl) titleEl.textContent = title || 'Aktionen';
+
+            const ratingRow = document.getElementById('thumb-menu-rating');
+            const flagRow = document.getElementById('thumb-menu-flag');
+            if (ratingRow && ratingRow.childElementCount === 0) {
+                const frag = document.createDocumentFragment();
+                [5, 4, 3, 2, 1, 0].forEach(v => {
+                    const b = document.createElement('button');
+                    b.type = 'button';
+                    b.className = 'context-menu-mini';
+                    b.dataset.rating = String(v);
+                    b.textContent = v === 0 ? '0' : `${v}★`;
+                    b.addEventListener('click', () => {
+                        setRatingByImageId(contextMenuImageId, v);
+                        updateContextMenuSelectionUI();
+                        closeThumbContextMenu();
+                    });
+                    frag.appendChild(b);
+                });
+                ratingRow.appendChild(frag);
+            }
+
+            if (flagRow && flagRow.childElementCount === 0) {
+                const flags = [
+                    { k: 'reject', label: '✗ Reject' },
+                    { k: 'review', label: '! Review' },
+                    { k: 'approve', label: '✓ Approve' },
+                    { k: 'final', label: '★ Final' },
+                    { k: 'clear', label: 'Flag ×' }
+                ];
+                const frag = document.createDocumentFragment();
+                flags.forEach(f => {
+                    const b = document.createElement('button');
+                    b.type = 'button';
+                    b.className = 'context-menu-mini';
+                    if (f.k !== 'clear') b.dataset.flag = f.k;
+                    b.textContent = f.label;
+                    b.addEventListener('click', () => {
+                        if (f.k === 'clear') clearFlagByImageId(contextMenuImageId);
+                        else toggleFlagByImageId(contextMenuImageId, f.k);
+                        updateContextMenuSelectionUI();
+                        closeThumbContextMenu();
+                    });
+                    frag.appendChild(b);
+                });
+                flagRow.appendChild(frag);
+            }
+
+            const favBtn = document.getElementById('thumb-menu-fav');
+            if (favBtn) {
+                favBtn.onclick = () => {
+                    if (contextMenuImageId) toggleFavoriteFromGallery(contextMenuImageId);
+                    updateContextMenuSelectionUI();
+                    closeThumbContextMenu();
+                };
+            }
+
+            menu.classList.remove('is-hidden');
+            positionContextMenu(menu, clientX, clientY);
+            updateContextMenuSelectionUI();
+        }
+
+        function updateLightboxTopbarControls() {
+            const titleEl = document.getElementById('lightbox-title');
+            const favBtn = document.getElementById('lightbox-fav-btn');
+
+            const total = currentImages?.length || 0;
+            const idx = Number(currentImageIndex) || 0;
+            const image = currentImages?.[idx];
+            const name = image?.name || 'Bild';
+
+            if (titleEl) titleEl.textContent = `${name} · ${total ? (idx + 1) : 0}/${total}`;
+
+            const imageId = getLightboxPrimaryImageId();
+            const isFav = Boolean(imageId && feedbackData?.favorites?.[imageId]);
+
+            if (favBtn) {
+                favBtn.textContent = isFav ? '♥' : '♡';
+                favBtn.classList.toggle('active', isFav);
+                favBtn.setAttribute('aria-pressed', isFav ? 'true' : 'false');
+                favBtn.toggleAttribute('disabled', !imageId);
+            }
+
+            const rating = Number(imageId ? (feedbackData?.ratings?.[imageId] || 0) : 0);
+            document.querySelectorAll('[data-lightbox-rating]').forEach(btn => {
+                const v = Number(btn.dataset.lightboxRating);
+                btn.classList.toggle('active', Number.isFinite(v) && v === rating);
+                btn.setAttribute('aria-pressed', (Number.isFinite(v) && v === rating) ? 'true' : 'false');
+                btn.toggleAttribute('disabled', !imageId);
+            });
+
+            const flag = imageId ? (feedbackData?.flags?.[imageId] || '') : '';
+            document.querySelectorAll('[data-lightbox-flag]').forEach(btn => {
+                const v = String(btn.dataset.lightboxFlag || '');
+                btn.classList.toggle('active', Boolean(v && v === flag));
+                btn.setAttribute('aria-pressed', (v && v === flag) ? 'true' : 'false');
+                btn.toggleAttribute('disabled', !imageId);
+            });
+
+            const clearBtn = document.getElementById('lightbox-clear-flag-btn');
+            if (clearBtn) clearBtn.toggleAttribute('disabled', !imageId);
         }
 
         function isIndexedDbAvailable() {
@@ -4046,10 +5170,24 @@
         function initSearch() {
             const searchInput = document.getElementById('search-input');
             if (searchInput) {
-                searchInput.addEventListener('input', (e) => {
-                    searchQuery = e.target.value.toLowerCase().trim();
+                let t = null;
+                const run = () => {
                     applySearchAndFilter();
                     updateFilterUI();
+                };
+
+                searchInput.addEventListener('input', (e) => {
+                    searchQuery = e.target.value.toLowerCase().trim();
+                    if (t) window.clearTimeout(t);
+                    t = window.setTimeout(run, 140);
+                });
+
+                searchInput.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') {
+                        if (t) window.clearTimeout(t);
+                        t = null;
+                        run();
+                    }
                 });
             }
         }
@@ -4113,8 +5251,12 @@
                 if (shouldShow) {
                     item.style.display = '';
                     visibleCount++;
+                    const numEl = item.querySelector('.gallery-item-number');
+                    if (numEl) numEl.textContent = String(visibleCount);
                 } else {
                     item.style.display = 'none';
+                    const numEl = item.querySelector('.gallery-item-number');
+                    if (numEl) numEl.textContent = '';
                 }
             });
             
@@ -4531,6 +5673,11 @@
             if (ctaSection && galleryConfig && galleryConfig.galleries && galleryConfig.galleries.length > 0) {
                 ctaSection.style.display = 'block';
             }
+
+            if (galleryHeaderResizeObserver) {
+                galleryHeaderResizeObserver.disconnect();
+                galleryHeaderResizeObserver = null;
+            }
         }
         
         // Erstelle Galerie-Karte
@@ -4666,8 +5813,64 @@
             });
         }
 
+        // Track header height changes (wrap/labels/counts) so content never hides under the fixed topbar.
+        let galleryHeaderResizeObserver = null;
+        function attachGalleryHeaderResizeObserver() {
+            const galleryContainer = document.getElementById('gallery-container');
+            if (!galleryContainer) return;
+            const header = galleryContainer.querySelector('.gallery-header');
+            if (!header) return;
+
+            if (galleryHeaderResizeObserver) {
+                galleryHeaderResizeObserver.disconnect();
+                galleryHeaderResizeObserver = null;
+            }
+            if (typeof ResizeObserver === 'undefined') return;
+
+            galleryHeaderResizeObserver = new ResizeObserver(() => {
+                scheduleGalleryTopbarMetricsUpdate();
+            });
+            galleryHeaderResizeObserver.observe(header);
+        }
+
         window.addEventListener('resize', scheduleGalleryTopbarMetricsUpdate, { passive: true });
         window.addEventListener('orientationchange', scheduleGalleryTopbarMetricsUpdate, { passive: true });
+
+        function getGalleryUiKeySuffix() {
+            const raw = (currentGallery?.id || currentGallery?.name || '').toString().trim();
+            if (!raw) return 'default';
+            return encodeURIComponent(raw.slice(0, 80));
+        }
+
+        function initSidebarAccordions() {
+            const sidebar = document.getElementById('gallery-sidebar');
+            if (!sidebar) return;
+            const accordions = Array.from(sidebar.querySelectorAll('details.sidebar-accordion[data-accordion-id]'));
+            if (!accordions.length) return;
+
+            const storageKey = `wbfm_sidebar_accordion_open:${getGalleryUiKeySuffix()}`;
+            const saved = safeStorageGet(storageKey);
+            if (Array.isArray(saved)) {
+                const savedSet = new Set(saved.map(v => String(v)));
+                accordions.forEach((detailsEl) => {
+                    const id = String(detailsEl.dataset.accordionId || '');
+                    if (!id) return;
+                    detailsEl.open = savedSet.has(id);
+                });
+            }
+
+            const persist = () => {
+                const openIds = accordions
+                    .filter(d => d.open)
+                    .map(d => String(d.dataset.accordionId || ''))
+                    .filter(Boolean);
+                safeStorageSet(storageKey, openIds);
+            };
+
+            accordions.forEach((detailsEl) => {
+                detailsEl.addEventListener('toggle', persist);
+            });
+        }
         
         // Zeige Galerie
         function showGallery(gallery) {
@@ -4714,6 +5917,9 @@
                 updateGalleryTopbarMetrics();
                 requestAnimationFrame(updateGalleryTopbarMetrics);
             });
+
+            // Keep metrics updated if the header height changes (e.g. chips wrap on narrow width).
+            attachGalleryHeaderResizeObserver();
         }
 
         function updateGalleryTopbarMetrics() {
@@ -4723,19 +5929,79 @@
             if (getComputedStyle(galleryContainer).display === 'none') return;
 
             const header = galleryContainer.querySelector('.gallery-header');
-            const filters = galleryContainer.querySelector('#quick-filters');
-
             const headerHeight = header ? Math.ceil(header.getBoundingClientRect().height) : 0;
-            const filtersHeight = filters ? Math.ceil(filters.getBoundingClientRect().height) : 0;
 
             const headerRect = header ? header.getBoundingClientRect() : null;
             const fixedLeft = headerRect ? Math.round(headerRect.left) : null;
 
             document.documentElement.style.setProperty('--gallery-header-h', `${headerHeight}px`);
-            document.documentElement.style.setProperty('--gallery-filters-h', `${filtersHeight}px`);
+            // Quick filters are integrated into the header; do not double-count.
+            document.documentElement.style.setProperty('--gallery-filters-h', '0px');
+            // Overview is integrated into the header now; keep the dedicated height at 0.
+            document.documentElement.style.setProperty('--gallery-overview-h', '0px');
             if (typeof fixedLeft === 'number' && Number.isFinite(fixedLeft)) {
                 document.documentElement.style.setProperty('--gallery-fixed-left', `${fixedLeft}px`);
             }
+        }
+
+        let overviewPanelListenersAttached = false;
+        function initOverviewPanel() {
+            const sidebar = document.getElementById('gallery-sidebar');
+            const toggleBtn = document.getElementById('sidebar-toggle-btn');
+            if (!sidebar || !toggleBtn) return;
+
+            // Restore per-gallery open state
+            const storageKey = `wbfm_overview_open:${getGalleryUiKeySuffix()}`;
+            const saved = safeStorageGet(storageKey);
+            const shouldOpen = saved === true;
+            setOverviewOpen(shouldOpen, { persist: false });
+
+            if (overviewPanelListenersAttached) return;
+            overviewPanelListenersAttached = true;
+
+            // Close on ESC
+            document.addEventListener('keydown', (e) => {
+                if (e.key !== 'Escape') return;
+                if (!isOverviewOpen()) return;
+                setOverviewOpen(false);
+            });
+
+            // Close on outside click
+            document.addEventListener('pointerdown', (e) => {
+                if (!isOverviewOpen()) return;
+                const sidebarEl = document.getElementById('gallery-sidebar');
+                if (!sidebarEl) return;
+                if (sidebarEl.contains(e.target)) return;
+                setOverviewOpen(false);
+            });
+        }
+
+        function isOverviewOpen() {
+            const sidebar = document.getElementById('gallery-sidebar');
+            return Boolean(sidebar && sidebar.classList.contains('is-open'));
+        }
+
+        function setOverviewOpen(open, { persist = true } = {}) {
+            const sidebar = document.getElementById('gallery-sidebar');
+            const toggleIcon = document.getElementById('sidebar-toggle-icon');
+            const toggleBtn = document.getElementById('sidebar-toggle-btn');
+            if (!sidebar) return;
+
+            sidebar.classList.toggle('is-open', Boolean(open));
+            if (toggleIcon) toggleIcon.textContent = open ? '✕' : '☰';
+            if (toggleBtn) {
+                toggleBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+                toggleBtn.setAttribute('aria-label', open ? 'Übersicht schließen' : 'Übersicht öffnen');
+                toggleBtn.title = open ? 'Übersicht schließen' : 'Übersicht öffnen';
+            }
+
+            if (persist) {
+                const storageKey = `wbfm_overview_open:${getGalleryUiKeySuffix()}`;
+                safeStorageSet(storageKey, Boolean(open));
+            }
+
+            // Usually the bar height stays constant, but on wrap it can change.
+            scheduleGalleryTopbarMetricsUpdate();
         }
         
         // Skeleton Screen für Ladeanimation
@@ -4772,6 +6038,56 @@
                 const imageId = getFeedbackImageId(image, index);
                 item.dataset.imageId = imageId;
                 item.dataset.index = String(index);
+
+                // Track last interacted item for keyboard shortcuts (e.g. "f" outside Lightbox)
+                const markLast = () => {
+                    lastGalleryImageId = imageId;
+                    lastGalleryImageIndex = index;
+                };
+                item.addEventListener('pointerdown', markLast, { capture: true });
+                item.addEventListener('mouseenter', markLast);
+                item.addEventListener('focusin', markLast);
+
+                // Right click / long press context menu
+                item.addEventListener('contextmenu', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    markLast();
+                    contextMenuSuppressClickUntil = Date.now() + 600;
+                    openThumbContextMenu({
+                        imageId,
+                        imageIndex: index,
+                        title: image?.name || imageId,
+                        clientX: e.clientX,
+                        clientY: e.clientY
+                    });
+                });
+
+                item.addEventListener('touchstart', (e) => {
+                    if (!e.touches || e.touches.length !== 1) return;
+                    const t = e.touches[0];
+                    if (!t) return;
+                    if (contextMenuLongPressTimer) window.clearTimeout(contextMenuLongPressTimer);
+                    contextMenuLongPressTimer = window.setTimeout(() => {
+                        markLast();
+                        contextMenuSuppressClickUntil = Date.now() + 700;
+                        openThumbContextMenu({
+                            imageId,
+                            imageIndex: index,
+                            title: image?.name || imageId,
+                            clientX: t.clientX,
+                            clientY: t.clientY
+                        });
+                    }, 520);
+                }, { passive: true });
+
+                const cancelLongPress = () => {
+                    if (contextMenuLongPressTimer) window.clearTimeout(contextMenuLongPressTimer);
+                    contextMenuLongPressTimer = null;
+                };
+                item.addEventListener('touchend', cancelLongPress);
+                item.addEventListener('touchmove', cancelLongPress);
+                item.addEventListener('touchcancel', cancelLongPress);
                 
                 // Erstelle hochwertiges Thumbnail-URL mit Progressive Loading
                 let imgSrc = image.thumbnailUrl || image.url || `./images/${image.name}`;
@@ -4870,6 +6186,12 @@
                 // Overlay mit Features
                 const overlay = document.createElement('div');
                 overlay.className = 'gallery-item-overlay';
+
+                // Nummerierung (wird nach Filter/Sortierung in applySearchAndFilter neu gesetzt)
+                const numberBadge = document.createElement('div');
+                numberBadge.className = 'gallery-item-number';
+                numberBadge.textContent = String(index + 1);
+                overlay.appendChild(numberBadge);
                 
                 // Checkbox für Auswahl
                 const checkbox = document.createElement('div');
@@ -4889,9 +6211,12 @@
                 
                 const likeBtn = document.createElement('button');
                 likeBtn.className = 'gallery-item-btn gallery-item-like' + (isFavorite ? ' active' : '');
-                likeBtn.innerHTML = `<span class="btn-label">Favorit</span> <span class="btn-count">${isFavorite ? 'Ja' : 'Nein'}</span>`;
+                likeBtn.innerHTML = isFavorite ? '♥' : '♡';
+                likeBtn.setAttribute('aria-label', isFavorite ? 'Favorit entfernen' : 'Als Favorit markieren');
+                likeBtn.title = isFavorite ? 'Favorit entfernen' : 'Als Favorit markieren';
                 likeBtn.onclick = (e) => {
                     e.stopPropagation();
+                    markLast();
                     toggleFavoriteFromGallery(imageId);
                 };
                 actions.appendChild(likeBtn);
@@ -4901,8 +6226,9 @@
                 commentBtn.innerHTML = `<span class="btn-label">Komm.</span> <span class="btn-count">${commentCount}</span>`;
                 commentBtn.onclick = (e) => {
                     e.stopPropagation();
+                    markLast();
                     openLightbox(index, fullSrc);
-                    setTimeout(() => toggleSidebar(), 300);
+                    setTimeout(() => openLightboxDetails(), 150);
                 };
                 actions.appendChild(commentBtn);
                 
@@ -4918,7 +6244,11 @@
                 if (selectedImageIds && selectedImageIds.has(imageId)) {
                     setGalleryItemSelected(item, true);
                 }
-                item.onclick = () => openLightbox(index, fullSrc);
+                item.onclick = () => {
+                    markLast();
+                    if (Date.now() < contextMenuSuppressClickUntil && contextMenuImageId === imageId) return;
+                    openLightbox(index, fullSrc);
+                };
                 
                 items.push(item);
             });
@@ -5108,10 +6438,7 @@
         
         // Toggle Gallery Sidebar
         function toggleGallerySidebar() {
-            const sidebar = document.getElementById('gallery-sidebar');
-            const toggleIcon = document.getElementById('sidebar-toggle-icon');
-            sidebar.classList.toggle('collapsed');
-            toggleIcon.textContent = sidebar.classList.contains('collapsed') ? '◀' : '▶';
+            setOverviewOpen(!isOverviewOpen());
         }
         
         // Filter nach Typ
@@ -5314,12 +6641,17 @@
                 }
             });
             
-            // Update DOM
-            document.getElementById('stat-total').textContent = total;
-            document.getElementById('stat-selected').textContent = selected;
-            document.getElementById('stat-favorites').textContent = favorites;
-            document.getElementById('stat-commented').textContent = commented;
-            document.getElementById('stat-rated').textContent = rated;
+            // Update DOM (null-safe: mini bar only renders a subset)
+            const setText = (id, value) => {
+                const el = document.getElementById(id);
+                if (el) el.textContent = value;
+            };
+
+            setText('stat-total', total);
+            setText('stat-selected', selected);
+            setText('stat-favorites', favorites);
+            setText('stat-commented', commented);
+            setText('stat-rated', rated);
 
             const r1 = document.getElementById('rating-count-1');
             const r2 = document.getElementById('rating-count-2');
@@ -5332,17 +6664,28 @@
             if (r4) r4.textContent = ratingCounts[4];
             if (r5) r5.textContent = ratingCounts[5];
 
+            setText('rating-chip-1', ratingCounts[1]);
+            setText('rating-chip-2', ratingCounts[2]);
+            setText('rating-chip-3', ratingCounts[3]);
+            setText('rating-chip-4', ratingCounts[4]);
+            setText('rating-chip-5', ratingCounts[5]);
+
             const galleryCountChip = document.getElementById('gallery-count-chip');
             const gallerySelectedChip = document.getElementById('gallery-selected-chip');
             if (galleryCountChip) galleryCountChip.textContent = `${total} Bilder`;
             if (gallerySelectedChip) gallerySelectedChip.textContent = `${selected} ausgewählt`;
 
             updateSelectionBar(selected);
-            
-            document.getElementById('flag-reject').textContent = flagCounts.reject;
-            document.getElementById('flag-review').textContent = flagCounts.review;
-            document.getElementById('flag-approve').textContent = flagCounts.approve;
-            document.getElementById('flag-final').textContent = flagCounts.final;
+
+            setText('flag-reject', flagCounts.reject);
+            setText('flag-review', flagCounts.review);
+            setText('flag-approve', flagCounts.approve);
+            setText('flag-final', flagCounts.final);
+
+            setText('flag-chip-reject', flagCounts.reject);
+            setText('flag-chip-review', flagCounts.review);
+            setText('flag-chip-approve', flagCounts.approve);
+            setText('flag-chip-final', flagCounts.final);
             
             // Update Auswahlen-Liste
             const selectionsSet = new Set();
@@ -5555,6 +6898,46 @@
             return image?.url || (image?.name ? `./images/${image.name}` : '');
         }
 
+        function getCullingPrimaryImageId() {
+            const idx = Number(currentImageIndex) || 0;
+            const image = currentImages?.[idx];
+            if (!image) return null;
+            return getFeedbackImageId(image, idx);
+        }
+
+        function updateCullingTopbarControls() {
+            const imageId = getCullingPrimaryImageId();
+            const favBtn = document.getElementById('culling-fav-btn');
+
+            if (favBtn) {
+                const isFav = Boolean(imageId && feedbackData?.favorites?.[imageId]);
+                favBtn.textContent = isFav ? '♥' : '♡';
+                favBtn.classList.toggle('active', isFav);
+                favBtn.setAttribute('aria-pressed', isFav ? 'true' : 'false');
+            }
+
+            const rating = Number(imageId ? (feedbackData?.ratings?.[imageId] || 0) : 0);
+            document.querySelectorAll('[data-culling-rating]').forEach(btn => {
+                const v = Number(btn.dataset.cullingRating);
+                btn.classList.toggle('active', Number.isFinite(v) && v === rating);
+                btn.setAttribute('aria-pressed', (Number.isFinite(v) && v === rating) ? 'true' : 'false');
+                btn.toggleAttribute('disabled', !imageId);
+            });
+
+            const flag = imageId ? (feedbackData?.flags?.[imageId] || '') : '';
+            document.querySelectorAll('[data-culling-flag]').forEach(btn => {
+                const v = String(btn.dataset.cullingFlag || '');
+                btn.classList.toggle('active', Boolean(v && v === flag));
+                btn.setAttribute('aria-pressed', (v && v === flag) ? 'true' : 'false');
+                btn.toggleAttribute('disabled', !imageId);
+            });
+
+            const clearBtn = document.getElementById('culling-clear-flag-btn');
+            if (clearBtn) {
+                clearBtn.toggleAttribute('disabled', !imageId);
+            }
+        }
+
         function renderCulling() {
             const overlay = document.getElementById('culling-overlay');
             if (!overlay || !overlay.classList.contains('active')) return;
@@ -5610,6 +6993,8 @@
 
             renderCullingFilmstrip();
             updateCullingFilmstripActive();
+
+            updateCullingTopbarControls();
         }
 
         function renderCullingFilmstrip() {
@@ -5791,6 +7176,40 @@
 
             const cullingClose = document.getElementById('culling-close');
             if (cullingClose) cullingClose.addEventListener('click', () => closeCullingMode());
+
+            const cullingBackBtn = document.getElementById('culling-back-btn');
+            if (cullingBackBtn) cullingBackBtn.addEventListener('click', () => closeCullingMode());
+
+            const cullingFavBtn = document.getElementById('culling-fav-btn');
+            if (cullingFavBtn) cullingFavBtn.addEventListener('click', () => {
+                toggleFavorite();
+                renderCulling();
+            });
+
+            document.querySelectorAll('[data-culling-rating]').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const v = Number(btn.dataset.cullingRating);
+                    if (!Number.isFinite(v)) return;
+                    setRating(v);
+                    renderCulling();
+                });
+            });
+
+            document.querySelectorAll('[data-culling-flag]').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const v = String(btn.dataset.cullingFlag || '');
+                    if (!v) return;
+                    setFlag(v);
+                    renderCulling();
+                });
+            });
+
+            const cullingClearFlagBtn = document.getElementById('culling-clear-flag-btn');
+            if (cullingClearFlagBtn) cullingClearFlagBtn.addEventListener('click', () => {
+                clearFlag();
+                renderCulling();
+            });
+
             const cullingLayoutBtn = document.getElementById('culling-layout-btn');
             if (cullingLayoutBtn) cullingLayoutBtn.addEventListener('click', () => toggleCullingLayout());
             const cullingOpenLightboxBtn = document.getElementById('culling-open-lightbox-btn');
@@ -5802,6 +7221,10 @@
 
             const compareClose = document.getElementById('compare-close');
             if (compareClose) compareClose.addEventListener('click', () => closeCompareView());
+
+            const compareBackBtn = document.getElementById('compare-back-btn');
+            if (compareBackBtn) compareBackBtn.addEventListener('click', () => closeCompareView());
+
             const compareOpenLightboxBtn = document.getElementById('compare-open-lightbox-btn');
             if (compareOpenLightboxBtn) compareOpenLightboxBtn.addEventListener('click', () => {
                 const first = getSelectedItems()?.[0];
@@ -5811,6 +7234,56 @@
                 closeCompareView();
                 openLightbox(idx);
             });
+
+            // Lightbox Topbar
+            const lightboxBackBtn = document.getElementById('lightbox-back-btn');
+            if (lightboxBackBtn) lightboxBackBtn.addEventListener('click', () => closeLightbox());
+
+            const lightboxFavBtn = document.getElementById('lightbox-fav-btn');
+            if (lightboxFavBtn) lightboxFavBtn.addEventListener('click', () => {
+                toggleFavorite();
+                updateLightboxTopbarControls();
+            });
+
+            document.querySelectorAll('[data-lightbox-rating]').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const v = Number(btn.dataset.lightboxRating);
+                    if (!Number.isFinite(v)) return;
+                    setRating(v);
+                    updateLightboxTopbarControls();
+                });
+            });
+
+            document.querySelectorAll('[data-lightbox-flag]').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const v = String(btn.dataset.lightboxFlag || '');
+                    if (!v) return;
+                    setFlag(v);
+                    updateLightboxTopbarControls();
+                });
+            });
+
+            const lightboxClearFlagBtn = document.getElementById('lightbox-clear-flag-btn');
+            if (lightboxClearFlagBtn) lightboxClearFlagBtn.addEventListener('click', () => {
+                clearFlag();
+                updateLightboxTopbarControls();
+            });
+
+            const lightboxDownloadBtn = document.getElementById('lightbox-download-btn');
+            if (lightboxDownloadBtn) lightboxDownloadBtn.addEventListener('click', () => downloadImage());
+
+            const lightboxDetailsBtn = document.getElementById('feedback-toggle-btn');
+            if (lightboxDetailsBtn) lightboxDetailsBtn.addEventListener('click', () => toggleSidebar());
+
+            const detailsCloseBtn = document.getElementById('feedback-sidebar-close');
+            if (detailsCloseBtn) detailsCloseBtn.addEventListener('click', () => closeLightboxDetails());
+
+            const detailsEl = document.getElementById('feedback-sidebar');
+            if (detailsEl) {
+                detailsEl.addEventListener('click', (e) => {
+                    if (e.target === detailsEl) closeLightboxDetails();
+                });
+            }
         }
 
         function openLightbox(index, fullImageUrl = null) {
@@ -5827,12 +7300,14 @@
             lightbox.classList.add('active');
             updateBodyOverlayState();
 
-            if (sidebar && window.matchMedia && window.matchMedia('(min-width: 1100px)').matches) {
-                sidebar.classList.add('open');
-            }
+            // Details modal starts closed by default
+            if (sidebar) sidebar.classList.add('is-hidden');
             
             // Update Feedback-Sidebar für aktuelles Bild
             updateFeedbackSidebar();
+
+            // Topbar
+            updateLightboxTopbarControls();
 
             // Filmstrip
             renderLightboxFilmstrip();
@@ -5959,12 +7434,32 @@
             const promptEl = document.getElementById('prompt-modal');
             const progressEl = document.getElementById('progress-modal');
             const choiceEl = document.getElementById('choice-modal');
+            const detailsEl = document.getElementById('feedback-sidebar');
             const confirmOpen = confirmEl && !confirmEl.classList.contains('is-hidden');
             const shortcutsOpen = shortcutsEl && !shortcutsEl.classList.contains('is-hidden');
             const promptOpen = promptEl && !promptEl.classList.contains('is-hidden');
             const progressOpen = progressEl && !progressEl.classList.contains('is-hidden');
             const choiceOpen = choiceEl && !choiceEl.classList.contains('is-hidden');
-            return Boolean(confirmOpen || shortcutsOpen || promptOpen || progressOpen || choiceOpen);
+            const detailsOpen = detailsEl && !detailsEl.classList.contains('is-hidden');
+            return Boolean(confirmOpen || shortcutsOpen || promptOpen || progressOpen || choiceOpen || detailsOpen);
+        }
+
+        function closeLightboxDetails() {
+            const el = document.getElementById('feedback-sidebar');
+            if (!el) return;
+            el.classList.add('is-hidden');
+            if (!isModalOpen()) document.body.classList.remove('modal-open');
+        }
+
+        function openLightboxDetails() {
+            const el = document.getElementById('feedback-sidebar');
+            if (!el) return;
+            el.classList.remove('is-hidden');
+            document.body.classList.add('modal-open');
+            try {
+                const closeBtn = document.getElementById('feedback-sidebar-close');
+                if (closeBtn) closeBtn.focus();
+            } catch {}
         }
 
         function closeShortcutsModal() {
@@ -7359,6 +8854,7 @@
             saveFeedbackData();
             updateFavoriteUI(imageId);
             updateAllImageBadges();
+            updateLightboxTopbarControls();
         }
         
         // Toggle Favorit (für Gallery Item)
@@ -7388,7 +8884,9 @@
             if (item) {
                 const likeBtn = item.querySelector('.gallery-item-like');
                 if (likeBtn) {
-                    likeBtn.innerHTML = `<span class="btn-label">Favorit</span> <span class="btn-count">${isFavorite ? 'Ja' : 'Nein'}</span>`;
+                    likeBtn.innerHTML = isFavorite ? '♥' : '♡';
+                    likeBtn.setAttribute('aria-label', isFavorite ? 'Favorit entfernen' : 'Als Favorit markieren');
+                    likeBtn.title = isFavorite ? 'Favorit entfernen' : 'Als Favorit markieren';
                     likeBtn.classList.toggle('active', isFavorite);
                 }
             }
@@ -7399,6 +8897,12 @@
             if (favoriteBtn && favoriteText) {
                 favoriteText.textContent = isFavorite ? 'Als Favorit entfernen' : 'Als Favorit markieren';
                 favoriteBtn.classList.toggle('active', isFavorite);
+            }
+
+            // Lightbox Topbar (nur wenn aktuelles Bild betroffen)
+            if (isLightboxActive()) {
+                const currentId = getLightboxPrimaryImageId();
+                if (currentId && currentId === imageId) updateLightboxTopbarControls();
             }
         }
         
@@ -7425,6 +8929,9 @@
             
             // Favorit
             updateFavoriteUI(imageId);
+
+            // Topbar (wenn aktiv)
+            updateLightboxTopbarControls();
             
             // Kommentare
             displayComments(imageId);
@@ -7539,8 +9046,11 @@
         
         // Toggle Sidebar
         function toggleSidebar() {
-            const sidebar = document.getElementById('feedback-sidebar');
-            sidebar.classList.toggle('open');
+            const el = document.getElementById('feedback-sidebar');
+            if (!el) return;
+            const shouldOpen = el.classList.contains('is-hidden');
+            if (shouldOpen) openLightboxDetails();
+            else closeLightboxDetails();
         }
         
         // Add Comment
@@ -7631,6 +9141,7 @@
             updateRatingStars(Number(rating) > 0 ? Number(rating) : 0);
             updateAllImageBadges();
             updateSidebarStats();
+            updateLightboxTopbarControls();
             void ensureDebugPanel();
         }
         
@@ -7652,6 +9163,7 @@
             updateFlagButtons(feedbackData.flags[imageId] || null);
             updateAllImageBadges();
             updateSidebarStats();
+            updateLightboxTopbarControls();
             
             // Filter neu anwenden (falls Flag-Filter aktiv)
             if (currentFilter.flag) {
@@ -7672,6 +9184,7 @@
             updateFlagButtons(null);
             updateAllImageBadges();
             updateSidebarStats();
+            updateLightboxTopbarControls();
 
             if (currentFilter.flag) {
                 applyFilter();
@@ -7690,6 +9203,7 @@
             document.getElementById('lightbox-image').src = imageUrl;
             updateFeedbackSidebar();
             updateLightboxFilmstripActive();
+            updateLightboxTopbarControls();
         }
         
         function previousImage() {
@@ -7699,6 +9213,7 @@
             document.getElementById('lightbox-image').src = imageUrl;
             updateFeedbackSidebar();
             updateLightboxFilmstripActive();
+            updateLightboxTopbarControls();
         }
         
         async function downloadImage() {
@@ -7761,6 +9276,14 @@
         
         // Tastatur (Picdrop-inspiriert)
         document.addEventListener('keydown', (e) => {
+            const passwordForm = document.getElementById('password-form');
+            const passwordVisible = passwordForm && getComputedStyle(passwordForm).display !== 'none';
+            if (passwordVisible && e.key === 'Escape') {
+                e.preventDefault();
+                showGallerySelector();
+                return;
+            }
+
             const activeEl = document.activeElement;
             const isTyping = !!activeEl && (
                 activeEl.tagName === 'INPUT' ||
@@ -7769,6 +9292,13 @@
                 activeEl.isContentEditable
             );
             if (isTyping) return;
+
+            // Context menu: Esc closes first
+            if (isThumbContextMenuOpen() && e.key === 'Escape') {
+                e.preventDefault();
+                closeThumbContextMenu();
+                return;
+            }
 
             // Modals first
             if (isModalOpen()) {
@@ -7779,6 +9309,7 @@
                     closePromptModal(null);
                     cancelProgressModal();
                     closeChoiceModal(null);
+                    closeLightboxDetails();
                 }
                 return;
             }
@@ -7997,6 +9528,18 @@
                 return;
             }
 
+            // F: Favorit togglen (letztes Bild unter Maus/Fokus)
+            if (key === 'f') {
+                e.preventDefault();
+                if (!lastGalleryImageId) {
+                    showToast('Favorit', 'Kein Bild aktiv – kurz über ein Bild hovern oder klicken.', 'warning');
+                    return;
+                }
+                toggleFavoriteFromGallery(lastGalleryImageId);
+                showToast('Favorit', 'Umschalten.', 'success');
+                return;
+            }
+
             if (e.key === 'Escape') {
                 if (selectedCount > 0) {
                     e.preventDefault();
@@ -8071,6 +9614,14 @@
         (async () => {
             // Theme initialisieren
             initTheme();
+
+            // UI Prefs
+            loadUiPrefs();
+            applyUiPrefs();
+            initUiToggles();
+
+            // Thumb context menu global close handlers
+            initThumbContextMenuGlobalHandlers();
 
             // Feedback initialisieren (inkl. IndexedDB Fallback)
             await loadFeedbackData();
